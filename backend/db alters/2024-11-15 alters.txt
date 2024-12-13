@@ -1,1 +1,0 @@
-CREATE TABLE `tblmyportalfiles` (`id` INT NOT NULL AUTO_INCREMENT , `sub_id_link` INT NOT NULL COMMENT 'subfolder id' , `file_path` TEXT NOT NULL , `filesize` DOUBLE NOT NULL , `file_name` VARCHAR(200) NOT NULL , `datetime_added` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
