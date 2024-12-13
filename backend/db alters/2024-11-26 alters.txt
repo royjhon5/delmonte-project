@@ -1,0 +1,1 @@
+ALTER TABLE `tblarchivehdr` ADD `NeedFollowUp` INT(1) NOT NULL COMMENT '1-Yes;0-No' AFTER `category`, ADD `DateFollowUp` DATE NOT NULL AFTER `NeedFollowUp`, ADD `IsClosed` INT(1) NOT NULL COMMENT '1-Yes;0-No' AFTER `DateFollowUp`, ADD `FollowUpRemarks` TEXT NOT NULL AFTER `IsClosed`;

@@ -1,0 +1,10 @@
+CREATE TABLE `tblscanners` (`id` INT NOT NULL AUTO_INCREMENT , `scannerName` VARCHAR(150) NOT NULL , `dedicatedTempPath` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `tblarchivehdr` ADD `scannerID` INT NOT NULL AFTER `pathfile_name`;
+ALTER TABLE `tblarchivehdr` ADD `SubDocName` VARCHAR(150) NOT NULL AFTER `scannerID`, ADD `SubDocIDLink` INT NOT NULL AFTER `SubDocName`, ADD `KeyWord` TEXT NOT NULL AFTER `SubDocIDLink`, ADD `Subject` VARCHAR(150) NOT NULL AFTER `KeyWord`, ADD `Department` VARCHAR(150) NOT NULL AFTER `Subject`, ADD `xAmount` DOUBLE NOT NULL AFTER `Department`, ADD `OfficeTo` VARCHAR(150) NOT NULL AFTER `xAmount`, ADD `DepartmentTo` VARCHAR(150) NOT NULL AFTER `OfficeTo`, ADD `PayrollPeriod` VARCHAR(50) NOT NULL AFTER `DepartmentTo`, ADD `DocNature` VARCHAR(150) NOT NULL AFTER `PayrollPeriod`;
+ALTER TABLE `tbldocumenttype` CHANGE `DTName` `DTName` VARCHAR(150) NOT NULL, CHANGE `DTAcronym` `DTAcronym` VARCHAR(150) NOT NULL;
+ALTER TABLE `tbldocumenttype` CHANGE `id` `id` INT(20) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+INSERT INTO `tbldocumenttype` (`id`, `DTName`, `DTAcronym`) VALUES ('', 'Financial Documents', 'FD'), ('', 'Office Documents', 'OD'), ('', 'Payroll and Payslips', 'PP'), ('', 'Miscellaneous/Others', 'MO');
+ALTER TABLE `tblsubdocuments` CHANGE `id` `id` BIGINT(20) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);
+ALTER TABLE `tblarchivehdr` CHANGE `DocReferenceID` `DocReferenceID` VARCHAR(50) NOT NULL;
+ALTER TABLE `tblarchivehdr` ADD `fileSize` DOUBLE NOT NULL COMMENT 'in Kb' AFTER `DocNature`;
+ALTER TABLE `tblarchivehdr` CHANGE `id` `id` INT(20) NOT NULL AUTO_INCREMENT, add PRIMARY KEY (`id`);

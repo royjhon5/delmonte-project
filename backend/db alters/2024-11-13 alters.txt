@@ -1,0 +1,3 @@
+ALTER TABLE `tblarchivehdr` ADD `AOMNo` VARCHAR(100) NOT NULL AFTER `personnelName`, ADD `AOMDate` DATE NULL DEFAULT NULL AFTER `AOMNo`, ADD `DateReceived` DATE NULL DEFAULT NULL AFTER `AOMDate`, ADD `DateSent` DATE NULL DEFAULT NULL AFTER `DateReceived`, ADD `LetterFor` INT NOT NULL AFTER `DateSent`, ADD `LetterTo` INT NOT NULL AFTER `LetterFor`;
+ALTER TABLE `tblarchivehdr` CHANGE `LetterFor` `LetterFor` TEXT NOT NULL, CHANGE `LetterTo` `LetterTo` TEXT NOT NULL;
+ALTER TABLE `tblarchivehdr` ADD `category` VARCHAR(150) NOT NULL COMMENT 'Incoming/ Outgoing/ Within Office' AFTER `LetterTo`;
