@@ -11,7 +11,7 @@ const reportSvc = require('./services/reportSvc')
 const arrayRoutesSvc = [authSvc, myPortalSvc, uploadDocSvc, scannerListSvc, inquirySvc, reportSvc];
 
 arrayRoutesSvc.forEach(routeSvc => {
-    // post
+    // postssssss
     if(routeSvc.routes.post){
         Object.entries(routeSvc.routes.post).forEach(([key]) => {
             router.post(routeSvc.routes.post[key][0], routeSvc.routes.post[key][1]);
