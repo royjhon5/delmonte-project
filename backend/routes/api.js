@@ -12,7 +12,7 @@ const administrativeSvc = require('./services/administrativeSvc');
 const arrayRoutesSvc = [authSvc, myPortalSvc, uploadDocSvc, scannerListSvc, inquirySvc, reportSvc, administrativeSvc];
 
 arrayRoutesSvc.forEach(routeSvc => {
-    // post
+    // postssssss
     if(routeSvc.routes.post){
         Object.entries(routeSvc.routes.post).forEach(([key]) => {
             router.post(routeSvc.routes.post[key][0], routeSvc.routes.post[key][1]);

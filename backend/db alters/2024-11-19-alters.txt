@@ -1,3 +1,0 @@
-ALTER TABLE `tblarchivehdr` ADD `notification_unread` INT NOT NULL DEFAULT '0' AFTER `personnelName`;
-CREATE TABLE `dbarchive`.`tblnotifcation` (`id` INT NOT NULL AUTO_INCREMENT , `archive_hdr_id` INT NOT NULL , `user_id` INT NOT NULL , `action` VARCHAR(75) NOT NULL , `datetimecreated` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
-​
