@@ -7,8 +7,9 @@ const uploadDocSvc = require('./services/uploadDocSvc');
 const scannerListSvc = require('./services/masterfile');
 const inquirySvc = require('./services/inquirySvc');
 const reportSvc = require('./services/reportSvc')
+const administrativeSvc = require('./services/administrativeSvc');
 
-const arrayRoutesSvc = [authSvc, myPortalSvc, uploadDocSvc, scannerListSvc, inquirySvc, reportSvc];
+const arrayRoutesSvc = [authSvc, myPortalSvc, uploadDocSvc, scannerListSvc, inquirySvc, reportSvc, administrativeSvc];
 
 arrayRoutesSvc.forEach(routeSvc => {
     // post

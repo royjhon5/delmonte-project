@@ -15,6 +15,10 @@ const GLAccountList = Loadable(lazy(() => import('@/pages/masterfile/gl_accout_l
 const LocationList = Loadable(lazy(() => import('@/pages/masterfile/location_list')));
 // ENDS HERE
 
+//ADMINISTRATIVE 
+const UpdatePackhouseEmployee = Loadable(lazy(() => import('@/pages/administrative/update_packhouse_employee')));
+//ENDS HERE
+
 export default function AppRouter() {
     const { accessToken } = useAuth();
     const dashboardRoutes = [
@@ -28,6 +32,8 @@ export default function AppRouter() {
                 ''
             ),
             children: [
+
+                //masterfile
                 {
                     path: '/dashboard/employee-list',
                     element: <EmployeeList />
@@ -51,7 +57,14 @@ export default function AppRouter() {
                 {
                     path: '/dashboard/location-list',
                     element: <LocationList />
+                },
+                //ends here
+                //administrative
+                {
+                    path: '/dashboard/employee-masterfile',
+                    element: <UpdatePackhouseEmployee />
                 }
+                //ends here
 
             ],
         }

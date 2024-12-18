@@ -93,11 +93,11 @@ const data = {
       icon: Shield,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Update Pack House Employee",
+          url: "/dashboard/employee-masterfile",
         },
         {
-          title: "Explorer",
+          title: "Export Packhouse Employe List",
           url: "#",
         },
         {

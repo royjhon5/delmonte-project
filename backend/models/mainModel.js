@@ -49,7 +49,7 @@ const mainModel = {
             if (params.limit) {
                 query += " LIMIT " + params.limit + " ";
             } else {
-                query += " LIMIT 100 ";
+                // query += " LIMIT 100 ";
             }
 
             // Execute query
