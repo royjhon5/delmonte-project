@@ -1,18 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const authSvc = require('./services/authSvc');
-const myPortalSvc = require('./services/myPortalSvc');
-const uploadDocSvc = require('./services/uploadDocSvc');
-const scannerListSvc = require('./services/masterfile');
-const inquirySvc = require('./services/inquirySvc');
-const reportSvc = require('./services/reportSvc')
-const administrativeSvc = require('./services/administrativeSvc');
-
-const arrayRoutesSvc = [authSvc, myPortalSvc, uploadDocSvc, scannerListSvc, inquirySvc, reportSvc, administrativeSvc];
+const arrayRoutesSvc = [
+    require('./services/authSvc'),
+    require('./services/masterfile'),
+    require('./services/administrativeSvc')
+];
 
 arrayRoutesSvc.forEach(routeSvc => {
-    // postssssss
+    // post
     if(routeSvc.routes.post){
         Object.entries(routeSvc.routes.post).forEach(([key]) => {
             router.post(routeSvc.routes.post[key][0], routeSvc.routes.post[key][1]);
