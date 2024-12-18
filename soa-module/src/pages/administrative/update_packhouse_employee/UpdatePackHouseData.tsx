@@ -17,7 +17,10 @@ export default function UpdatePackhouseEmployeeData() {
 
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.ChapaID_Old .toLowerCase().includes(search.toLowerCase())
+            row.ChapaID_Old .toLowerCase().includes(search.toLowerCase()) ||
+            row.FName.toLowerCase().includes(search.toLowerCase()) ||
+            row.MName.toLowerCase().includes(search.toLowerCase()) ||
+            row.LName.toLowerCase().includes(search.toLowerCase())
         );
       };
 
@@ -50,7 +53,7 @@ export default function UpdatePackhouseEmployeeData() {
           };      
           return (
             <Button>
-                Update Employee
+                Set as Packhouse
             </Button>
           )
           }
