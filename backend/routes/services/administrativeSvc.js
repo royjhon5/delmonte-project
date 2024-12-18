@@ -1,8 +1,10 @@
 const AdminCtrl = require('../../controller/administrative/EmployeeMasterfileList')
 
-const get = [
-    [ '/get-employeemasterfile', AdminCtrl.getEmployeeMasterfile ],
-]
-
-
-module.exports.routes = { get: get }
+module.exports.routes = { 
+    get: [
+        [ '/get-employeemasterfile', AdminCtrl.getEmployeeMasterfile ],
+    ], 
+    post: [
+        [ '/save-employeemasterfile', AdminCtrl.saveEmployeeMasterFile ],
+    ] 
+}
