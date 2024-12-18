@@ -3,12 +3,14 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AuthProvider } from "@/context/AuthContext";
 
 import { useRouter } from "@/routes/hooks";
+import { store } from "@/store";
 import { ThemeProvider } from "@/theme/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactNode, Suspense } from "react";
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { HelmetProvider } from "react-helmet-async";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 export const queryClient = new QueryClient();
@@ -45,11 +47,13 @@ export default function AppProvider({
                     <ErrorBoundary FallbackComponent={ErrorFallback}>
                         <QueryClientProvider client={queryClient}>
                         {/* <ReactQueryDevtools /> */}
-                        <AuthProvider>
+                        <Provider store={store}>    
+                          <AuthProvider>
                             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
                                 <SidebarProvider>{children}</SidebarProvider>
                             </ThemeProvider>
                           </AuthProvider>
+                          </Provider>
                         </QueryClientProvider>
                     </ErrorBoundary>
                 </BrowserRouter>
