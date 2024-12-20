@@ -39,13 +39,31 @@ module.exports.saveEmployeeMasterFile = async function (req, res) {
 	}
 }
 
+module.exports.getPackhouseEmployees = async function (req, res) {
+	var params = {
+		fields: ["*"],
+		tableName: "tblemployeemasterfile",
+		where: ["EmployeeStatus = ?", "IsPH = ?"],
+		whereValue: ['ACTIVE', 1],
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 module.exports.exportPackhouseEmployee = async function (req, res) {
 	const data = req.body
 	var params = {
 		fields: ["*"],
 		tableName: "tblemployeemasterfile",
-		where: ["IsPH = ?"],
-		whereValue: [1],
+		where: ["EmployeeStatus = ?", "IsPH = ?"],
+		whereValue: ['ACTIVE', 1],
 	}
 	try {
 		const response = await select(params);
