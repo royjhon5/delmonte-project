@@ -12,6 +12,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "sonner";
 
 export const queryClient = new QueryClient();
 const ErrorFallback = ({ error }: FallbackProps) => {
@@ -51,6 +52,7 @@ export default function AppProvider({
                           <AuthProvider>
                             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
                                 <SidebarProvider>{children}</SidebarProvider>
+                                <Toaster />
                             </ThemeProvider>
                           </AuthProvider>
                           </Provider>

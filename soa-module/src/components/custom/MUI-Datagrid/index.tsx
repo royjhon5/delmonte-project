@@ -1,5 +1,6 @@
-import { DataGrid, DataGridProps } from '@mui/x-data-grid';
+import { DataGrid, DataGridProps, GridOverlay } from '@mui/x-data-grid';
 import React from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type CustomDataGridProps = {
   columns: DataGridProps['columns'];
@@ -14,6 +15,12 @@ type CustomDataGridProps = {
   onRowClick?: DataGridProps['onRowClick'];
 };
 
+const CustomLoadingOverlay: React.FC = () => (
+  <GridOverlay>
+      <CircularProgress />
+  </GridOverlay>
+);
+
 const MuiDataGrid: React.FC<CustomDataGridProps> = ({
   columns,
   rows,
@@ -26,13 +33,15 @@ const MuiDataGrid: React.FC<CustomDataGridProps> = ({
   gridOverLay,
   onRowClick,
 }) => {
-
   return (
     <DataGrid
       loading={loading}
       columns={columns}
       rows={rows}
-      slots={slots}
+      slots={{
+        ...slots,
+        loadingOverlay: CustomLoadingOverlay,
+      }}
       rowHeight={47}
       rowSelection={false}
       disableRowSelectionOnClick={false}
@@ -53,15 +62,15 @@ const MuiDataGrid: React.FC<CustomDataGridProps> = ({
           // display: 'none',
         },
         '&.MuiDataGrid-root': {
-          borderBottom: '1px solid rgb(0, 0, 0)',
           border: 0,
+          borderBottom: '1px solid rgba(224, 224, 224, 1)',
         },
         '& .MuiDataGrid-container--top [role=row]': {
-          borderBottom: 'none',
+          borderBottom: 'none'
         },
         '.MuiDataGrid-cell': {
           borderTop: 'none',
-          padding: 0,
+          padding: 0
         },
         '.MuiDataGrid-main': {
           border: 0,
@@ -71,12 +80,12 @@ const MuiDataGrid: React.FC<CustomDataGridProps> = ({
         },
         '.css-ybzqx9-MuiDataGrid-root': {
           '--DataGrid-rowBorderColor': {
-            border: 0,
-          },
+            border: 0
+          }
         },
-        '& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
-          outline: 'none !important',
-        },
+        "& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus": {
+          outline: "none !important"
+        }
       }}
     />
   );

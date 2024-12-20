@@ -8,3 +8,4 @@ module.exports.routes = {
         [ '/save-employeemasterfile', AdminCtrl.saveEmployeeMasterFile ],
     ] 
 }
+

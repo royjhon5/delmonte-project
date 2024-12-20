@@ -6,9 +6,9 @@ const customQuery = (
   urlEndPoint: string | false = false,
   paramsVar: Record<string, any> = {},
   enabled: boolean = true
-): UseQueryResult<any, unknown> | undefined => {
+): { data?: any; isLoading: boolean; isError: boolean } | undefined => {
   if (urlEndPoint) {
-    return useQuery<any, unknown>({
+    const queryResult = useQuery<any, unknown>({
       queryKey: [urlEndPoint],
       enabled,
       queryFn: async () => {
@@ -21,14 +21,18 @@ const customQuery = (
       staleTime: 60000,
       cacheTime: 300000,
     });
+
+    return {
+      data: queryResult.data,
+      isLoading: queryResult.isLoading,
+      isError: queryResult.isError,
+    };
   }
   return undefined;
 };
 
-export {
-    customQuery,
-};
+export { customQuery };
 
 export default {
-    customQuery,
+  customQuery,
 };

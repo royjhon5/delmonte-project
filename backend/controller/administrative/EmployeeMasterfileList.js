@@ -4,6 +4,8 @@ module.exports.getEmployeeMasterfile = async function (req, res) {
 	var params = {
 		fields: ["*"],
 		tableName: "tblemployeemasterfile",
+		where: ["EmployeeStatus = ?"],
+		whereValue: ['ACTIVE'],
 	}
 	try {
 		await select(params).then(function(response){
@@ -26,7 +28,7 @@ module.exports.saveEmployeeMasterFile = async function (req, res) {
 		}
 	}
 	try {
-		var result = await data.id > 0 ? update(params) : insert(params);
+		var result = await data.EmpID > 0 ? update(params) : insert(params);
 		result.then(function(response){
 			res.status(200).json(response);
 		})
