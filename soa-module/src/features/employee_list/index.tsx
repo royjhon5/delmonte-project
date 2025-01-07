@@ -8,12 +8,17 @@ import { UsersDialogs } from './components/users-dialogs'
 import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersTable } from './components/users-table'
 import UsersProvider from './context/users-context'
-import { userListSchema } from './data/schema'
+import { employeeListSchema, userListSchema } from './data/schema'
 import { users } from './data/users'
+import { customQuery } from '@/hooks/custom-hooks'
 
 export default function EmployeeList() {
   const userList = userListSchema.parse(users);
-  console.log(userList)
+  const { data } = customQuery('/get-employee', {}, true);
+  const employees = (data && Array.isArray(data)) ? data.map(employee => employee) : [];
+  const employeeList = employeeListSchema.parse(employees);
+  console.log(employeeList);
+
 
   return (     
     <UsersProvider>

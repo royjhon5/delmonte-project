@@ -27,6 +27,21 @@ const userSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
+
+const employeeSchema = z.object({
+  id: z.number(),
+  chapa_id: z.string(),
+  firstname: z.string(),
+  lastname: z.string(),
+  middlename: z.string(),
+  extname: z.string(),
+  assigned_location_idlink: z.number(),
+  assigned_department_idlink: z.number(),
+  assigned_group_idlink: z.number(),
+  default_activity_idlink: z.number(),
+});
+
 export type User = z.infer<typeof userSchema>
 
-export const userListSchema = z.array(userSchema)
+export const userListSchema = z.array(userSchema);
+export const employeeListSchema = z.array(employeeSchema);

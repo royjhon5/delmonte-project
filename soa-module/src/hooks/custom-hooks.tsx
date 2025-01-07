@@ -4,11 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import http from '../api/http';
 
+interface CustomQueryResult {
+  data?: any;
+}
+
 const customQuery = (
   urlEndPoint: string | false = false,
   paramsVar: Record<string, any> = {},
   enabled: boolean = true
-): { data?: any; isLoading: boolean; isError: boolean } | undefined => {
+): CustomQueryResult | undefined => {
   if (urlEndPoint) {
     const queryResult = useQuery<any, unknown>({
       queryKey: [urlEndPoint],
@@ -26,8 +30,6 @@ const customQuery = (
 
     return {
       data: queryResult.data,
-      isLoading: queryResult.isLoading,
-      isError: queryResult.isError,
     };
   }
   return undefined;
