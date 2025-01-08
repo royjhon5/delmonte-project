@@ -92,7 +92,6 @@ export const employeColumns: ColumnDef<EmployeeData>[] = [
     },
     enableSorting: false,
   },
-  // Global filter column
   {
     id: 'global',
     header: '',
@@ -110,7 +109,7 @@ export const employeColumns: ColumnDef<EmployeeData>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const isPH = row.getValue('IsPH'); // Access the isPH value
+      const isPH = row.getValue('IsPH'); 
       return isPH === 1 ? null : <DataTableRowActions row={row} />;
     },
   },

@@ -71,7 +71,7 @@ export function UsersTable({ columns, data, isLoading }: DataTableProps) {
   return (
     <div className='space-y-4'>
       <DataTableToolbar table={table} />
-      <ScrollArea className="h-[530px] rounded-md border">
+      <ScrollArea className="h-[500px] rounded-md border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -103,7 +103,7 @@ export function UsersTable({ columns, data, isLoading }: DataTableProps) {
                   </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+                  table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
