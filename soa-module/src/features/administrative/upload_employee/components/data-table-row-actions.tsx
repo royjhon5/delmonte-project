@@ -35,10 +35,10 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(row.original)
-              setOpen('edit')
+              setOpen('confirm')
             }}
           >
-            Edit
+            Set as Packhouse Employee
             <DropdownMenuShortcut>
               <IconEdit size={16} />
             </DropdownMenuShortcut>

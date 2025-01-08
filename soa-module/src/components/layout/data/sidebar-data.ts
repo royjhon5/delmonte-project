@@ -1,48 +1,34 @@
 import {
   IconBarrierBlock,
-  IconBrowserCheck,
   IconBug,
-  IconChecklist,
+  IconComponents,
+  IconCreditCardPay,
+  IconDeviceMobile,
   IconError404,
-  IconHelp,
+  IconFileInfo,
+  IconInfoHexagon,
   IconLayoutDashboard,
   IconLock,
   IconLockAccess,
-  IconMessages,
-  IconNotification,
-  IconPackages,
-  IconPalette,
   IconServerOff,
-  IconSettings,
-  IconTool,
-  IconUserCog,
   IconUserOff,
-  IconUsers,
+  IconUserShield,
+  IconWifiOff,
 } from '@tabler/icons-react'
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
+import { Command } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: 'Roy Jhon Dev',
+    email: 'royjhondev@gmail.com',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: 'Shadcn Admin',
+      name: 'Del Monte',
       logo: Command,
-      plan: 'Vite + ShadcnUI',
-    },
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
+      plan: 'SOA Module',
     },
   ],
   navGroups: [
@@ -56,7 +42,7 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Masterfile',
-          icon: IconLockAccess,
+          icon: IconFileInfo,
           items: [
             {
               title: 'Employee List',
@@ -102,7 +88,7 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Transaction',
-          icon: IconLockAccess,
+          icon: IconCreditCardPay,
           items: [
             {
               title: 'Employee Templates - PH/NF-JP',
@@ -123,26 +109,40 @@ export const sidebarData: SidebarData = {
           ],
         },
         {
-          title: 'Tasks',
-          url: '/tasks',
-          icon: IconChecklist,
+          title: 'Administrative',
+          icon: IconUserShield,
+          items: [
+            {
+              title: 'Update / Export Packhouse Employee',
+              url: '/administrative/update_employee',
+            },
+            {
+              title: 'User List',
+              url: '/sign-in',
+            },      
+          ],
         },
-        {
-          title: 'Apps',
-          url: '/apps',
-          icon: IconPackages,
-        },
-        {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
-          icon: IconMessages,
-        },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: IconUsers,
-        },
+        // {
+        //   title: 'Tasks',
+        //   url: '/tasks',
+        //   icon: IconChecklist,
+        // },
+        // {
+        //   title: 'Apps',
+        //   url: '/apps',
+        //   icon: IconPackages,
+        // },
+        // {
+        //   title: 'Chats',
+        //   url: '/chats',
+        //   badge: '3',
+        //   icon: IconMessages,
+        // },
+        // {
+        //   title: 'Users',
+        //   url: '/users',
+        //   icon: IconUsers,
+        // },
       ],
     },
     {
@@ -150,7 +150,7 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: 'Offline Mode',
-          icon: IconLockAccess,
+          icon: IconWifiOff,
           items: [
             {
               title: 'Export Data (Site to External Drive)',
@@ -164,7 +164,7 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'Field Device Process',
-          icon: IconLockAccess,
+          icon: IconDeviceMobile,
           items: [
             {
               title: 'Load Employee',
@@ -178,7 +178,7 @@ export const sidebarData: SidebarData = {
         },
         {
           title: 'PH/NF/JP Device Process',
-          icon: IconLockAccess,
+          icon: IconComponents,
           items: [
             {
               title: 'Upload Employee Location',
@@ -250,43 +250,48 @@ export const sidebarData: SidebarData = {
       ],
     },
     {
-      title: 'Other',
+      title: 'Miscellaneous ',
       items: [
+        // {
+        //   title: 'Settings',
+        //   icon: IconSettings,
+        //   items: [
+        //     {
+        //       title: 'Profile',
+        //       url: '/settings',
+        //       icon: IconUserCog,
+        //     },
+        //     {
+        //       title: 'Account',
+        //       url: '/settings/account',
+        //       icon: IconTool,
+        //     },
+        //     {
+        //       title: 'Appearance',
+        //       url: '/settings/appearance',
+        //       icon: IconPalette,
+        //     },
+        //     {
+        //       title: 'Notifications',
+        //       url: '/settings/notifications',
+        //       icon: IconNotification,
+        //     },
+        //     {
+        //       title: 'Display',
+        //       url: '/settings/display',
+        //       icon: IconBrowserCheck,
+        //     },
+        //   ],
+        // },
+        // {
+        //   title: 'Help Center',
+        //   url: '/help-center',
+        //   icon: IconHelp,
+        // },
         {
-          title: 'Settings',
-          icon: IconSettings,
-          items: [
-            {
-              title: 'Profile',
-              url: '/settings',
-              icon: IconUserCog,
-            },
-            {
-              title: 'Account',
-              url: '/settings/account',
-              icon: IconTool,
-            },
-            {
-              title: 'Appearance',
-              url: '/settings/appearance',
-              icon: IconPalette,
-            },
-            {
-              title: 'Notifications',
-              url: '/settings/notifications',
-              icon: IconNotification,
-            },
-            {
-              title: 'Display',
-              url: '/settings/display',
-              icon: IconBrowserCheck,
-            },
-          ],
-        },
-        {
-          title: 'Help Center',
+          title: 'User Manual',
           url: '/help-center',
-          icon: IconHelp,
+          icon: IconInfoHexagon,
         },
       ],
     },

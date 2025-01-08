@@ -3,12 +3,12 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import LongText from '@/components/long-text'
-import { callTypes, userTypes } from '../data/data'
-import { User } from '../data/schema'
+// import { callTypes, userTypes } from '../data/data'
+import { EmployeeData } from '../data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
-export const columns: ColumnDef<User>[] = [
+export const employeColumns: ColumnDef<EmployeeData>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -18,8 +18,8 @@ export const columns: ColumnDef<User>[] = [
           (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-[2px]'
+        aria-label="Select all"
+        className="translate-y-[2px]"
       />
     ),
     meta: {
@@ -32,20 +32,20 @@ export const columns: ColumnDef<User>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-[2px]'
+        aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: 'username',
+    accessorKey: 'chapa_id',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Chapa ID' />
+      <DataTableColumnHeader column={column} title="Chapa ID" />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-36'>{row.getValue('username')}</LongText>
+      <LongText className="max-w-36">{row.getValue('chapa_id')}</LongText>
     ),
     meta: {
       className: cn(
@@ -59,44 +59,42 @@ export const columns: ColumnDef<User>[] = [
   {
     id: 'fullName',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Full Name' />
+      <DataTableColumnHeader column={column} title="Full Name" />
     ),
     cell: ({ row }) => {
-      const { firstName, lastName } = row.original
-      const fullName = `${firstName} ${lastName}`
-      return <LongText className='max-w-36'>{fullName}</LongText>
+      const { firstname, lastname } = row.original
+      const fullName = `${firstname} ${lastname}`
+      return <LongText className="max-w-36">{fullName}</LongText>
     },
     meta: { className: 'w-45' },
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'default_activity_idlink',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Default Activity' />
+      <DataTableColumnHeader column={column} title="Default Activity" />
     ),
     cell: ({ row }) => (
-      <div className='w-fit text-nowrap'>{row.getValue('email')}</div>
+      <div className="w-fit text-nowrap">{row.getValue('default_activity_idlink')}</div>
     ),
   },
   {
-    accessorKey: 'phoneNumber',
+    accessorKey: 'assigned_location_idlink',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Assigned Location' />
+      <DataTableColumnHeader column={column} title="Assigned Location" />
     ),
-    cell: ({ row }) => <div>{row.getValue('phoneNumber')}</div>,
+    cell: ({ row }) => <div>{row.getValue('assigned_location_idlink')}</div>,
     enableSorting: false,
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'assigned_department_idlink',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Assigned Department' />
+      <DataTableColumnHeader column={column} title="Assigned Department" />
     ),
     cell: ({ row }) => {
-      const { status } = row.original
-      const badgeColor = callTypes.get(status)
       return (
-        <div className='flex space-x-2'>
-          <Badge variant='outline' className={cn('capitalize', badgeColor)}>
-            {row.getValue('status')}
+        <div className="flex space-x-2">
+          <Badge variant="outline" className={cn('capitalize')}>
+            {row.getValue('assigned_department_idlink')}
           </Badge>
         </div>
       )
@@ -108,24 +106,14 @@ export const columns: ColumnDef<User>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: 'role',
+    accessorKey: 'assigned_group_idlink',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Assigned Group' />
+      <DataTableColumnHeader column={column} title="Assigned Group" />
     ),
     cell: ({ row }) => {
-      const { role } = row.original
-      const userType = userTypes.find(({ value }) => value === role)
-
-      if (!userType) {
-        return null
-      }
-
       return (
-        <div className='flex gap-x-2 items-center'>
-          {userType.icon && (
-            <userType.icon size={16} className='text-muted-foreground' />
-          )}
-          <span className='capitalize text-sm'>{row.getValue('role')}</span>
+        <div className="flex gap-x-2 items-center">
+          <span className="capitalize text-sm">{row.getValue('assigned_group_idlink')}</span>
         </div>
       )
     },
@@ -135,8 +123,24 @@ export const columns: ColumnDef<User>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // Global filter column
+  {
+    id: 'global',
+    header: 'Global Filter',
+    filterFn: (row, columnId, value) => {
+      const chapaId = row.getValue('chapa_id') as string
+      const fullName = `${row.original.firstname} ${row.original.lastname}`
+      return (
+        chapaId.toLowerCase().includes(value.toLowerCase()) ||
+        fullName.toLowerCase().includes(value.toLowerCase())
+      )
+    },
+    enableSorting: false,
+    enableHiding: true, // Optional: Hide this column from UI
+  },
   {
     id: 'actions',
     cell: DataTableRowActions,
   },
 ]
+

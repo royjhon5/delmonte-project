@@ -25,6 +25,7 @@ import {
 import { EmployeeData } from '../data/schema'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -36,9 +37,10 @@ declare module '@tanstack/react-table' {
 interface DataTableProps {
   columns: ColumnDef<EmployeeData>[]
   data: EmployeeData[]
+  isLoading: boolean
 }
 
-export function UsersTable({ columns, data }: DataTableProps) {
+export function UsersTable({ columns, data, isLoading }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -69,32 +71,38 @@ export function UsersTable({ columns, data }: DataTableProps) {
   return (
     <div className='space-y-4'>
       <DataTableToolbar table={table} />
-      <div className='rounded-md border'>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className={header.column.columnDef.meta?.className ?? ''}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+      <ScrollArea className="h-[530px] rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className='group/row'>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={header.column.columnDef.meta?.className ?? ''}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+            {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-[500px] text-center">
+                    Loading ...
+                  </TableCell>
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -116,18 +124,15 @@ export function UsersTable({ columns, data }: DataTableProps) {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
+                <TableCell colSpan={columns.length} className='h-24 text-center'>
                   No results.
                 </TableCell>
               </TableRow>
             )}
-          </TableBody>
-        </Table>
-      </div>
-      <DataTablePagination table={table} />
+            </TableBody>
+          </Table>
+      </ScrollArea>
+      {!isLoading && <DataTablePagination table={table} />}
     </div>
   )
 }

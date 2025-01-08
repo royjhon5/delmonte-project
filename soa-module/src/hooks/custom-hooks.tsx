@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import http from '../api/http';
 
 interface CustomQueryResult {
+  isLoading: boolean;
   data?: any;
 }
 
@@ -29,6 +30,7 @@ const customQuery = (
     });
 
     return {
+      isLoading: queryResult.isLoading,
       data: queryResult.data,
     };
   }

@@ -29,10 +29,10 @@ export function DataTableToolbar<TData>({
           className='h-8 w-[150px] lg:w-[250px]'
         />
         <div className='flex gap-x-2'>
-          {table.getColumn('assigned_department_idlink') && (
+          {table.getColumn('EmployeeStatus') && (
             <DataTableFacetedFilter
-              column={table.getColumn('assigned_department_idlink')}
-              title='Department'
+              column={table.getColumn('EmployeeStatus')}
+              title='Employee Status'
               options={userTypes.map((t) => ({ ...t }))}
             />
           )}

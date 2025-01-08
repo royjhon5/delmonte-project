@@ -1,12 +1,15 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
+const { EmployeeListJoin } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getEmployeeList = async function (req, res) {
-	var params = {
-		fields: ["*"],
-		tableName: "tblemployeelist",
-	}
+	const data = req.query;
+	const params = {
+        all: data.all ? true : false,
+        where: [],
+        whereValue: [],
+    };
 	try {
-		await select(params).then(function(response){
+		await EmployeeListJoin(params).then(function(response){
 			if(response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
