@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LocationData } from '../data/data'
-import { useLocation } from '../context/location-context'
+import { useLocation } from '../context/context-provider'
 
 interface DataTableRowActionsProps {
   row: Row<LocationData>

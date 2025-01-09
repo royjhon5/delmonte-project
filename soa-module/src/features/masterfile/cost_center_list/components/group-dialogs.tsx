@@ -1,4 +1,4 @@
-import { useLocation } from '../context/location-context'
+import { useLocation } from '../context/context-provider'
 import { ActionDialog } from './action-dialog'
 import { DeleteDialog } from './delete-dialog'
 

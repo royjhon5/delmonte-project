@@ -1,6 +1,6 @@
 import { IconUserPlus } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
-import { useLocation } from '../context/location-context'
+import { useLocation } from '../context/context-provider'
 
 export function PrimaryButton() {
   const { setOpen } = useLocation()

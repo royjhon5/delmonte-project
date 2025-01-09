@@ -1,5 +1,5 @@
 import { Header } from "@/components/layout/header";
-import DepartmentProvider from "./context/location-context";
+import DepartmentProvider from "./context/context-provider";
 import { Search } from "@/components/search";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { ProfileDropdown } from "@/components/profile-dropdown";
