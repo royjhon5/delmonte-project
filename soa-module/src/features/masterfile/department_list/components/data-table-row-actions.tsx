@@ -1,23 +1,24 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { Row } from '@tanstack/react-table'
-import { IconEdit } from '@tabler/icons-react'
+import { IconEdit, IconTrash } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useUsers } from '../context/users-context'
-import { EmployeeData } from '../data/schema'
+import { DepartmentData } from '../data/data'
+import { useDepartment } from '../context/department-context'
 
 interface DataTableRowActionsProps {
-  row: Row<EmployeeData>
+  row: Row<DepartmentData>
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
-  const { setOpen, setCurrentRow } = useUsers()
+  const { setOpen, setCurrentRow } = useDepartment()
   return (
     <>
       <DropdownMenu modal={false}>
@@ -34,12 +35,25 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuItem
             onClick={() => {
               setCurrentRow(row.original)
-              setOpen('confirm')
+              setOpen('edit')
             }}
           >
-            Set as Packhouse Employee
+            Edit
             <DropdownMenuShortcut>
               <IconEdit size={16} />
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => {
+              setCurrentRow(row.original)
+              setOpen('delete')
+            }}
+            className='!text-red-500'
+          >
+            Delete
+            <DropdownMenuShortcut>
+              <IconTrash size={16} />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>

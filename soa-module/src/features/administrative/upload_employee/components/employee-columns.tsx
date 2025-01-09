@@ -1,39 +1,12 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
 import LongText from '@/components/long-text'
-// import { callTypes, userTypes } from '../data/data'
 import { EmployeeData } from '../data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 
 export const employeColumns: ColumnDef<EmployeeData>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    meta: { className: 'w-45' },
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: 'ChapaID_Old',
     header: ({ column }) => (
@@ -63,9 +36,9 @@ export const employeColumns: ColumnDef<EmployeeData>[] = [
       <DataTableColumnHeader column={column} title="Employee Status" />
     ),
     cell: ({ row }) => {
-      const empStatus = row.getValue('EmployeeStatus');
+      const empStatus = (row.getValue('EmployeeStatus') as string).toUpperCase();
       return <div>{empStatus === "ACTIVE" ? 
-      <Badge variant='outline' className={cn('capitalize bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300')}>
+      <Badge variant='outline' className={cn('bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300')}>
       Active
       </Badge> : 
       <Badge variant='outline' className={cn('capitalize bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10')}>
@@ -108,10 +81,7 @@ export const employeColumns: ColumnDef<EmployeeData>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      const isPH = row.getValue('IsPH'); 
-      return isPH === 1 ? null : <DataTableRowActions row={row} />;
-    },
+    cell: DataTableRowActions
   },
 ]
 

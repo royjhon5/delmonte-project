@@ -22,10 +22,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { EmployeeData } from '../data/schema'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableToolbar } from './data-table-toolbar'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { DepartmentData } from '../data/data'
 import CustomLoading from '@/components/custom/loading'
 
 declare module '@tanstack/react-table' {
@@ -36,12 +36,12 @@ declare module '@tanstack/react-table' {
 }
 
 interface DataTableProps {
-  columns: ColumnDef<EmployeeData>[]
-  data: EmployeeData[]
+  columns: ColumnDef<DepartmentData>[]
+  data: DepartmentData[]
   isLoading: boolean
 }
 
-export function UsersTable({ columns, data, isLoading }: DataTableProps) {
+export function DataTable({ columns, data, isLoading }: DataTableProps) {
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -98,9 +98,9 @@ export function UsersTable({ columns, data, isLoading }: DataTableProps) {
             </TableHeader>
             <TableBody>
             {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-[500px] text-center">
-                    <CustomLoading message="Retrieving" />
+                <TableRow className="group/row hover:bg-transparent">
+                  <TableCell colSpan={columns.length} className="h-[400px] text-center">
+                    <CustomLoading message='Retrieving' />
                   </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
@@ -124,8 +124,8 @@ export function UsersTable({ columns, data, isLoading }: DataTableProps) {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
+              <TableRow className="group/row hover:bg-transparent">
+                <TableCell colSpan={columns.length} className='h-[400px] text-center'>
                   No results.
                 </TableCell>
               </TableRow>

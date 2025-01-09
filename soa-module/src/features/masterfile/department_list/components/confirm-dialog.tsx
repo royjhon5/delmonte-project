@@ -2,31 +2,30 @@
 
 import { IconAlertTriangle } from '@tabler/icons-react'
 import { toast } from '@/hooks/use-toast'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { EmployeeData } from '../data/schema'
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import http from '@/api/http'
+import { DepartmentData } from '../data/data'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: EmployeeData
+  currentRow: DepartmentData
 }
 
 interface EmpData {
-    EmpID: number;
-    IsPH: number;
+    id: number;
+    department_name: string;
 }
 
-export function EmployeeConfirmationDialog({ open, onOpenChange, currentRow }: Props) {
+export function ConfirmationDialog({ open, onOpenChange, currentRow }: Props) {
   const queryClient = useQueryClient();
 
   const handleConfirm = async (): Promise<void> => {
     const EmpDataTo: EmpData = {
-      EmpID: currentRow.EmpID,
-      IsPH: 1,
+      id: 1,
+      department_name: "wew",
     }; 
     try {
       await confirmSave.mutateAsync(EmpDataTo);
@@ -76,17 +75,10 @@ export function EmployeeConfirmationDialog({ open, onOpenChange, currentRow }: P
       desc={
         <div className='space-y-4'>
           <p className='mb-2'>
-            Are you sure you want to update the status of{' '}
-            <span className='font-bold'>{currentRow.FName} {currentRow.LName}</span>?
+            Are you sure you want to update {' '}
+            <span className='font-bold'>{currentRow.department_name}</span>?
             <br />
-            This action will permanently change his/her status. This cannot be undone.
           </p>
-          <Alert variant='destructive'>
-            <AlertTitle>Warning!</AlertTitle>
-            <AlertDescription>
-              Please be carefull, this operation can not be rolled back.
-            </AlertDescription>
-          </Alert>
         </div>
       }
       confirmText='Update'

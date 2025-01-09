@@ -113,25 +113,37 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 					}
 				});
 				
-				ws.cell(1, 1, 1, 10, true).string(heading1).style(centerStyle); // row, column
-				ws.cell(2, 1, 2, 10, true).string("As of " + months[parseInt(await getDateNow('month')) - 1] + " " + await getDateNow('day') + ", " + await getDateNow('year')).style(centerStyle);
+				// ws.cell(1, 1, 1, 10, true).string(heading1).style(centerStyle); // row, column
+				// ws.cell(2, 1, 2, 10, true).string("As of " + months[parseInt(await getDateNow('month')) - 1] + " " + await getDateNow('day') + ", " + await getDateNow('year')).style(centerStyle);
 
-				var row = 3;
-				row += 2; // add space
-				ws.cell(row, 1).string("Chapa ID").style(borderedStyle);
-				ws.cell(row, 2).string("Lastname").style(borderedStyle);
-				ws.cell(row, 3).string("Firstname").style(borderedStyle);
-				ws.cell(row, 4).string("Middlename").style(borderedStyle);
-				ws.cell(row, 5).string("Extname").style(borderedStyle);
-				ws.cell(row, 6).string("Fullname").style(borderedStyle);
+				// var row = 3;
+				// row += 2; // add space
+				// ws.cell(row, 1).string("Chapa ID").style(borderedStyle);
+				// ws.cell(row, 2).string("Lastname").style(borderedStyle);
+				// ws.cell(row, 3).string("Firstname").style(borderedStyle);
+				// ws.cell(row, 4).string("Middlename").style(borderedStyle);
+				// ws.cell(row, 5).string("Extname").style(borderedStyle);
+				// ws.cell(row, 6).string("Fullname").style(borderedStyle);
+				var row = 0;
 				mappedResults.map(item => {
 					row += 1; // add space
-					ws.cell(row, 1).string(item.ChapaID_Old).style(borderedStyle);
-					ws.cell(row, 2).string(item.LName).style(borderedStyle);
-					ws.cell(row, 3).string(item.FName).style(borderedStyle);
-					ws.cell(row, 4).string(item.MName).style(borderedStyle);
-					ws.cell(row, 5).string(item.ExtName).style(borderedStyle);
-					ws.cell(row, 6).string(item.FName + " " + item.LName).style(borderedStyle);
+					// ws.cell(row, 1).string(item.ChapaID_Old).style(borderedStyle);
+					// ws.cell(row, 2).string(item.LName).style(borderedStyle);
+					// ws.cell(row, 3).string(item.FName).style(borderedStyle);
+					// ws.cell(row, 4).string(item.MName).style(borderedStyle);
+					// ws.cell(row, 5).string(item.ExtName).style(borderedStyle);
+					// ws.cell(row, 6).string(item.FName + " " + item.LName).style(borderedStyle);
+					ws.cell(row, 1).string("'"+item.EmpID);
+					ws.cell(row, 2).string("Employee");
+					ws.cell(row, 3).string(item.FName + " " + item.MName + " " + item.LName + " " + item.ExtName + " - " + item.ChapaID_Old);
+					ws.cell(row, 4).string("'1");
+					ws.cell(row, 5).string("");
+					ws.cell(row, 6).string("");
+					ws.cell(row, 7).string("");
+					ws.cell(row, 8).string("");
+					ws.cell(row, 9).string("");
+					ws.cell(row, 10).string("");
+					ws.cell(row, 11).string("");
 				})
 
 				wb.write(filename + ".xlsx", res); // download the generated excel file

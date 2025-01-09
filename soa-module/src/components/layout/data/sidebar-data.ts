@@ -82,7 +82,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Department List',
-              url: '/otp',
+              url: '/masterfile/department_list',
             },
           ],
         },

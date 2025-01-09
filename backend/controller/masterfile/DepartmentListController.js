@@ -1,8 +1,4 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const dayjs = require('dayjs');
-const pdf = require('pdf-creator-node');
-const fs = require('fs');
-const path = require('path');
 
 module.exports.saveDepartmentList = async function (req, res) {
 	const data = req.body
@@ -10,7 +6,7 @@ module.exports.saveDepartmentList = async function (req, res) {
 		tableName: "tbldepartment",
 		fieldValue: {
 			id: data.id,
-			department_name: data.department_name,
+			departmentname: data.departmentname,
 		}
 	}
 	try {
