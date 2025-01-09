@@ -78,7 +78,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Location List',
-              url: '/otp',
+              url: '/masterfile/location_list',
             },
             {
               title: 'Department List',

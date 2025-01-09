@@ -94,7 +94,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-left'>
-                      Department Name
+                      Location Name
                     </FormLabel>
                     <FormControl>
                       <Input
