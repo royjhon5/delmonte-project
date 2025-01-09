@@ -66,7 +66,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Activity List',
-              url: '/otp',
+              url: '/masterfile/activity_list',
             },
             {
               title: 'GL Code List',

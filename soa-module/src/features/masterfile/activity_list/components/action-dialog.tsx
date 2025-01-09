@@ -26,7 +26,7 @@ import { GlobalData } from '../data/data'
 
 const formSchema = z
   .object({
-    gl_code	: z.string().min(1, { message: 'Department details is required.' }),
+    activityname	: z.string().min(1, { message: 'Department details is required.' }),
     isEdit: z.boolean(),
   })
 type UserForm = z.infer<typeof formSchema>
@@ -47,7 +47,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
           isEdit,
         }
       : {
-          gl_code: '',
+          activityname: '',
           isEdit,
         },
   })
@@ -90,11 +90,11 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
             >
               <FormField
                 control={form.control}
-                name='gl_code'
+                name='activityname'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-left'>
-                      GL Code
+                      Activity Name
                     </FormLabel>
                     <FormControl>
                       <Input
