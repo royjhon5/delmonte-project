@@ -74,7 +74,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Cost Center List',
-              url: '/otp',
+              url: '/masterfile/cost_center_list',
             },
             {
               title: 'Location List',

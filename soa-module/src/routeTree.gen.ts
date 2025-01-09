@@ -73,6 +73,9 @@ const AuthenticatedMasterfileEmployeelistIndexLazyImport = createFileRoute(
 const AuthenticatedMasterfileDepartmentlistIndexLazyImport = createFileRoute(
   '/_authenticated/masterfile/department_list/',
 )()
+const AuthenticatedMasterfileCostcenterlistIndexLazyImport = createFileRoute(
+  '/_authenticated/masterfile/cost_center_list/',
+)()
 const AuthenticatedAdministrativeUpdateemployeeIndexLazyImport =
   createFileRoute('/_authenticated/administrative/update_employee/')()
 
@@ -316,6 +319,17 @@ const AuthenticatedMasterfileDepartmentlistIndexLazyRoute =
     ).then((d) => d.Route),
   )
 
+const AuthenticatedMasterfileCostcenterlistIndexLazyRoute =
+  AuthenticatedMasterfileCostcenterlistIndexLazyImport.update({
+    id: '/masterfile/cost_center_list/',
+    path: '/masterfile/cost_center_list/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/_authenticated/masterfile/cost_center_list/index.lazy'
+    ).then((d) => d.Route),
+  )
+
 const AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute =
   AuthenticatedAdministrativeUpdateemployeeIndexLazyImport.update({
     id: '/administrative/update_employee/',
@@ -506,6 +520,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdministrativeUpdateemployeeIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/masterfile/cost_center_list/': {
+      id: '/_authenticated/masterfile/cost_center_list/'
+      path: '/masterfile/cost_center_list'
+      fullPath: '/masterfile/cost_center_list'
+      preLoaderRoute: typeof AuthenticatedMasterfileCostcenterlistIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/masterfile/department_list/': {
       id: '/_authenticated/masterfile/department_list/'
       path: '/masterfile/department_list'
@@ -567,6 +588,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksIndexLazyRoute: typeof AuthenticatedTasksIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
   AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute: typeof AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute
+  AuthenticatedMasterfileCostcenterlistIndexLazyRoute: typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   AuthenticatedMasterfileDepartmentlistIndexLazyRoute: typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   AuthenticatedMasterfileEmployeelistIndexLazyRoute: typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
   AuthenticatedMasterfileLocationlistIndexLazyRoute: typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
@@ -583,6 +605,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
   AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute:
     AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute,
+  AuthenticatedMasterfileCostcenterlistIndexLazyRoute:
+    AuthenticatedMasterfileCostcenterlistIndexLazyRoute,
   AuthenticatedMasterfileDepartmentlistIndexLazyRoute:
     AuthenticatedMasterfileDepartmentlistIndexLazyRoute,
   AuthenticatedMasterfileEmployeelistIndexLazyRoute:
@@ -619,6 +643,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/administrative/update_employee': typeof AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute
+  '/masterfile/cost_center_list': typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   '/masterfile/department_list': typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   '/masterfile/employee_list': typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
   '/masterfile/location_list': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
@@ -647,6 +672,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
   '/administrative/update_employee': typeof AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute
+  '/masterfile/cost_center_list': typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   '/masterfile/department_list': typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   '/masterfile/employee_list': typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
   '/masterfile/location_list': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
@@ -679,6 +705,7 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexLazyRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexLazyRoute
   '/_authenticated/administrative/update_employee/': typeof AuthenticatedAdministrativeUpdateemployeeIndexLazyRoute
+  '/_authenticated/masterfile/cost_center_list/': typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   '/_authenticated/masterfile/department_list/': typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   '/_authenticated/masterfile/employee_list/': typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
   '/_authenticated/masterfile/location_list/': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
@@ -711,6 +738,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/users'
     | '/administrative/update_employee'
+    | '/masterfile/cost_center_list'
     | '/masterfile/department_list'
     | '/masterfile/employee_list'
     | '/masterfile/location_list'
@@ -738,6 +766,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/users'
     | '/administrative/update_employee'
+    | '/masterfile/cost_center_list'
     | '/masterfile/department_list'
     | '/masterfile/employee_list'
     | '/masterfile/location_list'
@@ -768,6 +797,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/'
     | '/_authenticated/users/'
     | '/_authenticated/administrative/update_employee/'
+    | '/_authenticated/masterfile/cost_center_list/'
     | '/_authenticated/masterfile/department_list/'
     | '/_authenticated/masterfile/employee_list/'
     | '/_authenticated/masterfile/location_list/'
@@ -839,6 +869,7 @@ export const routeTree = rootRoute
         "/_authenticated/tasks/",
         "/_authenticated/users/",
         "/_authenticated/administrative/update_employee/",
+        "/_authenticated/masterfile/cost_center_list/",
         "/_authenticated/masterfile/department_list/",
         "/_authenticated/masterfile/employee_list/",
         "/_authenticated/masterfile/location_list/"
@@ -934,6 +965,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/administrative/update_employee/": {
       "filePath": "_authenticated/administrative/update_employee/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/masterfile/cost_center_list/": {
+      "filePath": "_authenticated/masterfile/cost_center_list/index.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/masterfile/department_list/": {
