@@ -19,10 +19,10 @@ export function DataTableToolbar<TData>({
         <Input
           placeholder='Search ...'
           value={
-            (table.getColumn('costcenter')?.getFilterValue() as string) ?? ''
+            (table.getColumn('gl_code')?.getFilterValue() as string) ?? ''
           }
           onChange={(event) =>
-            table.getColumn('costcenter')?.setFilterValue(event.target.value)
+            table.getColumn('gl_code')?.setFilterValue(event.target.value)
           }
           className='h-8 w-[150px] lg:w-[250px]'
         />

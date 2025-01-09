@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const globalSchema = z.object({
   id: z.number(),
-  costcenter: z.string(),
+  gl_code	: z.string(),
 });
 
 export type GlobalData = z.infer<typeof globalSchema>

@@ -12,7 +12,7 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 
 export default function LocationList() {
-  const { data, isLoading } = customQuery('/get-location', {}, true);
+  const { data, isLoading } = customQuery('/get-location', {}, true) || { data: undefined, isLoading: false };
   const location = (data && Array.isArray(data)) ? data.map(locations => locations) : [];
   const locationData = LocationListSchema.parse(location);
     return (

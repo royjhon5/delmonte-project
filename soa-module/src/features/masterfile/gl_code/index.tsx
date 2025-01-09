@@ -11,10 +11,10 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
-export default function CostCenterList() {
-  const { data, isLoading } = customQuery('/get-costcenter', {}, true);
-  const costcenter = (data && Array.isArray(data)) ? data.map(cost => cost) : [];
-  const costcenterData = globalListSchema.parse(costcenter);
+export default function GlCodeList() {
+  const { data, isLoading } = customQuery('/get-costcenter', {}, true) || { data: undefined, isLoading: false };
+  const glCode = (data && Array.isArray(data)) ? data.map(glcode => glcode) : [];
+  const glcodeData = globalListSchema.parse(glCode);
     return (
         <MainProvider>
             <Header fixed>
@@ -27,15 +27,15 @@ export default function CostCenterList() {
              <Main>
                 <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap'>
                 <div>
-                    <h2 className='text-2xl font-bold tracking-tight'>Cost Center List</h2>
+                    <h2 className='text-2xl font-bold tracking-tight'>GL Code List</h2>
                     <p className='text-muted-foreground'>
-                    Manage your Cost Center data here.
+                    Manage your GL Code data here.
                     </p>
                 </div>
                     <PrimaryButton />
                 </div>
                 <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-                    <DataTable data={costcenterData} columns={DataColumns} isLoading={isLoading} />
+                    <DataTable data={glcodeData} columns={DataColumns} isLoading={isLoading} />
                 </div>
             </Main>
             <DialogContainer />

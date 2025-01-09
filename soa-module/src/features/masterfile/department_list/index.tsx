@@ -12,7 +12,7 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 
 export default function DepartmentList() {
-  const { data, isLoading } = customQuery('/get-department', {}, true);
+  const { data, isLoading } = customQuery('/get-department', {}, true) || { data: undefined, isLoading: false };
   const department = (data && Array.isArray(data)) ? data.map(departments => departments) : [];
   const dapartmentData = departmentListSchema.parse(department);
     return (

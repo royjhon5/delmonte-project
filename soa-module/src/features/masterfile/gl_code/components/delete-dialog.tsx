@@ -46,11 +46,11 @@ export function DeleteDialog({ open, onOpenChange, currentRow }: Props) {
         <div className='space-y-4'>
           <p className='mb-2'>
             Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.costcenter}</span>?
+            <span className='font-bold'>{currentRow.gl_code}</span>?
             <br />
             This action will permanently remove {' '}
             <span className='font-bold'>
-              {currentRow.costcenter}
+              {currentRow.gl_code}
             </span>{' '}
             from the system. This cannot be undone.
           </p>

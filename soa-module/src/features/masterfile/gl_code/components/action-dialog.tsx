@@ -26,7 +26,7 @@ import { GlobalData } from '../data/data'
 
 const formSchema = z
   .object({
-    costcenter: z.string().min(1, { message: 'Department details is required.' }),
+    gl_code	: z.string().min(1, { message: 'Department details is required.' }),
     isEdit: z.boolean(),
   })
 type UserForm = z.infer<typeof formSchema>
@@ -47,7 +47,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
           isEdit,
         }
       : {
-          costcenter: '',
+          gl_code: '',
           isEdit,
         },
   })
@@ -78,7 +78,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
         <DialogHeader className='text-left'>
           <DialogTitle>{isEdit ? 'Edit' : 'Add New'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the location details here. ' : 'Create new location details here. '}
+            {isEdit ? 'Update the gl code here. ' : 'Create new gl code here. '}
             Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
@@ -90,11 +90,11 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
             >
               <FormField
                 control={form.control}
-                name='costcenter'
+                name='gl_code'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-left'>
-                      Cost Center Name
+                      GL Code
                     </FormLabel>
                     <FormControl>
                       <Input

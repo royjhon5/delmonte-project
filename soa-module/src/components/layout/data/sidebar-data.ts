@@ -70,7 +70,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'GL Code List',
-              url: '/otp',
+              url: '/masterfile/gl_code',
             },
             {
               title: 'Cost Center List',

@@ -31,7 +31,7 @@ export default function MainProvider({ children }: Props) {
 export const useMainContext = () => {
     const context = React.useContext(MainContext);
     if (!context) {
-        throw new Error('cost Center Context must be used within a <Main Provider>');
+        throw new Error('Gl Code Context must be used within a <Main Provider>');
     }   
     return context;
 };
