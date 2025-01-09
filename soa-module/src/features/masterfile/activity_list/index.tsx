@@ -11,7 +11,7 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
-export default function GlCodeList() {
+export default function ActivityList() {
   const { data, isLoading } = customQuery('/get-costcenter', {}, true) || { data: undefined, isLoading: false };
   const glCode = (data && Array.isArray(data)) ? data.map(glcode => glcode) : [];
   const glcodeData = globalListSchema.parse(glCode);
@@ -27,9 +27,9 @@ export default function GlCodeList() {
              <Main>
                 <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap'>
                 <div>
-                    <h2 className='text-2xl font-bold tracking-tight'>GL Code List</h2>
+                    <h2 className='text-2xl font-bold tracking-tight'>Activity List</h2>
                     <p className='text-muted-foreground'>
-                    Manage your GL Code data here.
+                    Manage your Activity data here.
                     </p>
                 </div>
                     <PrimaryButton />
