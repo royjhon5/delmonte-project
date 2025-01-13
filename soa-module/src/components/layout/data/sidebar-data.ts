@@ -44,7 +44,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Account to Change List',
-              url: '/sign-in-2',
+              url: '/masterfile/account_to_charge',
             },
             {
               title: 'Group Line List',

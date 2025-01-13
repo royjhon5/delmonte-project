@@ -11,7 +11,7 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
-export default function CostCenterList() {
+export default function AccountToChargeList() {
   const { data, isLoading } = customQuery('/get-accounttocharge', {}, true) || { data: undefined, isLoading: false };
   const accounttocharge = (data && Array.isArray(data)) ? data.map(cost => cost) : [];
   const ATCData = globalListSchema.parse(accounttocharge);
