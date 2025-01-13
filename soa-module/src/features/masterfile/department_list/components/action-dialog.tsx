@@ -23,9 +23,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { DepartmentData } from '../data/data'
+import { customQuery } from '@/hooks/custom-hooks'
+import { useMemo } from 'react'
+import { Combobox } from '@/components/combo-box'
 
 const formSchema = z
   .object({
+    location_name: z.string().min(1, { message: 'Location details is required.' }),
     department_name: z.string().min(1, { message: 'Department details is required.' }),
     isEdit: z.boolean(),
   })
@@ -39,6 +43,20 @@ interface Props {
 
 export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
   const isEdit = !!currentRow
+  const { data, isLoading } = customQuery('/get-location', {}, true) || { data: undefined, isLoading: false };
+  /* eslint-disable */
+  const locationData = useMemo(() => {
+    if (Array.isArray(data)) {
+      return data.map((location: any) => ({
+        value: location.id, 
+        label: location.location_name,
+      }))
+    }
+    return []
+  }, [data])
+  const handleSelect = (selectedValue: string) => {
+    console.log("Selected value:", selectedValue)
+  }
   const form = useForm<UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
@@ -47,6 +65,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
           isEdit,
         }
       : {
+          location_name: '',
           department_name: '',
           isEdit,
         },
@@ -88,6 +107,24 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-4 p-0.5'
             >
+
+              
+               <FormField
+                control={form.control}
+                name='location_name'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                    <FormLabel className='col-span-2 text-left'>
+                      Location Name
+                    </FormLabel>
+                    <FormControl>
+                    <Combobox data={locationData} placeholder='Click to select' onSelect={handleSelect}
+                        isLoading={isLoading} {...field}  />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name='department_name'
