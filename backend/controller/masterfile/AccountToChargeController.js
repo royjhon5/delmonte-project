@@ -1,12 +1,15 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
+const { AccountToChargeJoin } = require("../../models/rawQueryModel/rawQueryModel");
 
-module.exports.getGroupData = async function (req, res) {
-	var params = {
-		fields: ["*"],
-		tableName: "tblgroupline_list",
-	}
+module.exports.getAccountToCharge = async function (req, res) {
+	const data = req.query;
+	const params = {
+        all: data.all ? true : false,
+        where: [],
+        whereValue: [],
+    };
 	try {
-		await select(params).then(function(response){
+		await AccountToChargeJoin(params).then(function(response){
 			if(response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
@@ -16,13 +19,13 @@ module.exports.getGroupData = async function (req, res) {
 	}
 }
 
-module.exports.saveGroupData = async function (req, res) {
+module.exports.saveAccountToCharge = async function (req, res) {
 	const data = req.body
 	var params = {
-		tableName: "tblgroupline_list",
+		tableName: "tblactivitylist",
 		fieldValue: {
 			id: data.id,
-			groupline_name: data.groupline_name
+			activityname: data.activityname
 		}
 	}
 	try {
@@ -36,10 +39,10 @@ module.exports.saveGroupData = async function (req, res) {
 	}
 }
 
-module.exports.deleteGroupData = async function (req, res) {
+module.exports.deleteAccoubtToCharge = async function (req, res) {
     const data = req.query
 	var params = {
-		tableName: "tblgroupline_list",
+		tableName: "tblactivitylist",
 		where: ["id = ?"],
 		whereValue: [data.id],
 	}

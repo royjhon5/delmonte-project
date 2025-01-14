@@ -1,9 +1,9 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
 
-module.exports.getGroupData = async function (req, res) {
+module.exports.getDataField = async function (req, res) {
 	var params = {
 		fields: ["*"],
-		tableName: "tblgroupline_list",
+		tableName: "tblfield_list",
 	}
 	try {
 		await select(params).then(function(response){
@@ -16,13 +16,13 @@ module.exports.getGroupData = async function (req, res) {
 	}
 }
 
-module.exports.saveGroupData = async function (req, res) {
+module.exports.saveFieldData = async function (req, res) {
 	const data = req.body
 	var params = {
-		tableName: "tblgroupline_list",
+		tableName: "tblfield_list",
 		fieldValue: {
 			id: data.id,
-			groupline_name: data.groupline_name
+			field_name: data.field_name
 		}
 	}
 	try {
@@ -36,10 +36,10 @@ module.exports.saveGroupData = async function (req, res) {
 	}
 }
 
-module.exports.deleteGroupData = async function (req, res) {
+module.exports.deleteFieldData = async function (req, res) {
     const data = req.query
 	var params = {
-		tableName: "tblgroupline_list",
+		tableName: "tblfield_list",
 		where: ["id = ?"],
 		whereValue: [data.id],
 	}

@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const globalSchema = z.object({
   id: z.number(),
-  activityname	: z.string(),
+  field_name	: z.string(),
 });
 
 export type GlobalData = z.infer<typeof globalSchema>

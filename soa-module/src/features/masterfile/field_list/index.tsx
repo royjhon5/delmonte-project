@@ -27,9 +27,9 @@ export default function ActivityList() {
              <Main>
                 <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap'>
                 <div>
-                    <h2 className='text-2xl font-bold tracking-tight'>Activity List</h2>
+                    <h2 className='text-2xl font-bold tracking-tight'>Field List</h2>
                     <p className='text-muted-foreground'>
-                    Manage your Activity data here.
+                    Manage your Field data here.
                     </p>
                 </div>
                     <PrimaryButton />

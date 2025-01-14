@@ -4,6 +4,10 @@ const CostCtrl = require('../../controller/masterfile/CostCenterController');
 const ActCtrl = require('../../controller/masterfile/ActivityListController');
 const EmpCtrl = require('../../controller/masterfile/EmployeeListController');
 const DeptCtrl = require('../../controller/masterfile/DepartmentListController');
+const FieldCtrl = require('../../controller/masterfile/FieldListController');
+const DayCtrl = require('../../controller/masterfile/DayTypeListController');
+const AccontToChargeCtrl = require('../../controller/masterfile/AccountToChargeController');
+const GroupCtrl = require('../../controller/masterfile/GroupListController');
 
 module.exports.routes = {
     post: [
@@ -13,6 +17,10 @@ module.exports.routes = {
         [ '/post-activity', ActCtrl.saveActivityData ],
         [ '/post-employee', EmpCtrl.saveEmployeeData ],
         [ '/post-department', DeptCtrl.saveDepartmentList ],
+        [ '/post-field', FieldCtrl.saveFieldData ],
+        [ '/post-daytype', DayCtrl.saveDataDay ],
+        [ '/post-accounttocharge', AccontToChargeCtrl.saveAccountToCharge ],
+        [ '/post-group', GroupCtrl.saveGroupData ],
     ], 
     get: [
         [ '/get-location', LocCtrl.getLocationList ],
@@ -21,6 +29,10 @@ module.exports.routes = {
         [ '/get-activity', ActCtrl.getActivityList ],
         [ '/get-employee', EmpCtrl.getEmployeeList ],
         [ '/get-department', DeptCtrl.getDepartmentList ],
+        [ '/get-field', FieldCtrl.getDataField ],
+        [ '/get-daytype', DayCtrl.getDataDay ],
+        [ '/get-accounttocharge', AccontToChargeCtrl.getAccountToCharge ],
+        [ '/get-group', GroupCtrl.getGroupData ],
     ], 
     remove: [
         [ '/remove-location', LocCtrl.deleteLocationData ],
@@ -29,5 +41,9 @@ module.exports.routes = {
         [ '/remove-activity', ActCtrl.deleteActivityData ],
         [ '/remove-employee', EmpCtrl.deleteEmployeeData ],
         [ '/remove-department', DeptCtrl.deleteDepartmentData ],
+        [ '/remove-field', FieldCtrl.deleteFieldData ],
+        [ '/remove-daytype', DayCtrl.deleteDataDay ],
+        [ '/remove-accounttocharge', AccontToChargeCtrl.deleteAccoubtToCharge ],
+        [ '/remove-group', GroupCtrl.deleteGroupData ],
     ] 
 }

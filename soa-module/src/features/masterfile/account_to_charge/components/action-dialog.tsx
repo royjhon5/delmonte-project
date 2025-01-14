@@ -21,12 +21,15 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { GlobalData } from '../data/data'
+import { useMemo } from 'react'
+import { customQuery } from '@/hooks/custom-hooks'
+import { Combobox } from '@/components/combo-box'
 
 const formSchema = z
   .object({
-    costcenter: z.string().min(1, { message: 'Department details is required.' }),
+    costcenter: z.string().min(1, { message: 'Cost Center details is required.' }),
+    gl_code: z.string().min(1, { message: 'Department details is required.' }),
     isEdit: z.boolean(),
   })
 type UserForm = z.infer<typeof formSchema>
@@ -39,6 +42,54 @@ interface Props {
 
 export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
   const isEdit = !!currentRow
+
+  const { data: ccData, isLoading: isLoadingCostCenter } = customQuery('/get-costcenter', {}, true) || { data: undefined, isLoading: false };
+  /* eslint-disable */
+  const costcenterData = useMemo(() => {
+    if (Array.isArray(ccData)) {
+      return ccData.map((location: any) => ({
+        value: location.id, 
+        label: location.costcenter,
+      }))
+    }
+    return []
+  }, [ccData])
+  const selectedCostCenterValue = (valueSelectedCostCenter: string) => {
+    console.log("Selected value:", valueSelectedCostCenter)
+  }
+
+  const { data: glCode, isLoading: isLoadingGlCode } = customQuery('/get-glcode', {}, true) || { data: undefined, isLoading: false };
+  /* eslint-disable */
+  const glcodeData = useMemo(() => {
+    if (Array.isArray(glCode)) {
+      return glCode.map((location: any) => ({
+        value: location.id, 
+        label: location.gl_code,
+      }))
+    }
+    return []
+  }, [glCode])
+  const selectedGlCodeValue = (selectedData: string) => {
+    console.log("Selected value:", selectedData)
+  }
+
+
+  const { data: activity, isLoading: isLoadingActivity } = customQuery('/get-activity', {}, true) || { data: undefined, isLoading: false };
+  /* eslint-disable */
+  const activityData = useMemo(() => {
+    if (Array.isArray(activity)) {
+      return activity.map((location: any) => ({
+        value: location.id, 
+        label: location.activityname,
+      }))
+    }
+    return []
+  }, [glCode])
+  const selectedActivityValue = (selectedData: string) => {
+    console.log("Selected value:", selectedData)
+  }
+
+
   const form = useForm<UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
@@ -48,6 +99,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
         }
       : {
           costcenter: '',
+          gl_code: '',
           isEdit,
         },
   })
@@ -88,25 +140,57 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-4 p-0.5'
             >
-              <FormField
-                control={form.control}
-                name='costcenter'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
-                    <FormLabel className='col-span-2 text-left'>
-                      Cost Center Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className='col-span-4'
-                        autoComplete='off'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
+               <FormField
+                  control={form.control}
+                  name='costcenter'
+                  render={({ field }) => (
+                    <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                      <FormLabel className='col-span-2 text-left'>
+                        Cost Center
+                      </FormLabel>
+                      <FormControl>
+                      <Combobox data={costcenterData} placeholder='Click to select' onSelect={selectedCostCenterValue}
+                          isLoading={isLoadingCostCenter} {...field}  />
+                      </FormControl>
+                      <FormMessage className='col-span-4 col-start-3' />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='gl_code'
+                  render={({ field }) => (
+                    <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                      <FormLabel className='col-span-2 text-left'>
+                        GL Code
+                      </FormLabel>
+                      <FormControl>
+                      <Combobox data={glcodeData} placeholder='Click to select' onSelect={selectedGlCodeValue}
+                          isLoading={isLoadingGlCode} {...field}  />
+                      </FormControl>
+                      <FormMessage className='col-span-4 col-start-3' />
+                    </FormItem>
+                  )}
+                />
+
+
+                <FormField
+                  control={form.control}
+                  name='gl_code'
+                  render={({ field }) => (
+                    <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                      <FormLabel className='col-span-2 text-left'>
+                        Activity Name
+                      </FormLabel>
+                      <FormControl>
+                      <Combobox data={activityData} placeholder='Click to select' onSelect={selectedActivityValue}
+                          isLoading={isLoadingActivity} {...field}  />
+                      </FormControl>
+                      <FormMessage className='col-span-4 col-start-3' />
+                    </FormItem>
+                  )}
+                />  
             </form>
           </Form>
         <DialogFooter>

@@ -6,12 +6,12 @@ import { GlobalData } from '../data/data'
 
 export const DataColumns: ColumnDef<GlobalData>[] = [
   {
-    accessorKey: 'activityname',
+    accessorKey: 'field_name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Activity" />
+      <DataTableColumnHeader column={column} title="Field name" />
     ),
     cell: ({ row }) => (
-      <LongText className="max-w-45">{row.getValue('activityname')}</LongText>
+      <LongText className="max-w-45">{row.getValue('field_name')}</LongText>
     ),
     meta: { className: 'w-50' },
     enableHiding: false,
