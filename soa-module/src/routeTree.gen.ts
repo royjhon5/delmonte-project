@@ -70,6 +70,9 @@ const AuthenticatedMasterfileLocationlistIndexLazyImport = createFileRoute(
 const AuthenticatedMasterfileGlcodeIndexLazyImport = createFileRoute(
   '/_authenticated/masterfile/gl_code/',
 )()
+const AuthenticatedMasterfileFieldlistIndexLazyImport = createFileRoute(
+  '/_authenticated/masterfile/field_list/',
+)()
 const AuthenticatedMasterfileEmployeelistIndexLazyImport = createFileRoute(
   '/_authenticated/masterfile/employee_list/',
 )()
@@ -313,6 +316,17 @@ const AuthenticatedMasterfileGlcodeIndexLazyRoute =
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any).lazy(() =>
     import('./routes/_authenticated/masterfile/gl_code/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedMasterfileFieldlistIndexLazyRoute =
+  AuthenticatedMasterfileFieldlistIndexLazyImport.update({
+    id: '/masterfile/field_list/',
+    path: '/masterfile/field_list/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/masterfile/field_list/index.lazy').then(
       (d) => d.Route,
     ),
   )
@@ -597,6 +611,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMasterfileEmployeelistIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/masterfile/field_list/': {
+      id: '/_authenticated/masterfile/field_list/'
+      path: '/masterfile/field_list'
+      fullPath: '/masterfile/field_list'
+      preLoaderRoute: typeof AuthenticatedMasterfileFieldlistIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/masterfile/gl_code/': {
       id: '/_authenticated/masterfile/gl_code/'
       path: '/masterfile/gl_code'
@@ -656,6 +677,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMasterfileCostcenterlistIndexLazyRoute: typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   AuthenticatedMasterfileDepartmentlistIndexLazyRoute: typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   AuthenticatedMasterfileEmployeelistIndexLazyRoute: typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
+  AuthenticatedMasterfileFieldlistIndexLazyRoute: typeof AuthenticatedMasterfileFieldlistIndexLazyRoute
   AuthenticatedMasterfileGlcodeIndexLazyRoute: typeof AuthenticatedMasterfileGlcodeIndexLazyRoute
   AuthenticatedMasterfileLocationlistIndexLazyRoute: typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
 }
@@ -681,6 +703,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedMasterfileDepartmentlistIndexLazyRoute,
   AuthenticatedMasterfileEmployeelistIndexLazyRoute:
     AuthenticatedMasterfileEmployeelistIndexLazyRoute,
+  AuthenticatedMasterfileFieldlistIndexLazyRoute:
+    AuthenticatedMasterfileFieldlistIndexLazyRoute,
   AuthenticatedMasterfileGlcodeIndexLazyRoute:
     AuthenticatedMasterfileGlcodeIndexLazyRoute,
   AuthenticatedMasterfileLocationlistIndexLazyRoute:
@@ -720,6 +744,7 @@ export interface FileRoutesByFullPath {
   '/masterfile/cost_center_list': typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   '/masterfile/department_list': typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   '/masterfile/employee_list': typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
+  '/masterfile/field_list': typeof AuthenticatedMasterfileFieldlistIndexLazyRoute
   '/masterfile/gl_code': typeof AuthenticatedMasterfileGlcodeIndexLazyRoute
   '/masterfile/location_list': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
 }
@@ -752,6 +777,7 @@ export interface FileRoutesByTo {
   '/masterfile/cost_center_list': typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   '/masterfile/department_list': typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   '/masterfile/employee_list': typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
+  '/masterfile/field_list': typeof AuthenticatedMasterfileFieldlistIndexLazyRoute
   '/masterfile/gl_code': typeof AuthenticatedMasterfileGlcodeIndexLazyRoute
   '/masterfile/location_list': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
 }
@@ -788,6 +814,7 @@ export interface FileRoutesById {
   '/_authenticated/masterfile/cost_center_list/': typeof AuthenticatedMasterfileCostcenterlistIndexLazyRoute
   '/_authenticated/masterfile/department_list/': typeof AuthenticatedMasterfileDepartmentlistIndexLazyRoute
   '/_authenticated/masterfile/employee_list/': typeof AuthenticatedMasterfileEmployeelistIndexLazyRoute
+  '/_authenticated/masterfile/field_list/': typeof AuthenticatedMasterfileFieldlistIndexLazyRoute
   '/_authenticated/masterfile/gl_code/': typeof AuthenticatedMasterfileGlcodeIndexLazyRoute
   '/_authenticated/masterfile/location_list/': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
 }
@@ -824,6 +851,7 @@ export interface FileRouteTypes {
     | '/masterfile/cost_center_list'
     | '/masterfile/department_list'
     | '/masterfile/employee_list'
+    | '/masterfile/field_list'
     | '/masterfile/gl_code'
     | '/masterfile/location_list'
   fileRoutesByTo: FileRoutesByTo
@@ -855,6 +883,7 @@ export interface FileRouteTypes {
     | '/masterfile/cost_center_list'
     | '/masterfile/department_list'
     | '/masterfile/employee_list'
+    | '/masterfile/field_list'
     | '/masterfile/gl_code'
     | '/masterfile/location_list'
   id:
@@ -889,6 +918,7 @@ export interface FileRouteTypes {
     | '/_authenticated/masterfile/cost_center_list/'
     | '/_authenticated/masterfile/department_list/'
     | '/_authenticated/masterfile/employee_list/'
+    | '/_authenticated/masterfile/field_list/'
     | '/_authenticated/masterfile/gl_code/'
     | '/_authenticated/masterfile/location_list/'
   fileRoutesById: FileRoutesById
@@ -964,6 +994,7 @@ export const routeTree = rootRoute
         "/_authenticated/masterfile/cost_center_list/",
         "/_authenticated/masterfile/department_list/",
         "/_authenticated/masterfile/employee_list/",
+        "/_authenticated/masterfile/field_list/",
         "/_authenticated/masterfile/gl_code/",
         "/_authenticated/masterfile/location_list/"
       ]
@@ -1078,6 +1109,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/masterfile/employee_list/": {
       "filePath": "_authenticated/masterfile/employee_list/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/masterfile/field_list/": {
+      "filePath": "_authenticated/masterfile/field_list/index.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/masterfile/gl_code/": {

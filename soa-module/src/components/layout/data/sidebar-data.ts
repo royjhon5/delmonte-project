@@ -56,7 +56,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Field List',
-              url: '/otp',
+              url: '/masterfile/field_list',
             },
             {
               title: 'Activity List',

@@ -11,8 +11,8 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
-export default function ActivityList() {
-  const { data, isLoading } = customQuery('/get-activity', {}, true) || { data: undefined, isLoading: false };
+export default function FieldList() {
+  const { data, isLoading } = customQuery('/get-field', {}, true) || { data: undefined, isLoading: false };
   const glCode = (data && Array.isArray(data)) ? data.map(glcode => glcode) : [];
   const glcodeData = globalListSchema.parse(glCode);
     return (
