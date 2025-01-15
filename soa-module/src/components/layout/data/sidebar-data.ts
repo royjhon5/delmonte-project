@@ -48,7 +48,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Group Line List',
-              url: '/sign-up',
+              url: '/masterfile/group_line',
             },
             {
               title: 'Day Type List',

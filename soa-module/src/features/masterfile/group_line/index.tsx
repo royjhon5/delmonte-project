@@ -11,7 +11,7 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
-export default function DayTypeList() {
+export default function GroupLineList() {
   const { data, isLoading } = customQuery('/get-group', {}, true) || { data: undefined, isLoading: false };
   const daytype = (data && Array.isArray(data)) ? data.map(day => day) : [];
   const daytypeData = globalListSchema.parse(daytype);
