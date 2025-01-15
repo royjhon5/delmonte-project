@@ -26,7 +26,7 @@ import { GlobalData } from '../data/data'
 
 const formSchema = z
   .object({
-    field_name	: z.string().min(1, { message: 'Field details is required.' }),
+    groupline_name	: z.string().min(1, { message: 'Field details is required.' }),
     isEdit: z.boolean(),
   })
 type UserForm = z.infer<typeof formSchema>
@@ -47,7 +47,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
           isEdit,
         }
       : {
-          field_name: '',
+          groupline_name: '',
           isEdit,
         },
   })
@@ -78,7 +78,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
         <DialogHeader className='text-left'>
           <DialogTitle>{isEdit ? 'Edit' : 'Add New'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the day type here. ' : 'Create new day type here. '}
+            {isEdit ? 'Update the group line here. ' : 'Create new group line here. '}
             Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
@@ -90,11 +90,11 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
             >
               <FormField
                 control={form.control}
-                name='field_name'
+                name='groupline_name'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-left'>
-                      Day Type Name
+                      Group Line Name
                     </FormLabel>
                     <FormControl>
                       <Input

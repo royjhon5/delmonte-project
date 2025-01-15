@@ -12,7 +12,7 @@ import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
 export default function DayTypeList() {
-  const { data, isLoading } = customQuery('/get-daytype', {}, true) || { data: undefined, isLoading: false };
+  const { data, isLoading } = customQuery('/get-group', {}, true) || { data: undefined, isLoading: false };
   const daytype = (data && Array.isArray(data)) ? data.map(day => day) : [];
   const daytypeData = globalListSchema.parse(daytype);
     return (
@@ -27,9 +27,9 @@ export default function DayTypeList() {
              <Main>
                 <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap'>
                 <div>
-                    <h2 className='text-2xl font-bold tracking-tight'>Day Type List</h2>
+                    <h2 className='text-2xl font-bold tracking-tight'>Group Line List</h2>
                     <p className='text-muted-foreground'>
-                    Manage your Day Type data here.
+                    Manage your Group Line data here.
                     </p>
                 </div>
                     <PrimaryButton />
