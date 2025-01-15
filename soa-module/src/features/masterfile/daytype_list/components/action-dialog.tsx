@@ -78,7 +78,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
         <DialogHeader className='text-left'>
           <DialogTitle>{isEdit ? 'Edit' : 'Add New'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the gl code here. ' : 'Create new gl code here. '}
+            {isEdit ? 'Update the day type here. ' : 'Create new day type here. '}
             Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
@@ -94,7 +94,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-left'>
-                      Field Name
+                      Day Type Name
                     </FormLabel>
                     <FormControl>
                       <Input

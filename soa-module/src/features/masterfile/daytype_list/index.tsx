@@ -11,10 +11,10 @@ import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
 
-export default function FieldList() {
-  const { data, isLoading } = customQuery('/get-field', {}, true) || { data: undefined, isLoading: false };
-  const glCode = (data && Array.isArray(data)) ? data.map(glcode => glcode) : [];
-  const glcodeData = globalListSchema.parse(glCode);
+export default function DayTypeList() {
+  const { data, isLoading } = customQuery('/get-daytype', {}, true) || { data: undefined, isLoading: false };
+  const daytype = (data && Array.isArray(data)) ? data.map(day => day) : [];
+  const daytypeData = globalListSchema.parse(daytype);
     return (
         <MainProvider>
             <Header fixed>
@@ -27,15 +27,15 @@ export default function FieldList() {
              <Main>
                 <div className='mb-2 flex items-center justify-between space-y-2 flex-wrap'>
                 <div>
-                    <h2 className='text-2xl font-bold tracking-tight'>Field List</h2>
+                    <h2 className='text-2xl font-bold tracking-tight'>Day Type List</h2>
                     <p className='text-muted-foreground'>
-                    Manage your Field data here.
+                    Manage your Day Type data here.
                     </p>
                 </div>
                     <PrimaryButton />
                 </div>
                 <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-                    <DataTable data={glcodeData} columns={DataColumns} isLoading={isLoading} />
+                    <DataTable data={daytypeData} columns={DataColumns} isLoading={isLoading} />
                 </div>
             </Main>
             <DialogContainer />

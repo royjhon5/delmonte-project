@@ -52,7 +52,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'Day Type List',
-              url: '/forgot-password',
+              url: '/masterfile/daytype_list',
             },
             {
               title: 'Field List',
