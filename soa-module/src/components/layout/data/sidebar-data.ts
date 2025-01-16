@@ -94,7 +94,7 @@ export const sidebarData: SidebarData = {
             },
             {
               title: 'DAR Creation',
-              url: '/sign-up',
+              url: '/transaction/dar_creation',
             },
             {
               title: 'SOA Creation',
