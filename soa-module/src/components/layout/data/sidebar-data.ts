@@ -86,7 +86,7 @@ export const sidebarData: SidebarData = {
           items: [
             {
               title: 'Employee Templates - PH/NF-JP',
-              url: '/sign-in',
+              url: '/transaction/employee_templates',
             },
             {
               title: 'Rate Templates Client',

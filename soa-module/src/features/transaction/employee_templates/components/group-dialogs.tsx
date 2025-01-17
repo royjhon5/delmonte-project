@@ -1,23 +1,22 @@
 import { useMainContext } from '../context/context-provider'
 import { ActionDialog } from './action-dialog'
-import { ActionDrawer } from './action-drawer'
 import { DeleteDialog } from './delete-dialog'
 
 export function DialogContainer() {
   const { open, setOpen, currentRow, setCurrentRow } = useMainContext()
   return (
     <>
-      {/* <ActionDialog
-        key='user-add'
-        open={open === 'add'}
-        onOpenChange={() => setOpen('add')}
-      /> */}
-
-      <ActionDrawer 
+      <ActionDialog
         key='user-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
       />
+
+      {/* <ActionDrawer 
+        key='user-add'
+        open={open === 'add'}
+        onOpenChange={() => setOpen('add')}
+      /> */}
 
       {currentRow && (
         <>

@@ -78,7 +78,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
         <DialogHeader className='text-left'>
           <DialogTitle>{isEdit ? 'Edit' : 'Add New'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the group line here. ' : 'Create new group line here. '}
+            {isEdit ? 'Update the employee templates here. ' : 'Create new employee templates here. '}
             Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
@@ -94,7 +94,90 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
                     <FormLabel className='col-span-2 text-left'>
-                      Group Line Name
+                      Chapa ID
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='col-span-4'
+                        autoComplete='off'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='groupline_name'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                    <FormLabel className='col-span-2 text-left'>
+                      First Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='col-span-4'
+                        autoComplete='off'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+
+
+              <FormField
+                control={form.control}
+                name='groupline_name'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                    <FormLabel className='col-span-2 text-left'>
+                      Middle Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='col-span-4'
+                        autoComplete='off'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+
+
+              <FormField
+                control={form.control}
+                name='groupline_name'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                    <FormLabel className='col-span-2 text-left'>
+                      Last Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        className='col-span-4'
+                        autoComplete='off'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className='col-span-4 col-start-3' />
+                  </FormItem>
+                )}
+              />
+
+
+              <FormField
+                control={form.control}
+                name='groupline_name'
+                render={({ field }) => (
+                  <FormItem className='grid grid-cols-6 items-center gap-x-4 gap-y-1 space-y-0'>
+                    <FormLabel className='col-span-2 text-left'>
+                      Activity
                     </FormLabel>
                     <FormControl>
                       <Input

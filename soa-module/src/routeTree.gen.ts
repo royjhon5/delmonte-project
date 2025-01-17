@@ -64,6 +64,8 @@ const AuthenticatedSettingsAppearanceLazyImport = createFileRoute(
 const AuthenticatedSettingsAccountLazyImport = createFileRoute(
   '/_authenticated/settings/account',
 )()
+const AuthenticatedTransactionEmployeetemplatesIndexLazyImport =
+  createFileRoute('/_authenticated/transaction/employee_templates/')()
 const AuthenticatedTransactionDarcreationIndexLazyImport = createFileRoute(
   '/_authenticated/transaction/dar_creation/',
 )()
@@ -305,6 +307,17 @@ const AuthenticatedSettingsAccountLazyRoute =
     import('./routes/_authenticated/settings/account.lazy').then(
       (d) => d.Route,
     ),
+  )
+
+const AuthenticatedTransactionEmployeetemplatesIndexLazyRoute =
+  AuthenticatedTransactionEmployeetemplatesIndexLazyImport.update({
+    id: '/transaction/employee_templates/',
+    path: '/transaction/employee_templates/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/_authenticated/transaction/employee_templates/index.lazy'
+    ).then((d) => d.Route),
   )
 
 const AuthenticatedTransactionDarcreationIndexLazyRoute =
@@ -695,6 +708,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTransactionDarcreationIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/transaction/employee_templates/': {
+      id: '/_authenticated/transaction/employee_templates/'
+      path: '/transaction/employee_templates'
+      fullPath: '/transaction/employee_templates'
+      preLoaderRoute: typeof AuthenticatedTransactionEmployeetemplatesIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
   }
 }
 
@@ -746,6 +766,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMasterfileGrouplineIndexLazyRoute: typeof AuthenticatedMasterfileGrouplineIndexLazyRoute
   AuthenticatedMasterfileLocationlistIndexLazyRoute: typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
   AuthenticatedTransactionDarcreationIndexLazyRoute: typeof AuthenticatedTransactionDarcreationIndexLazyRoute
+  AuthenticatedTransactionEmployeetemplatesIndexLazyRoute: typeof AuthenticatedTransactionEmployeetemplatesIndexLazyRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -781,6 +802,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedMasterfileLocationlistIndexLazyRoute,
   AuthenticatedTransactionDarcreationIndexLazyRoute:
     AuthenticatedTransactionDarcreationIndexLazyRoute,
+  AuthenticatedTransactionEmployeetemplatesIndexLazyRoute:
+    AuthenticatedTransactionEmployeetemplatesIndexLazyRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -822,6 +845,7 @@ export interface FileRoutesByFullPath {
   '/masterfile/group_line': typeof AuthenticatedMasterfileGrouplineIndexLazyRoute
   '/masterfile/location_list': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
   '/transaction/dar_creation': typeof AuthenticatedTransactionDarcreationIndexLazyRoute
+  '/transaction/employee_templates': typeof AuthenticatedTransactionEmployeetemplatesIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -858,6 +882,7 @@ export interface FileRoutesByTo {
   '/masterfile/group_line': typeof AuthenticatedMasterfileGrouplineIndexLazyRoute
   '/masterfile/location_list': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
   '/transaction/dar_creation': typeof AuthenticatedTransactionDarcreationIndexLazyRoute
+  '/transaction/employee_templates': typeof AuthenticatedTransactionEmployeetemplatesIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -898,6 +923,7 @@ export interface FileRoutesById {
   '/_authenticated/masterfile/group_line/': typeof AuthenticatedMasterfileGrouplineIndexLazyRoute
   '/_authenticated/masterfile/location_list/': typeof AuthenticatedMasterfileLocationlistIndexLazyRoute
   '/_authenticated/transaction/dar_creation/': typeof AuthenticatedTransactionDarcreationIndexLazyRoute
+  '/_authenticated/transaction/employee_templates/': typeof AuthenticatedTransactionEmployeetemplatesIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -938,6 +964,7 @@ export interface FileRouteTypes {
     | '/masterfile/group_line'
     | '/masterfile/location_list'
     | '/transaction/dar_creation'
+    | '/transaction/employee_templates'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/500'
@@ -973,6 +1000,7 @@ export interface FileRouteTypes {
     | '/masterfile/group_line'
     | '/masterfile/location_list'
     | '/transaction/dar_creation'
+    | '/transaction/employee_templates'
   id:
     | '__root__'
     | '/_authenticated'
@@ -1011,6 +1039,7 @@ export interface FileRouteTypes {
     | '/_authenticated/masterfile/group_line/'
     | '/_authenticated/masterfile/location_list/'
     | '/_authenticated/transaction/dar_creation/'
+    | '/_authenticated/transaction/employee_templates/'
   fileRoutesById: FileRoutesById
 }
 
@@ -1089,7 +1118,8 @@ export const routeTree = rootRoute
         "/_authenticated/masterfile/gl_code/",
         "/_authenticated/masterfile/group_line/",
         "/_authenticated/masterfile/location_list/",
-        "/_authenticated/transaction/dar_creation/"
+        "/_authenticated/transaction/dar_creation/",
+        "/_authenticated/transaction/employee_templates/"
       ]
     },
     "/(auth)/500": {
@@ -1226,6 +1256,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/transaction/dar_creation/": {
       "filePath": "_authenticated/transaction/dar_creation/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/transaction/employee_templates/": {
+      "filePath": "_authenticated/transaction/employee_templates/index.lazy.tsx",
       "parent": "/_authenticated"
     }
   }
