@@ -42,7 +42,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, CustomComboBoxProps>(
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[200px] justify-between"
+            className="w-full justify-between"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -61,7 +61,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, CustomComboBoxProps>(
           </Button>
         </PopoverTrigger>
         {!isLoading && (
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-[330px] p-0">
             <Command>
               <CommandInput
                 placeholder={`Search ${placeholder.toLowerCase()}...`}
@@ -96,4 +96,4 @@ export const Combobox = React.forwardRef<HTMLInputElement, CustomComboBoxProps>(
   }
 )
 
-Combobox.displayName = "Combobox" // Required for debugging with React DevTools
+Combobox.displayName = "Combobox"

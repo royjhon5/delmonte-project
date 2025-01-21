@@ -7,9 +7,9 @@ import { customQuery } from "@/hooks/custom-hooks";
 import { globalListSchema } from "./data/data";
 import { DataTable } from "./components/data.table";
 import { DataColumns } from "./components/data-columns";
-import { PrimaryButton } from "./components/primary-buttons";
 import { DialogContainer } from "./components/group-dialogs";
 import MainProvider from "./context/context-provider";
+import { FormActionCard } from "./components/action-card";
 
 export default function EmployeeTemplates() {
   const { data, isLoading } = customQuery('/get-group', {}, true) || { data: undefined, isLoading: false };
@@ -32,11 +32,13 @@ export default function EmployeeTemplates() {
                     Manage your Employee Templates data here.
                     </p>
                 </div>
-                    <PrimaryButton />
                 </div>
-                <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-x-12 lg:space-y-0'>
-                    <div>
-                    <DataTable data={employeeTemplateData} columns={DataColumns} isLoading={isLoading} />
+                <div className="grid grid-cols-12 gap-3">
+                    <div className="col-span-12 md:col-span-3">
+                        <FormActionCard />
+                    </div>
+                    <div className="col-span-12 md:col-span-9">
+                        <DataTable data={employeeTemplateData} columns={DataColumns} isLoading={isLoading} />
                     </div>
                 </div>
             </Main>
