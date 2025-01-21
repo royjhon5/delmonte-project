@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
 
-const AddGroupLineModal = ({ RefreshData }) => {
+const AddDepartmentListModal = ({ RefreshData }) => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
@@ -18,26 +18,26 @@ const AddGroupLineModal = ({ RefreshData }) => {
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
-        setGroupLine('');
+        setDepartmentList('');
     }
-    const [GroupLine, setGroupLine] = useState('');
+    const [DepartmentList, setDepartmentList] = useState('');
 
     const SaveOrUpdateData = async () => {
-        const GroupLineData = {
+        const DepartmentListData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            groupline_name: GroupLine,
+            department_name: DepartmentList,
         };
         try {
-            await saveNewGroupLineData.mutateAsync(GroupLineData);
+            await saveNewDepartmentListData.mutateAsync(DepartmentListData);
         } catch (error) {
             console.error('Error saving:', error);
             toast.error('Failed to save.');
         }
     };
-    const saveNewGroupLineData = useMutation({
-        mutationFn: (GroupLineData) => http.post('/post-group', GroupLineData),
+    const saveNewDepartmentListData = useMutation({
+        mutationFn: (DepartmentListData) => http.post('/post-department', DepartmentListData),
         onSuccess: () => {
-            setGroupLine('');
+            setDepartmentList('');
             RefreshData();
             toast.success('Data saved successfully.');
             CloseDialog();
@@ -49,7 +49,7 @@ const AddGroupLineModal = ({ RefreshData }) => {
 
     useEffect(() => {
         if (isToUpdate) {
-            setGroupLine(toUpdateData.groupline_name);
+            setDepartmentList(toUpdateData.department_name);
         }
     }, [isToUpdate, toUpdateData])
 
@@ -57,11 +57,11 @@ const AddGroupLineModal = ({ RefreshData }) => {
         <CustomDialog
             open={open}
             maxWidth={'xs'}
-            DialogTitles={isToUpdate ? "Update Group Line" : "Add New Group Line"}
+            DialogTitles={isToUpdate ? "Update Department" : "Add New Department"}
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Group Line" value={GroupLine} onChange={(e) => { setGroupLine(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Department" value={DepartmentList} onChange={(e) => { setDepartmentList(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={
@@ -78,8 +78,8 @@ const AddGroupLineModal = ({ RefreshData }) => {
     );
 }
 
-AddGroupLineModal.propTypes = {
+AddDepartmentListModal.propTypes = {
     RefreshData: PropTypes.func,
 }
 
-export default AddGroupLineModal;
+export default AddDepartmentListModal;

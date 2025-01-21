@@ -25,9 +25,16 @@ const MasterFile = () => {
   const id = 'mouse-over-popover'
 
   const navigate = useNavigate()
+  // masterfile
   const navigateGroupLine = () => {navigate('/dashboard/group-line'), colorCollapseBtn()}
   const navigateEmployeeList = () => {navigate('/dashboard/employee-list'), colorCollapseBtn()}
   const navigateDayType = () => {navigate('/dashboard/day-type'), colorCollapseBtn()}
+  const navigateFieldList = () => {navigate('/dashboard/field-list'), colorCollapseBtn()}
+  const navigateActivityList = () => {navigate('/dashboard/activity-list'), colorCollapseBtn()}
+  const navigateGLCodeList = () => {navigate('/dashboard/gl-code'), colorCollapseBtn()}
+  const navigateCostCenterList = () => {navigate('/dashboard/cost-center'), colorCollapseBtn()}
+  const navigateLocationList = () => {navigate('/dashboard/location-list'), colorCollapseBtn()}
+  const navigateDepartmentList = () => {navigate('/dashboard/department-list'), colorCollapseBtn()}
 
   const openCollapseBtn = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: !open });
@@ -49,6 +56,12 @@ const MasterFile = () => {
     if (location.pathname === '/dashboard/group-line' 
     ||  location.pathname === '/dashboard/employee-list'
     ||  location.pathname === '/dashboard/day-type'
+    ||  location.pathname === '/dashboard/field-list'
+    ||  location.pathname === '/dashboard/activity-list'
+    ||  location.pathname === '/dashboard/gl-code'
+    ||  location.pathname === '/dashboard/cost-center'
+    ||  location.pathname === '/dashboard/location-list'
+    ||  location.pathname === '/dashboard/department-list'
     ) {
       dispatch({ type: COLOR_ADMINISTRATIVE, colorMasterFile: true });
     } else {
@@ -117,33 +130,33 @@ const MasterFile = () => {
         />
         <CustomMenuButton
           label="Field List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/field-list"
+          onClick={navigateFieldList}
         />
         <CustomMenuButton
           label="Activity List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/activity-list"
+          onClick={navigateActivityList}
         />
         <CustomMenuButton
           label="GL Code List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/gl-code"
+          onClick={navigateGLCodeList}
         />
         <CustomMenuButton
           label="Cost Center List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/cost-center"
+          onClick={navigateCostCenterList}
         />
         <CustomMenuButton
           label="Location List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/location-list"
+          onClick={navigateLocationList}
         />
         <CustomMenuButton
           label="Department List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/department-list"
+          onClick={navigateDepartmentList}
         />
         </>
       }
@@ -171,33 +184,33 @@ const MasterFile = () => {
         />
         <ListBtn
           label="Field List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/field-list"
+          onClick={navigateFieldList}
         />
          <ListBtn
           label="Activity List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/activity-list"
+          onClick={navigateActivityList}
         />
          <ListBtn
           label="GL Code List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/gl-code"
+          onClick={navigateGLCodeList}
         />
         <ListBtn
           label="Cost Center List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/cost-center"
+          onClick={navigateCostCenterList}
         />
         <ListBtn
           label="Location List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/location-list"
+          onClick={navigateLocationList}
         />
         <ListBtn
           label="Department List"
-          activePath="/dashboard/logs"
-          onClick={navigateGroupLine}
+          activePath="/dashboard/department-list"
+          onClick={navigateDepartmentList}
         />
     </Collapsebtn>
     </>

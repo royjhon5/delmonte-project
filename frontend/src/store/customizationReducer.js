@@ -27,12 +27,8 @@ export const initialState = {
     colorAdministrative: false,
 
     // masterfile
-    openGroupLineModal: false,
-    groupLineData: {},
-    openEmployeeListModal: false,
-    employeeListData: {},
-    openDayTypeModal: false,
-    dayTypeData: {},
+    openCustomModal: false,
+    formData: {},
 
     // common
     confirmDelete: false,
@@ -136,35 +132,15 @@ const customizationReducer = (state = initialState, action) => {
         // ENDS HERE
 
         // MASTERFILE
-        case actionTypes.OPEN_GROUPLINE_MODAL:
+        case actionTypes.OPEN_CUSTOM_MODAL:
             return {
                 ...state,
-                openGroupLineModal: action.openGroupLineModal
+                openCustomModal: action.openCustomModal
             };
-        case actionTypes.GROUP_LINE_DATA:
+        case actionTypes.FORM_DATA:
             return {
                 ...state,
-                groupLineData: action.groupLineData
-            };
-        case actionTypes.OPEN_EMPLOYEELIST_MODAL:
-            return {
-                ...state,
-                openEmployeeListModal: action.openEmployeeListModal
-            };
-        case actionTypes.EMPLOYEELIST_DATA:
-            return {
-                ...state,
-                employeeListData: action.employeeListData
-            };
-        case actionTypes.OPEN_DAYTYPE_MODAL:
-            return {
-                ...state,
-                openDayTypeModal: action.openDayTypeModal
-            };
-        case actionTypes.DAYTYPE_DATA:
-            return {
-                ...state,
-                dayTypeData: action.dayTypeData
+                formData: action.formData
             };
 
         // COMMON

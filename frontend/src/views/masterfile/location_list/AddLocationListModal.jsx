@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
 
-const AddGroupLineModal = ({ RefreshData }) => {
+const AddLocationListModal = ({ RefreshData }) => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
@@ -18,26 +18,26 @@ const AddGroupLineModal = ({ RefreshData }) => {
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
-        setGroupLine('');
+        setLocationList('');
     }
-    const [GroupLine, setGroupLine] = useState('');
+    const [LocationList, setLocationList] = useState('');
 
     const SaveOrUpdateData = async () => {
-        const GroupLineData = {
+        const LocationListData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            groupline_name: GroupLine,
+            location_name: LocationList,
         };
         try {
-            await saveNewGroupLineData.mutateAsync(GroupLineData);
+            await saveNewLocationListData.mutateAsync(LocationListData);
         } catch (error) {
             console.error('Error saving:', error);
             toast.error('Failed to save.');
         }
     };
-    const saveNewGroupLineData = useMutation({
-        mutationFn: (GroupLineData) => http.post('/post-group', GroupLineData),
+    const saveNewLocationListData = useMutation({
+        mutationFn: (LocationListData) => http.post('/post-location', LocationListData),
         onSuccess: () => {
-            setGroupLine('');
+            setLocationList('');
             RefreshData();
             toast.success('Data saved successfully.');
             CloseDialog();
@@ -49,7 +49,7 @@ const AddGroupLineModal = ({ RefreshData }) => {
 
     useEffect(() => {
         if (isToUpdate) {
-            setGroupLine(toUpdateData.groupline_name);
+            setLocationList(toUpdateData.location_name);
         }
     }, [isToUpdate, toUpdateData])
 
@@ -57,11 +57,11 @@ const AddGroupLineModal = ({ RefreshData }) => {
         <CustomDialog
             open={open}
             maxWidth={'xs'}
-            DialogTitles={isToUpdate ? "Update Group Line" : "Add New Group Line"}
+            DialogTitles={isToUpdate ? "Update Location" : "Add New Location"}
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Group Line" value={GroupLine} onChange={(e) => { setGroupLine(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Location" value={LocationList} onChange={(e) => { setLocationList(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={
@@ -78,8 +78,8 @@ const AddGroupLineModal = ({ RefreshData }) => {
     );
 }
 
-AddGroupLineModal.propTypes = {
+AddLocationListModal.propTypes = {
     RefreshData: PropTypes.func,
 }
 
-export default AddGroupLineModal;
+export default AddLocationListModal;

@@ -2,7 +2,7 @@ import { Box, Button, Grid, TextField } from "@mui/material";
 import CustomDialog from "../../../components/CustomDialog";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
-import { IS_UPDATE_FORM, OPEN_DAYTYPE_MODAL } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL } from "../../../store/actions";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
@@ -10,13 +10,13 @@ import { useEffect, useState } from "react";
 
 const AddDayTypeModal = ({ RefreshData }) => {
     const dispatch = useDispatch();
-    const open = useSelector((state) => state.customization.openDayTypeModal);
+    const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
     const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
     // end here
-    const toUpdateData = useSelector((state) => state.customization.dayTypeData);
+    const toUpdateData = useSelector((state) => state.customization.customData);
     const CloseDialog = () => {
-        dispatch({ type: OPEN_DAYTYPE_MODAL, openDayTypeModal: false });
+        dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
         setDayType('');
     }

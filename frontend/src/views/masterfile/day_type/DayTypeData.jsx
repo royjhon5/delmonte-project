@@ -4,7 +4,7 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_DAYTYPE_MODAL, OPEN_DELETESWAL, DAYTYPE_DATA } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL, OPEN_DELETESWAL, FORM_DATA } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -48,8 +48,8 @@ const DayTypeData = () => {
                         id: data.row.id,
                         dt_name: data.row.dt_name,
                     };
-                    dispatch({ type: DAYTYPE_DATA, dayTypeData: obj });
-                    dispatch({ type: OPEN_DAYTYPE_MODAL, openDayTypeModal: true });
+                    dispatch({ type: FORM_DATA, formData: obj });
+                    dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
                     dispatch({ type: IS_UPDATE_FORM, isUpdateForm: true });
                 };
                 return (
@@ -67,7 +67,7 @@ const DayTypeData = () => {
     ];
 
     const openAddDayTypeModal = () => {
-        dispatch({ type: OPEN_DAYTYPE_MODAL, openDayTypeModal: true });
+        dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
     const refreshData = () => queryClient.invalidateQueries(['/get-daytype']);

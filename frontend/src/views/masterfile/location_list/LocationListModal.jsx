@@ -11,29 +11,29 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
-import AddGroupLineModal from "./AddGroupLineModal";
+import AddLocationListModal from "./AddLocationListModal";
 
-const GroupLineData = () => {
+const LocationListData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
     const queryClient = useQueryClient();
     const [selectedID, setSelectedID] = useState(0);
-    const { data: mainData } = hookContainer('/get-group');
+    const { data: mainData } = hookContainer('/get-location');
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.groupline_name.toLowerCase().includes(search.toLowerCase())
+            row.location_name.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
         {
-            field: 'groupline_name', headerName: 'Group Line Name', width: 900,
+            field: 'location_name', headerName: 'Location Name', width: 900,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.groupline_name}
+                    {data.row.location_name}
                 </Box>
             ),
         },
@@ -46,7 +46,7 @@ const GroupLineData = () => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
-                        groupline_name: data.row.groupline_name,
+                        location_name: data.row.location_name,
                     };
                     dispatch({ type: FORM_DATA, formData: obj });
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
@@ -66,11 +66,11 @@ const GroupLineData = () => {
         }
     ];
 
-    const openAddGroupLineModal = () => {
+    const openAddLocationListModal = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
-    const refreshData = () => queryClient.invalidateQueries(['/get-group']);
+    const refreshData = () => queryClient.invalidateQueries(['/get-location']);
 
     const selectToDelete = (data) => {
         setSelectedID(data);
@@ -78,10 +78,10 @@ const GroupLineData = () => {
     }
 
     const deleteData = useMutation({
-        mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
+        mutationFn: () => http.delete(`/remove-location?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-group']);
+            queryClient.invalidateQueries(['/get-location']);
             dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
         }
     });
@@ -92,12 +92,12 @@ const GroupLineData = () => {
 
     return (
         <>
-            <AddGroupLineModal RefreshData={refreshData} />
+            <AddLocationListModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddGroupLineModal}>Add Group Line</Button>
+                    <Button variant="contained" onClick={openAddLocationListModal}>Add Group Line</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -111,4 +111,4 @@ const GroupLineData = () => {
     )
 }
 
-export default GroupLineData
+export default LocationListData

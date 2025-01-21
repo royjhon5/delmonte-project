@@ -6,7 +6,7 @@ module.exports.saveDepartmentList = async function (req, res) {
 		tableName: "tbldepartment",
 		fieldValue: {
 			id: data.id,
-			departmentname: data.departmentname,
+			department_name: data.department_name,
 		}
 	}
 	try {

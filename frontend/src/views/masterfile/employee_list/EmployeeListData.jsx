@@ -4,7 +4,7 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_DELETESWAL, EMPLOYEELIST_DATA, OPEN_EMPLOYEELIST_MODAL } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_DELETESWAL, FORM_DATA, OPEN_CUSTOM_MODAL } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -82,8 +82,8 @@ const EmployeeListData = () => {
                         id: data.row.id,
                         groupline_name: data.row.groupline_name,
                     };
-                    dispatch({ type: EMPLOYEELIST_DATA, EmployeeListData: obj });
-                    dispatch({ type: OPEN_EMPLOYEELIST_MODAL, openEmployeeListModal: true });
+                    dispatch({ type: FORM_DATA, formData: obj });
+                    dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
                     dispatch({ type: IS_UPDATE_FORM, isUpdateForm: true });
                 };
                 return (
@@ -101,7 +101,7 @@ const EmployeeListData = () => {
     ];
 
     const openAddEmployeeListModal = () => {
-        dispatch({ type: OPEN_EMPLOYEELIST_MODAL, openEmployeeListModal: true });
+        dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
     const refreshData = () => queryClient.invalidateQueries(['/get-employee']);

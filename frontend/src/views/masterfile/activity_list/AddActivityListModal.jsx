@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
 
-const AddGroupLineModal = ({ RefreshData }) => {
+const AddActivityList = ({ RefreshData }) => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
@@ -18,26 +18,26 @@ const AddGroupLineModal = ({ RefreshData }) => {
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
-        setGroupLine('');
+        setActivityList('');
     }
-    const [GroupLine, setGroupLine] = useState('');
+    const [ActivityList, setActivityList] = useState('');
 
     const SaveOrUpdateData = async () => {
-        const GroupLineData = {
+        const ActivityListData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            groupline_name: GroupLine,
+            activityname: ActivityList,
         };
         try {
-            await saveNewGroupLineData.mutateAsync(GroupLineData);
+            await saveNewActivityListData.mutateAsync(ActivityListData);
         } catch (error) {
             console.error('Error saving:', error);
             toast.error('Failed to save.');
         }
     };
-    const saveNewGroupLineData = useMutation({
-        mutationFn: (GroupLineData) => http.post('/post-group', GroupLineData),
+    const saveNewActivityListData = useMutation({
+        mutationFn: (ActivityListData) => http.post('/post-activity', ActivityListData),
         onSuccess: () => {
-            setGroupLine('');
+            setActivityList('');
             RefreshData();
             toast.success('Data saved successfully.');
             CloseDialog();
@@ -49,7 +49,7 @@ const AddGroupLineModal = ({ RefreshData }) => {
 
     useEffect(() => {
         if (isToUpdate) {
-            setGroupLine(toUpdateData.groupline_name);
+            setActivityList(toUpdateData.activityname);
         }
     }, [isToUpdate, toUpdateData])
 
@@ -57,11 +57,11 @@ const AddGroupLineModal = ({ RefreshData }) => {
         <CustomDialog
             open={open}
             maxWidth={'xs'}
-            DialogTitles={isToUpdate ? "Update Group Line" : "Add New Group Line"}
+            DialogTitles={isToUpdate ? "Update Activity" : "Add New Activity"}
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Group Line" value={GroupLine} onChange={(e) => { setGroupLine(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Activity" value={ActivityList} onChange={(e) => { setActivityList(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={
@@ -78,8 +78,8 @@ const AddGroupLineModal = ({ RefreshData }) => {
     );
 }
 
-AddGroupLineModal.propTypes = {
+AddActivityList.propTypes = {
     RefreshData: PropTypes.func,
 }
 
-export default AddGroupLineModal;
+export default AddActivityList;
