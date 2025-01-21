@@ -30,10 +30,18 @@ const DepartmentListData = () => {
 
     const ColumnHeader = [
         {
-            field: 'department_name', headerName: 'Department Name', width: 900,
+            field: 'department_name', headerName: 'Department Name', width: 450,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.department_name}
+                </Box>
+            ),
+        },
+        {
+            field: 'client_name', headerName: 'Client Name', width: 450,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.client_name}
                 </Box>
             ),
         },
@@ -47,6 +55,7 @@ const DepartmentListData = () => {
                     const obj = {
                         id: data.row.id,
                         department_name: data.row.department_name,
+                        client_idlink: data.row.client_idlink,
                     };
                     dispatch({ type: FORM_DATA, formData: obj });
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });

@@ -8,6 +8,7 @@ const FieldCtrl = require('../../controller/masterfile/FieldListController');
 const DayCtrl = require('../../controller/masterfile/DayTypeListController');
 const AccontToChargeCtrl = require('../../controller/masterfile/AccountToChargeController');
 const GroupCtrl = require('../../controller/masterfile/GroupListController');
+const ClientCtrl = require('../../controller/masterfile/ClientListController');
 
 module.exports.routes = {
     post: [
@@ -21,6 +22,7 @@ module.exports.routes = {
         [ '/post-daytype', DayCtrl.saveDataDay ],
         [ '/post-accounttocharge', AccontToChargeCtrl.saveAccountToCharge ],
         [ '/post-group', GroupCtrl.saveGroupData ],
+        [ '/post-client', ClientCtrl.saveClientList ],
     ], 
     get: [
         [ '/get-location', LocCtrl.getLocationList ],
@@ -33,6 +35,7 @@ module.exports.routes = {
         [ '/get-daytype', DayCtrl.getDataDay ],
         [ '/get-accounttocharge', AccontToChargeCtrl.getAccountToCharge ],
         [ '/get-group', GroupCtrl.getGroupData ],
+        [ '/get-client', ClientCtrl.getClientList ],
     ], 
     remove: [
         [ '/remove-location', LocCtrl.deleteLocationData ],
@@ -45,5 +48,6 @@ module.exports.routes = {
         [ '/remove-daytype', DayCtrl.deleteDataDay ],
         [ '/remove-accounttocharge', AccontToChargeCtrl.deleteAccoubtToCharge ],
         [ '/remove-group', GroupCtrl.deleteGroupData ],
+        [ '/remove-client', ClientCtrl.deleteClientData ],
     ] 
 }

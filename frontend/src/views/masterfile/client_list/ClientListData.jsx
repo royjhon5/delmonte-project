@@ -4,99 +4,94 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_DELETESWAL, FORM_DATA, OPEN_CUSTOM_MODAL } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL, OPEN_DELETESWAL, FORM_DATA } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
-import AddEmployeeListModal from "./AddEmployeeListModal";
+import AddClientListModal from "./AddClientListModal";
 
-const EmployeeListData = () => {
+const ClientListData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
     const queryClient = useQueryClient();
     const [selectedID, setSelectedID] = useState(0);
-    const { data: mainData } = hookContainer('/get-employee');
+    const { data: mainData } = hookContainer('/get-client');
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.chapa_id.toLowerCase().includes(search.toLowerCase()) ||
-            row.firstname.toLowerCase().includes(search.toLowerCase()) ||
-            row.lastname.toLowerCase().includes(search.toLowerCase())
+            row.client_name.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
         {
-            field: 'chapa_id', headerName: 'Chapa ID', width: 200,
+            field: 'client_code', headerName: 'Code', width: 200,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.chapa_id}
+                    {data.row.client_code}
                 </Box>
             ),
         },
         {
-            field: 'fullname', headerName: 'Fullname', width: 250,
+            field: 'client_name', headerName: 'Client Name', width: 280,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.firstname + " " + data.row.middlename + " " + data.row.lastname + " " + data.row.extname}
+                    {data.row.client_name}
                 </Box>
             ),
         },
         {
-            field: 'location_name', headerName: 'Location', width: 250,
+            field: 'client_address', headerName: 'Address', width: 300,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.location_name}
+                    {data.row.client_address}
                 </Box>
             ),
         },
         {
-            field: 'department_name', headerName: 'Department', width: 250,
+            field: 'client_contactno', headerName: 'Contact No', width: 220,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.department_name}
+                    {data.row.client_contactno}
                 </Box>
             ),
         },
         {
-            field: 'groupline_name', headerName: 'Group', width: 250,
+            field: 'client_email', headerName: 'Email', width: 230,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.groupline_name}
+                    {data.row.client_email}
                 </Box>
             ),
         },
         {
-            field: 'activityname', headerName: 'Activity', width: 250,
+            field: 'client_tinno', headerName: 'TIN No', width: 230,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.activityname}
+                    {data.row.client_tinno}
                 </Box>
             ),
         },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
-            width: 70,
+            width: 80,
             align: 'right',
             renderCell: (data) => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
-                        chapa_id: data.row.chapa_id,
-                        firstname: data.row.firstname,
-                        lastname: data.row.lastname,
-                        middlename: data.row.middlename,
-                        extname: data.row.extname,
-                        assigned_location_idlink: data.row.assigned_location_idlink,
-                        assigned_department_idlink: data.row.assigned_department_idlink,
-                        assigned_group_idlink: data.row.assigned_group_idlink,
-                        default_activity_idlink: data.row.default_activity_idlink,
+                        client_code: data.row.client_code,
+                        client_name: data.row.client_name,
+                        client_address: data.row.client_address,
+                        client_contactno: data.row.client_contactno,
+                        client_email: data.row.client_email,
+                        client_tinno: data.row.client_tinno,
                     };
                     dispatch({ type: FORM_DATA, formData: obj });
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
@@ -116,11 +111,11 @@ const EmployeeListData = () => {
         }
     ];
 
-    const openAddEmployeeListModal = () => {
+    const openAddClientListModal = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
-    const refreshData = () => queryClient.invalidateQueries(['/get-employee']);
+    const refreshData = () => queryClient.invalidateQueries(['/get-client']);
 
     const selectToDelete = (data) => {
         setSelectedID(data);
@@ -128,10 +123,10 @@ const EmployeeListData = () => {
     }
 
     const deleteData = useMutation({
-        mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
+        mutationFn: () => http.delete(`/remove-client?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-employee']);
+            queryClient.invalidateQueries(['/get-client']);
             dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
         }
     });
@@ -142,12 +137,12 @@ const EmployeeListData = () => {
 
     return (
         <>
-            <AddEmployeeListModal RefreshData={refreshData} />
+            <AddClientListModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddEmployeeListModal}>Add Employee</Button>
+                    <Button variant="contained" onClick={openAddClientListModal}>Add Day Type</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -161,4 +156,4 @@ const EmployeeListData = () => {
     )
 }
 
-export default EmployeeListData
+export default ClientListData

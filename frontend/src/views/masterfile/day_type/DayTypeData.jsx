@@ -81,7 +81,7 @@ const DayTypeData = () => {
         mutationFn: () => http.delete(`/remove-daytype?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-get-daytype']);
+            queryClient.invalidateQueries(['/get-daytype']);
             dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
         }
     });

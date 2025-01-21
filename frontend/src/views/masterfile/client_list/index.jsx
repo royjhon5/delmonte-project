@@ -3,14 +3,14 @@ import { Fragment } from "react"
 
 import { Helmet } from "react-helmet-async"
 import BreadCrumbs from "../../../components/BreadCrumbs"
-import LocationListData from "./LocationListData"
+import ClientListData from "./ClientListData"
 
 
-const LocationList = () => {
+const ClientList = () => {
   return (
     <Fragment>
         <Helmet>
-            <title>Location List</title>
+            <title>Client List</title>
         </Helmet>
         <Box sx={{ mb: '20px' }}>
             <Stack sx={{
@@ -19,14 +19,14 @@ const LocationList = () => {
                 alignItems: 'center'
             }}>
                 <Box sx={{ flexGrow: 1 , display: 'flex', flexDirection: 'column', }}>
-                    <Typography variant="h4">Location List</Typography>
+                    <Typography variant="h4">Client List</Typography>
                     <BreadCrumbs />
                 </Box>
             </Stack>
         </Box>
-        <LocationListData />
+        <ClientListData />
     </Fragment>
   )
 }
 
-export default LocationList
+export default ClientList
