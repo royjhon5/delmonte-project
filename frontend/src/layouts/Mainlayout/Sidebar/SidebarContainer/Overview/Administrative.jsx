@@ -27,7 +27,7 @@ const MasterFile = () => {
   const navigate = useNavigate()
   const navigateDocumentTypeList = () => {navigate('/dashboard/document-type-list'), colorCollapseBtn()}
   const navigateScannerList = () => {navigate('/dashboard/scanner-list'), colorCollapseBtn()}
-  const navigateUserList = () => {navigate('/dashboard/user-list'), colorCollapseBtn()}
+  const navigateGroupLine = () => {navigate('/dashboard/group-line'), colorCollapseBtn()}
   const navigateDepartment = () => {navigate('/dashboard/department-list'), colorCollapseBtn()}
   const navigateSystemLogs = () => {navigate('/dashboard/logs'), colorCollapseBtn()}
 
@@ -49,7 +49,7 @@ const MasterFile = () => {
 
   useEffect(() => {
     if (location.pathname === '/dashboard/document-type-list' 
-    ||  location.pathname === '/dashboard/scanner-list'
+    ||  location.pathname === '/dashboard/group-line'
     ||  location.pathname === '/dashboard/user-list'
     ||  location.pathname === '/dashboard/department-list'
     ||  location.pathname === '/dashboard/logs'
@@ -111,8 +111,8 @@ const MasterFile = () => {
         />
          <CustomMenuButton 
           label="Group Line List"
-          activePath="/dashboard/user-list"
-          onClick={navigateUserList}
+          activePath="/dashboard/group-line"
+          onClick={navigateGroupLine}
         />
         <CustomMenuButton 
           label="Day Type List"
@@ -165,8 +165,8 @@ const MasterFile = () => {
         />
         <ListBtn
           label="Group Line List"
-          activePath="/dashboard/user-list"
-          onClick={navigateUserList}
+          activePath="/dashboard/group-line"
+          onClick={navigateGroupLine}
         />
         <ListBtn
           label="Day Type List"

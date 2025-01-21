@@ -3,7 +3,6 @@ import Loadable from '../components/Loadable/Loadable'
 const MainLayout = Loadable(lazy(() => import('../layouts/Mainlayout/MainLayout')));
 const Dashboard = Loadable(lazy(() => import('../views/dashboard/index')));
 
-const MyPortal = Loadable(lazy(() => import('../views/_myportal')));
 const UploadFinancialDocuments = Loadable(lazy(() => import('../views/_doumentupload/_upload_financial_documents')));
 const UploadOfficeDocuments = Loadable(lazy(() => import('../views/_doumentupload/_upload_office_documents')));
 const PayrollDocuments = Loadable(lazy(() => import('../views/_doumentupload/_upload_payroll_documents')));
@@ -21,6 +20,10 @@ const PageNotFound = Loadable(lazy(() => import('../components/Page404/pageNotFo
 import ProtectedRoute from './ProtectedRoute';
 const UpdateFormPass = Loadable(lazy(() => import('../views/authentication/update-password/updatepass-container')));
 
+
+// masterfile
+const GroupLineList = Loadable(lazy(() => import('../views/masterfile/group_line')));
+
 const DashboardRoutes = {
 	path: '/',
 	element: <MainLayout />,
@@ -35,10 +38,10 @@ const DashboardRoutes = {
 		},
 
 		{
-			path: '/dashboard/my-portal',
+			path: '/dashboard/group-line',
 			element: (
 				<ProtectedRoute pageName='My Portal'>
-					<MyPortal />
+					<GroupLineList />
 				</ProtectedRoute>
 			)
 		},
