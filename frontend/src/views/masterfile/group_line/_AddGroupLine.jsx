@@ -19,16 +19,14 @@ const AddGroupLine = ({RefreshData}) => {
     dispatch({ type: OPEN_ADDSCANNER, openAddScanner: false }); 
     dispatch({ type: ISTOUPDATE_SCANNER, isToUpdateScanner: false });
     setScannerName('');
-    setDedicatedTmpPath('');
   } 
   const [ScannerName, setScannerName] = useState('');
-  const [DedicatedTmpPath, setDedicatedTmpPath] = useState('');
 
 
   const SaveOrUpdateData = async () => {
     const ScannerData = { 
       id: isToUpdate ? toUpdateData.id : 0,
-      scannerName: ScannerName,
+      groupline_name: ScannerName,
     };
     try {
       await saveNewScannerData.mutateAsync(ScannerData);
@@ -41,7 +39,6 @@ const AddGroupLine = ({RefreshData}) => {
     mutationFn: (ScannerData) => http.post('/post-group', ScannerData),
     onSuccess: () => {
      setScannerName('');
-     setDedicatedTmpPath('');
      RefreshData();
     },
     onError: (error) => {
@@ -52,7 +49,6 @@ const AddGroupLine = ({RefreshData}) => {
   useEffect(() => {
     if(isToUpdate) {
         setScannerName(toUpdateData.name);
-        setDedicatedTmpPath(toUpdateData.path);
     }
   }, [isToUpdate, toUpdateData])
 
@@ -60,12 +56,11 @@ const AddGroupLine = ({RefreshData}) => {
     <CustomDialog 
         open={open}
         maxWidth={'xs'}
-        DialogTitles={isToUpdate ? "Update Scanner Details" : "Add New Scanner"}
+        DialogTitles={isToUpdate ? "Update Group Line" : "Add New Group"}
         onClose={CloseDialog}
         DialogContents={
             <Box sx={{mt:1}}>
-            <TextField label="Scanner Name" value={ScannerName} onChange={(e) => {setScannerName(e.target.value)}} fullWidth sx={{ mt:1}} size="medium" />
-            <TextField label="Dedicated Path Name" value={DedicatedTmpPath} onChange={(e) => {setDedicatedTmpPath(e.target.value)}} fullWidth sx={{ mt:1}} size="medium" />
+            <TextField label="Groupl Line Name" value={ScannerName} onChange={(e) => {setScannerName(e.target.value)}} fullWidth sx={{ mt:1}} size="medium" />
             </Box>
         }
         DialogAction={

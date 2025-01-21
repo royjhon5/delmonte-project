@@ -24,20 +24,18 @@ const GroupLineData = () => {
     }) : [];
     const SearchFilter = (rows) => {
       return rows.filter(row =>
-          row.scannerName.toLowerCase().includes(search.toLowerCase()) || 
-          row.dedicatedTempPath.toLowerCase().includes(search.toLowerCase())
+          row.groupline_name.toLowerCase().includes(search.toLowerCase())
       );
     };
 
     const ColumnHeader = [
-    { field: 'groupline_name', headerName: 'Group Line Name', width: 450,
+    { field: 'groupline_name', headerName: 'Group Line Name', flex:1,
       renderCell: (params) => (
         <Box sx={{paddingLeft:1}}>
-          {params.row.scannerName}
+          {params.row.groupline_name}
         </Box>
       ),
      },
-    { field: 'dedicatedTempPath', headerName: 'Dedicated Path Name', flex:1, },
     { field: "action", headerAlign: 'right',
       headerName: '',    
       width: 150,
@@ -96,7 +94,7 @@ const GroupLineData = () => {
     <Paper>
         <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
             <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => {setSearch(e.target.value)}} sx={{ width: { xl: '30%', lg: '30%' }}} />
-            <Button variant="contained" onClick={openAddNewScanner}>Add Scanner</Button>
+            <Button variant="contained" onClick={openAddNewScanner}>Add Group</Button>
         </Stack>
         <CustomDataGrid 
             columns={ColumnHeader}
