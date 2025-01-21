@@ -16,8 +16,8 @@ import { SvgIconColors } from "../../../../../themes/palette";
 const MasterFile = () => {
   const theme = useTheme();  
   const sideActiveColor = SvgIconColors(theme.palette.appSettings)
-  const open= useSelector((state) => state.customization.openAdministrative);
-  const activateColor = useSelector((state) => state.customization.colorAdministrative)
+  const open= useSelector((state) => state.customization.openMasterFile);
+  const activateColor = useSelector((state) => state.customization.colorMasterFile)
   const dispatch = useDispatch();
   const [anchorHere, setAnchorHere] = useState(null)
   const popoverRef = useRef(null)
@@ -25,38 +25,34 @@ const MasterFile = () => {
   const id = 'mouse-over-popover'
 
   const navigate = useNavigate()
-  const navigateDocumentTypeList = () => {navigate('/dashboard/document-type-list'), colorCollapseBtn()}
-  const navigateScannerList = () => {navigate('/dashboard/scanner-list'), colorCollapseBtn()}
   const navigateGroupLine = () => {navigate('/dashboard/group-line'), colorCollapseBtn()}
-  const navigateDepartment = () => {navigate('/dashboard/department-list'), colorCollapseBtn()}
-  const navigateSystemLogs = () => {navigate('/dashboard/logs'), colorCollapseBtn()}
+  const navigateEmployeeList = () => {navigate('/dashboard/employee-list'), colorCollapseBtn()}
+  const navigateDayType = () => {navigate('/dashboard/day-type'), colorCollapseBtn()}
 
   const openCollapseBtn = () => {
-    dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
+    dispatch({ type: OPEN_MASTERFILE, openMasterFile: !open });
     dispatch({ type: OPEN_ACCOUNTING, openAccounting: false });
     dispatch({ type: OPEN_CASHIERPORTAL, openCashierPortal: false });
     dispatch({ type: OPEN_FINANCIALREPORT, openFinancialReport: false });
-    dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: !open });
+    dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false });
   }
 
   const colorCollapseBtn = () => {
-    dispatch({ type: COLOR_MASTERFILE, colorMasterFile: false });
+    dispatch({ type: COLOR_MASTERFILE, colorMasterFile: true });
     dispatch({ type: COLOR_ACCOUNTING, colorAccounting: false });
     dispatch({ type: COLOR_CASHIERPORTAL, colorCashierPortal: false });
     dispatch({ type: COLOR_FINANCIALREPORT, colorFinancialReport: false });
-    dispatch({ type: COLOR_ADMINISTRATIVE, colorAdministrative: true });
+    dispatch({ type: COLOR_ADMINISTRATIVE, colorAdministrative: false });
   }
 
   useEffect(() => {
-    if (location.pathname === '/dashboard/document-type-list' 
-    ||  location.pathname === '/dashboard/group-line'
-    ||  location.pathname === '/dashboard/user-list'
-    ||  location.pathname === '/dashboard/department-list'
-    ||  location.pathname === '/dashboard/logs'
+    if (location.pathname === '/dashboard/group-line' 
+    ||  location.pathname === '/dashboard/employee-list'
+    ||  location.pathname === '/dashboard/day-type'
     ) {
-      dispatch({ type: COLOR_ADMINISTRATIVE, colorAdministrative: true });
+      dispatch({ type: COLOR_ADMINISTRATIVE, colorMasterFile: true });
     } else {
-      dispatch({ type: COLOR_ADMINISTRATIVE, colorAdministrative: false });
+      dispatch({ type: COLOR_ADMINISTRATIVE, colorMasterFile: false });
     }
   }, [dispatch]);
 
@@ -101,13 +97,13 @@ const MasterFile = () => {
         <>
         <CustomMenuButton 
           label="Employee List"
-          activePath="/dashboard/document-type-list"
-          onClick={navigateDocumentTypeList}
+          activePath="/dashboard/employee-list"
+          onClick={navigateEmployeeList}
         />
         <CustomMenuButton 
           label="Account To Charge"
           activePath="/dashboard/scanner-list"
-          onClick={navigateScannerList}
+          onClick={navigateGroupLine}
         />
          <CustomMenuButton 
           label="Group Line List"
@@ -116,38 +112,38 @@ const MasterFile = () => {
         />
         <CustomMenuButton 
           label="Day Type List"
-          activePath="/dashboard/department-list"
-          onClick={navigateDepartment}
+          activePath="/dashboard/day-type"
+          onClick={navigateDayType}
         />
         <CustomMenuButton
           label="Field List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <CustomMenuButton
           label="Activity List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <CustomMenuButton
           label="GL Code List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <CustomMenuButton
           label="Cost Center List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <CustomMenuButton
           label="Location List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <CustomMenuButton
           label="Department List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         </>
       }
@@ -155,13 +151,13 @@ const MasterFile = () => {
     <Collapsebtn stateOpen={open}>
         <ListBtn
           label="Employee List"
-          activePath="/dashboard/document-type-list"
-          onClick={navigateDocumentTypeList}
+          activePath="/dashboard/employee-list"
+          onClick={navigateEmployeeList}
         />
         <ListBtn
           label="Account To Charge"
           activePath="/dashboard/scanner-list"
-          onClick={navigateScannerList}
+          onClick={navigateGroupLine}
         />
         <ListBtn
           label="Group Line List"
@@ -170,38 +166,38 @@ const MasterFile = () => {
         />
         <ListBtn
           label="Day Type List"
-          activePath="/dashboard/department-list"
-          onClick={navigateDepartment}
+          activePath="/dashboard/day-type"
+          onClick={navigateDayType}
         />
         <ListBtn
           label="Field List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
          <ListBtn
           label="Activity List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
          <ListBtn
           label="GL Code List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <ListBtn
           label="Cost Center List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <ListBtn
           label="Location List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
         <ListBtn
           label="Department List"
           activePath="/dashboard/logs"
-          onClick={navigateSystemLogs}
+          onClick={navigateGroupLine}
         />
     </Collapsebtn>
     </>

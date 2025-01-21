@@ -4,36 +4,36 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_GROUPLINE_MODAL, OPEN_DELETESWAL, GROUP_LINE_DATA } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_DAYTYPE_MODAL, OPEN_DELETESWAL, DAYTYPE_DATA } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
-import AddGroupLineModal from "./AddGroupLineModal";
+import AddDayTypeModal from "./AddDayTypeModal";
 
-const GroupLineData = () => {
+const DayTypeData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
     const queryClient = useQueryClient();
     const [selectedID, setSelectedID] = useState(0);
-    const { data: mainData } = hookContainer('/get-group');
+    const { data: mainData } = hookContainer('/get-daytype');
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.groupline_name.toLowerCase().includes(search.toLowerCase())
+            row.dt_name.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
         {
-            field: 'groupline_name', headerName: 'Group Line Name', width: 900,
+            field: 'dt_name', headerName: 'Day Type', width: 900,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.groupline_name}
+                    {data.row.dt_name}
                 </Box>
             ),
         },
@@ -46,10 +46,10 @@ const GroupLineData = () => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
-                        groupline_name: data.row.groupline_name,
+                        dt_name: data.row.dt_name,
                     };
-                    dispatch({ type: GROUP_LINE_DATA, groupLineData: obj });
-                    dispatch({ type: OPEN_GROUPLINE_MODAL, openGroupLineModal: true });
+                    dispatch({ type: DAYTYPE_DATA, dayTypeData: obj });
+                    dispatch({ type: OPEN_DAYTYPE_MODAL, openDayTypeModal: true });
                     dispatch({ type: IS_UPDATE_FORM, isUpdateForm: true });
                 };
                 return (
@@ -66,11 +66,11 @@ const GroupLineData = () => {
         }
     ];
 
-    const openAddGroupLineModal = () => {
-        dispatch({ type: OPEN_GROUPLINE_MODAL, openGroupLineModal: true });
+    const openAddDayTypeModal = () => {
+        dispatch({ type: OPEN_DAYTYPE_MODAL, openDayTypeModal: true });
     }
 
-    const refreshData = () => queryClient.invalidateQueries(['/get-group']);
+    const refreshData = () => queryClient.invalidateQueries(['/get-daytype']);
 
     const selectToDelete = (data) => {
         setSelectedID(data);
@@ -78,10 +78,10 @@ const GroupLineData = () => {
     }
 
     const deleteData = useMutation({
-        mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
+        mutationFn: () => http.delete(`/remove-daytype?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-scanner-list']);
+            queryClient.invalidateQueries(['/get-get-daytype']);
             dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
         }
     });
@@ -92,12 +92,12 @@ const GroupLineData = () => {
 
     return (
         <>
-            <AddGroupLineModal RefreshData={refreshData} />
+            <AddDayTypeModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddGroupLineModal}>Add Group Line</Button>
+                    <Button variant="contained" onClick={openAddDayTypeModal}>Add Day Type</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -111,4 +111,4 @@ const GroupLineData = () => {
     )
 }
 
-export default GroupLineData
+export default DayTypeData

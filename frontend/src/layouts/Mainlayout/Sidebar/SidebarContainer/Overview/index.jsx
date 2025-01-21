@@ -5,7 +5,7 @@ import CustomList from "../../../../../components/StyledListItemButton/CustomeLi
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useDispatch } from "react-redux";
 import { COLOR_ACCOUNTING, COLOR_ADMINISTRATIVE, COLOR_CASHIERPORTAL, COLOR_FINANCIALREPORT, COLOR_MASTERFILE, OPEN_ACCOUNTING, OPEN_ADMINISTRATIVE, OPEN_CASHIERPORTAL, OPEN_FINANCIALREPORT, OPEN_MASTERFILE } from "../../../../../store/actions";
-import MasterFile from "./Administrative";
+import MasterFile from "./Masterfile";
 
 const OverView = () => {
   const navigate = useNavigate();

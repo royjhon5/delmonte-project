@@ -4,33 +4,67 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_GROUPLINE_MODAL, OPEN_DELETESWAL, GROUP_LINE_DATA } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_DELETESWAL, EMPLOYEELIST_DATA, OPEN_EMPLOYEELIST_MODAL } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
-import AddGroupLineModal from "./AddGroupLineModal";
+import AddEmployeeListModal from "./AddEmployeeListModal";
 
-const GroupLineData = () => {
+const EmployeeListData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
     const queryClient = useQueryClient();
     const [selectedID, setSelectedID] = useState(0);
-    const { data: mainData } = hookContainer('/get-group');
+    const { data: mainData } = hookContainer('/get-employee');
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.groupline_name.toLowerCase().includes(search.toLowerCase())
+            row.chapa_id.toLowerCase().includes(search.toLowerCase()) ||
+            row.firstname.toLowerCase().includes(search.toLowerCase()) ||
+            row.lastname.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
         {
-            field: 'groupline_name', headerName: 'Group Line Name', width: 900,
+            field: 'chapa_id', headerName: 'Chapa ID', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.groupline_name}
+                </Box>
+            ),
+        },
+        {
+            field: 'location', headerName: 'Location', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.groupline_name}
+                </Box>
+            ),
+        },
+        {
+            field: 'department', headerName: 'Department', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.groupline_name}
+                </Box>
+            ),
+        },
+        {
+            field: 'group', headerName: 'Group', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.groupline_name}
+                </Box>
+            ),
+        },
+        {
+            field: 'activity', headerName: 'Activity', width: 150,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.groupline_name}
@@ -48,8 +82,8 @@ const GroupLineData = () => {
                         id: data.row.id,
                         groupline_name: data.row.groupline_name,
                     };
-                    dispatch({ type: GROUP_LINE_DATA, groupLineData: obj });
-                    dispatch({ type: OPEN_GROUPLINE_MODAL, openGroupLineModal: true });
+                    dispatch({ type: EMPLOYEELIST_DATA, EmployeeListData: obj });
+                    dispatch({ type: OPEN_EMPLOYEELIST_MODAL, openEmployeeListModal: true });
                     dispatch({ type: IS_UPDATE_FORM, isUpdateForm: true });
                 };
                 return (
@@ -66,11 +100,11 @@ const GroupLineData = () => {
         }
     ];
 
-    const openAddGroupLineModal = () => {
-        dispatch({ type: OPEN_GROUPLINE_MODAL, openGroupLineModal: true });
+    const openAddEmployeeListModal = () => {
+        dispatch({ type: OPEN_EMPLOYEELIST_MODAL, openEmployeeListModal: true });
     }
 
-    const refreshData = () => queryClient.invalidateQueries(['/get-group']);
+    const refreshData = () => queryClient.invalidateQueries(['/get-employee']);
 
     const selectToDelete = (data) => {
         setSelectedID(data);
@@ -81,7 +115,7 @@ const GroupLineData = () => {
         mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-scanner-list']);
+            queryClient.invalidateQueries(['/get-employee']);
             dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
         }
     });
@@ -92,12 +126,12 @@ const GroupLineData = () => {
 
     return (
         <>
-            <AddGroupLineModal RefreshData={refreshData} />
+            <AddEmployeeListModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddGroupLineModal}>Add Group Line</Button>
+                    <Button variant="contained" onClick={openAddEmployeeListModal}>Add Employee</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -111,4 +145,4 @@ const GroupLineData = () => {
     )
 }
 
-export default GroupLineData
+export default EmployeeListData

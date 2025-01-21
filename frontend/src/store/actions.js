@@ -17,63 +17,28 @@ export const COLOR_CASHIERPORTAL = '@customization/COLOR_CASHIERPORTAL';
 export const COLOR_FINANCIALREPORT = '@customization/COLOR_FINANCIALREPORT';
 export const COLOR_ADMINISTRATIVE = '@customization/COLOR_ADMINISTRATIVE';
 
-//CASH VOUCHER
-export const OPEN_NEWCASHVOUCHER = '@customization/OPEN_NEWCASHVOUCHER';
-export const OPEN_ADDNEWCOMPANY = '@customization/OPEN_ADDNEWCOMPANY';
-export const PASS_COMPANYDETAILS = '@customization/PASS_COMPANYDETAILS';
-export const OPEN_ADDPAYEE = '@customization/OPEN_ADDPAYEE';
-export const OPEN_VOUCHERSELECTION = '@customization/OPEN_VOUCHERSELECTION';
-export const OPEN_SUBCODESELECTION = '@customization/OPEN_SUBCODESELECTION';
-export const OPEN_COMPANYBRANCHSELECTION = '@customization/OPEN_COMPANYBRANCHSELECTION';
-export const CHANGE_SWAL_ENV = '@customization/CHANGE_SWAL_ENV';
-//ENDS HERE
-
 //EXTERNAL GLOBAL USAGE 
 export const OPEN_SAVENEWPAYEE = '@customization/OPEN_SAVENEWPAYEE';
 export const OPEN_TOUPDATEPAYEE = '@customization/OPEN_TOUPDATEPAYEE';
 export const PASS_SUPPLIERDETAILS = '@customization/PASS_SUPPLIERDETAILS';
-export const OPEN_DELETESWAL = '@customization/OPEN_DELETESWAL';
+
 export const PASS_DATA = '@customization/PASS_DATA';
 export const IS_CHECKPAYEE = '@customization/IS_CHECKPAYEE';
 export const PASS_SPECIFIC = '@customization/PASS_SPECIFIC';
 export const CASHVOUCHER_DATA = '@customization/CASHVOUCHER_DATA';
 export const IS_UPDATECASHVOUCHER = '@customization/IS_UPDATECASHVOUCHER';
-export const OPEN_SWALCONFIRMATION = '@customization/OPEN_SWALCONFIRMATION';
+
 //ENDS HERE
 
-//DOCUMENT TYPE MASTER FILE
-export const OPEN_SUBDOCUMENT = '@customization/OPEN_SUBDOCUMENT';
-export const DOCUMENT_TYPEOBJ = '@customization/DOCUMENT_TYPEOBJ';
+//MASTERFILE
+export const OPEN_GROUPLINE_MODAL = '@customization/OPEN_GROUPLINE_MODAL';
+export const GROUP_LINE_DATA = '@customization/GROUP_LINE_DATA';
+export const OPEN_EMPLOYEELIST_MODAL = '@customization/OPEN_EMPLOYEELIST_MODAL';
+export const EMPLOYEELIST_DATA = '@customization/EMPLOYEELIST_DATA';
+export const OPEN_DAYTYPE_MODAL = '@customization/OPEN_DAYTYPE_MODAL';
+export const DAYTYPE_DATA = '@customization/DAYTYPE_DATA';
 
-export const OPEN_ADDSCANNER = '@customization/OPEN_ADDSCANNER';
-export const SCANNER_TYPEOBJ = '@customization/SCANNER_TYPEOBJ';
-export const ISTOUPDATE_SCANNER = '@customization/ISTOUPDATE_SCANNER';
-
-
-export const OPEN_ADDDEPARTMENT = '@customization/OPEN_ADDDEPARTMENT';
-export const DEPARTMENT_LISTOBJ = '@customization/DEPARTMENT_LISTOBJ';
-export const ISTOUPDATE_DEPT = '@customization/ISTOUPDATE_DEPT';
-
-
-export const OPEN_SEARCHVIAKEYWORD = '@customization/OPEN_SEARCHVIAKEYWORD';
-
-//my portal
-export const OPEN_CREATENEWFOLDER = '@customization/OPEN_CREATENEWFOLDER';
-export const FOLDER_LISTOBJ = '@customization/FOLDER_LISTOBJ';
-export const ISTOUPDATE_FOLDER = '@customization/ISTOUPDATE_FOLDER';
-
-export const OPEN_CREATENEWSUBFOLDER = '@customization/OPEN_CREATENEWSUBFOLDER';
-export const SUBFOLDER_LISTOBJ = '@customization/SUBFOLDER_LISTOBJ';
-export const ISTOUPDATE_SUBFOLDER = '@customization/ISTOUPDATE_SUBFOLDER';
-export const PASSID_LINK = '@customization/PASSID_LINK';
-
-export const OPEN_CREATEFILES = '@customization/OPEN_CREATEFILES';
-export const FILES_DATAOBJ = '@customization/FILES_DATAOBJ';
-export const ISTOUPDATE_FILES = '@customization/ISTOUPDATE_FILES';
-export const PASS_SUBIDLINK = '@customization/PASS_SUBIDLINK';
-
-//open for summary reports
-export const OPEN_ARCHIVEBYCAT = '@customization/OPEN_ARCHIVEBYCAT';
-export const OPEN_ARCHIVEBYDEPT = '@customization/OPEN_ARCHIVEBYDEPT';
-export const OPEN_SUMMARYDOCTYPE = '@customization/OPEN_SUMMARYDOCTYPE';
-export const OPEN_COATRANSMITTALREPORT = '@customization/OPEN_COATRANSMITTALREPORT';
+// COMMON
+export const IS_UPDATE_FORM = '@customization/IS_UPDATE_FORM';
+export const OPEN_DELETESWAL = '@customization/OPEN_DELETESWAL';
+export const OPEN_SWALCONFIRMATION = '@customization/OPEN_SWALCONFIRMATION';
