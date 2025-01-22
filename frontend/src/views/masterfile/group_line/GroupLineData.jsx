@@ -4,7 +4,7 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_GROUPLINE_MODAL, OPEN_DELETESWAL, GROUP_LINE_DATA } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL, OPEN_DELETESWAL, FORM_DATA } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -48,8 +48,8 @@ const GroupLineData = () => {
                         id: data.row.id,
                         groupline_name: data.row.groupline_name,
                     };
-                    dispatch({ type: GROUP_LINE_DATA, groupLineData: obj });
-                    dispatch({ type: OPEN_GROUPLINE_MODAL, openGroupLineModal: true });
+                    dispatch({ type: FORM_DATA, formData: obj });
+                    dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
                     dispatch({ type: IS_UPDATE_FORM, isUpdateForm: true });
                 };
                 return (
@@ -67,7 +67,7 @@ const GroupLineData = () => {
     ];
 
     const openAddGroupLineModal = () => {
-        dispatch({ type: OPEN_GROUPLINE_MODAL, openGroupLineModal: true });
+        dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
     const refreshData = () => queryClient.invalidateQueries(['/get-group']);
@@ -81,7 +81,7 @@ const GroupLineData = () => {
         mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-scanner-list']);
+            queryClient.invalidateQueries(['/get-group']);
             dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
         }
     });

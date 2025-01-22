@@ -2,20 +2,25 @@ import { Box, Button, Grid, TextField } from "@mui/material";
 import CustomDialog from "../../../components/CustomDialog";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
-import { IS_UPDATE_FORM, OPEN_EMPLOYEELIST_MODAL } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL } from "../../../store/actions";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
+import { hookContainer } from "../../../hooks/globalQuery";
 
 const AddGroupLine = ({ RefreshData }) => {
     const dispatch = useDispatch();
-    const open = useSelector((state) => state.customization.openEmployeeListModal);
+    const { data: locationList } = hookContainer('/get-location');
+    const { data: departmentList } = hookContainer('/get-department');
+    const { data: groupList } = hookContainer('/get-group');
+    const { data: activityList } = hookContainer('/get-activity');
+    const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
     const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
     // end here
-    const toUpdateData = useSelector((state) => state.customization.employeeListData);
-    const [chapaID, setChapaID] = useState('');
+    const toUpdateData = useSelector((state) => state.customization.formData);
+    const [chapa_id, setChapaID] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const [middlename, setMiddlename] = useState('');
@@ -26,14 +31,14 @@ const AddGroupLine = ({ RefreshData }) => {
     const [default_activity_idlink, setActivityLinkID] = useState('');
 
     const CloseDialog = () => {
-        dispatch({ type: OPEN_EMPLOYEELIST_MODAL, openEmployeeListModal: false });
+        dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
         clearData();
     }
     const SaveOrUpdateData = async () => {
         const saveUpdateData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            chapaID: chapaID,
+            chapa_id: chapa_id,
             firstname: firstname,
             lastname: lastname,
             middlename: middlename,
@@ -51,7 +56,7 @@ const AddGroupLine = ({ RefreshData }) => {
         }
     };
     const saveUpdateDataExecute = useMutation({
-        mutationFn: (saveUpdateData) => http.post('/post-group', saveUpdateData),
+        mutationFn: (saveUpdateData) => http.post('/post-employee', saveUpdateData),
         onSuccess: () => {
             toast.success('Data saved successfully.');
             clearData();
@@ -77,7 +82,7 @@ const AddGroupLine = ({ RefreshData }) => {
 
     useEffect(() => {
         if (isToUpdate) {
-            setChapaID(toUpdateData.chapaID);
+            setChapaID(toUpdateData.chapa_id);
             setFirstname(toUpdateData.firstname);
             setLastname(toUpdateData.lastname);
             setMiddlename(toUpdateData.middlename);
@@ -97,15 +102,43 @@ const AddGroupLine = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="ChapaID" value={chapaID} onChange={(e) => { setChapaID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="ChapaID" value={chapa_id} onChange={(e) => { setChapaID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                     <TextField label="Firstname" value={firstname} onChange={(e) => { setFirstname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                     <TextField label="Middlename" value={middlename} onChange={(e) => { setMiddlename(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                     <TextField label="Lastname" value={lastname} onChange={(e) => { setLastname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                     <TextField label="Extname" value={extname} onChange={(e) => { setExtname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Location" value={assigned_location_idlink} onChange={(e) => { setLocationLinkID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Department" value={assigned_department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Group" value={assigned_group_idlink} onChange={(e) => { setGroupLinkID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Activity" value={default_activity_idlink} onChange={(e) => { setActivityLinkID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Location" select value={assigned_location_idlink} onChange={(e) => { setLocationLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                        <option></option>
+                        {locationList?.map((option) => (
+                            <option key={option.id} value={`${option.id}`}>
+                                {option.location_name}
+                            </option>
+                        ))}
+                    </TextField>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Department" select value={assigned_department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                        <option></option>
+                        {departmentList?.map((option) => (
+                            <option key={option.id} value={`${option.id}`}>
+                                {option.department_name}
+                            </option>
+                        ))}
+                    </TextField>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={assigned_group_idlink} onChange={(e) => { setGroupLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                        <option></option>
+                        {groupList?.map((option) => (
+                            <option key={option.id} value={`${option.id}`}>
+                                {option.groupline_name}
+                            </option>
+                        ))}
+                    </TextField>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={default_activity_idlink} onChange={(e) => { setActivityLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                        <option></option>
+                        {activityList?.map((option) => (
+                            <option key={option.id} value={`${option.id}`}>
+                                {option.activityname}
+                            </option>
+                        ))}
+                    </TextField>
                 </Box>
             }
             DialogAction={

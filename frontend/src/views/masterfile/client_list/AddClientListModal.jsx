@@ -18,14 +18,24 @@ const AddDayTypeModal = ({ RefreshData }) => {
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
-        setDayType('');
+        clearData();
     }
-    const [DayType, setDayType] = useState('');
+    const [client_code, setClientCode] = useState('');
+    const [client_name, setClientName] = useState('');
+    const [client_address, setClientAddress] = useState('');
+    const [client_contactno, setContactNo] = useState('');
+    const [client_email, setEmail] = useState('');
+    const [client_tinno, setTINNo] = useState('');
 
     const SaveOrUpdateData = async () => {
         const DayTypeData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            dt_name: DayType,
+            client_code: client_code,
+            client_name: client_name,
+            client_address: client_address,
+            client_contactno: client_contactno,
+            client_email: client_email,
+            client_tinno: client_tinno
         };
         try {
             await saveNewDayTypeData.mutateAsync(DayTypeData);
@@ -35,9 +45,9 @@ const AddDayTypeModal = ({ RefreshData }) => {
         }
     };
     const saveNewDayTypeData = useMutation({
-        mutationFn: (DayTypeData) => http.post('/post-daytype', DayTypeData),
+        mutationFn: (DayTypeData) => http.post('/post-client', DayTypeData),
         onSuccess: () => {
-            setDayType('');
+            clearData();
             RefreshData();
             toast.success('Data saved successfully.');
             CloseDialog();
@@ -49,19 +59,38 @@ const AddDayTypeModal = ({ RefreshData }) => {
 
     useEffect(() => {
         if (isToUpdate) {
-            setDayType(toUpdateData.dt_name);
+            setClientCode(toUpdateData.client_code);
+            setClientName(toUpdateData.client_name);
+            setClientAddress(toUpdateData.client_address);
+            setContactNo(toUpdateData.client_contactno);
+            setEmail(toUpdateData.client_email);
+            setTINNo(toUpdateData.client_tinno);
         }
     }, [isToUpdate, toUpdateData])
+
+    const clearData = () => {
+        setClientCode('');
+        setClientName('');
+        setClientAddress('');
+        setContactNo('');
+        setEmail('');
+        setTINNo('');
+    }
 
     return (
         <CustomDialog
             open={open}
             maxWidth={'xs'}
-            DialogTitles={isToUpdate ? "Update DayType" : "Add New DayType"}
+            DialogTitles={isToUpdate ? "Update Client" : "Add New Client"}
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="DayType" value={DayType} onChange={(e) => { setDayType(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Code" value={client_code} onChange={(e) => { setClientCode(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Client Name" value={client_name} onChange={(e) => { setClientName(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Address" value={client_address} onChange={(e) => { setClientAddress(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Contact No" value={client_contactno} onChange={(e) => { setContactNo(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Email" value={client_email} onChange={(e) => { setEmail(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="TIN No" value={client_tinno} onChange={(e) => { setTINNo(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={

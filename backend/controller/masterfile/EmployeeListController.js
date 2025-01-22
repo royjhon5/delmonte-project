@@ -25,7 +25,15 @@ module.exports.saveEmployeeData = async function (req, res) {
 		tableName: "tblemployeelist",
 		fieldValue: {
 			id: data.id,
-			activityname: data.activityname
+			chapa_id: data.chapa_id,
+			firstname: data.firstname,
+			lastname: data.lastname,
+			middlename: data.middlename,
+			extname: data.extname,
+			assigned_location_idlink: data.assigned_location_idlink,
+			assigned_department_idlink: data.assigned_department_idlink,
+			assigned_group_idlink: data.assigned_group_idlink,
+			default_activity_idlink: data.default_activity_idlink,
 		}
 	}
 	try {

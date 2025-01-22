@@ -6,7 +6,8 @@ module.exports.saveDepartmentList = async function (req, res) {
 		tableName: "tbldepartment",
 		fieldValue: {
 			id: data.id,
-			departmentname: data.departmentname,
+			department_name: data.department_name,
+			client_idlink: data.client_idlink,
 		}
 	}
 	try {
@@ -22,7 +23,7 @@ module.exports.saveDepartmentList = async function (req, res) {
 
 module.exports.getDepartmentList = async function (req, res) {
 	var params = {
-		fields: ["*"],
+		fields: ["*, (SELECT tblclient.client_name FROM tblclient WHERE tblclient.id = tbldepartment.client_idlink LIMIT 1)as client_name"],
 		tableName: "tbldepartment",
 	}
 	try {

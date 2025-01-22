@@ -31,12 +31,8 @@ export const IS_UPDATECASHVOUCHER = '@customization/IS_UPDATECASHVOUCHER';
 //ENDS HERE
 
 //MASTERFILE
-export const OPEN_GROUPLINE_MODAL = '@customization/OPEN_GROUPLINE_MODAL';
-export const GROUP_LINE_DATA = '@customization/GROUP_LINE_DATA';
-export const OPEN_EMPLOYEELIST_MODAL = '@customization/OPEN_EMPLOYEELIST_MODAL';
-export const EMPLOYEELIST_DATA = '@customization/EMPLOYEELIST_DATA';
-export const OPEN_DAYTYPE_MODAL = '@customization/OPEN_DAYTYPE_MODAL';
-export const DAYTYPE_DATA = '@customization/DAYTYPE_DATA';
+export const OPEN_CUSTOM_MODAL = '@customization/OPEN_CUSTOM_MODAL';
+export const FORM_DATA = '@customization/FORM_DATA';
 
 // COMMON
 export const IS_UPDATE_FORM = '@customization/IS_UPDATE_FORM';

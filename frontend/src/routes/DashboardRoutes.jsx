@@ -12,6 +12,13 @@ const UpdateFormPass = Loadable(lazy(() => import('../views/authentication/updat
 const GroupLineList = Loadable(lazy(() => import('../views/Masterfile/group_line')));
 const EmployeeList = Loadable(lazy(() => import('../views/Masterfile/employee_list')));
 const DayTypeList = Loadable(lazy(() => import('../views/Masterfile/day_type')));
+const FieldList = Loadable(lazy(() => import('../views/Masterfile/field_list')));
+const ActivityList = Loadable(lazy(() => import('../views/Masterfile/activity_list')));
+const GLCodeList = Loadable(lazy(() => import('../views/Masterfile/gl_code')));
+const CostCenterList = Loadable(lazy(() => import('../views/Masterfile/cost_center')));
+const LocationList = Loadable(lazy(() => import('../views/Masterfile/location_list')));
+const DepartmentList = Loadable(lazy(() => import('../views/Masterfile/department_list')));
+const ClientList = Loadable(lazy(() => import('../views/Masterfile/client_list')));
 // administrative
 const UserList = Loadable(lazy(() => import('../views/Administrative/_UserList')));
 
@@ -27,6 +34,7 @@ const DashboardRoutes = {
 				</ProtectedRoute>
 			)
 		},
+		// masterfile
 		{
 			path: '/dashboard/group-line',
 			element: (
@@ -52,6 +60,63 @@ const DashboardRoutes = {
 			)
 		},
 		{
+			path: '/dashboard/field-list',
+			element: (
+				<ProtectedRoute pageName='Field List'>
+					<FieldList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/activity-list',
+			element: (
+				<ProtectedRoute pageName='Activity List'>
+					<ActivityList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/gl-code',
+			element: (
+				<ProtectedRoute pageName='GL Code'>
+					<GLCodeList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/cost-center',
+			element: (
+				<ProtectedRoute pageName='Cost Center'>
+					<CostCenterList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/location-list',
+			element: (
+				<ProtectedRoute pageName='Location List'>
+					<LocationList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/department-list',
+			element: (
+				<ProtectedRoute pageName='Department List'>
+					<DepartmentList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/client-list',
+			element: (
+				<ProtectedRoute pageName='Client List'>
+					<ClientList />
+				</ProtectedRoute>
+			)
+		},
+		// administrative
+		{
 			path: '/dashboard/user-list',
 			element: (
 				<ProtectedRoute pageName='User List'>
@@ -59,17 +124,15 @@ const DashboardRoutes = {
 				</ProtectedRoute>
 			)
 		},
-
+		// others
 		{
 			path: '/access-denied',
 			element: <AccessDenied />
 		},
-
 		{
 			path: '/dashboard/change-password',
 			element: <UpdateFormPass />
 		},
-
 		{
 			path: '*',
 			element: <PageNotFound />
