@@ -6,6 +6,10 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useDispatch } from "react-redux";
 import { COLOR_ACCOUNTING, COLOR_ADMINISTRATIVE, COLOR_CASHIERPORTAL, COLOR_FINANCIALREPORT, COLOR_MASTERFILE, OPEN_ACCOUNTING, OPEN_ADMINISTRATIVE, OPEN_CASHIERPORTAL, OPEN_FINANCIALREPORT, OPEN_MASTERFILE } from "../../../../../store/actions";
 import MasterFile from "./Masterfile";
+import Transactions from "./Transactions";
+import OfflineMode from "./Data Uploads/OfflineMode";
+import FieldDeviceProcess from "./Data Uploads/Field_DeviceProcess";
+import PH_NF_JP_DeviceProcess from "./Data Uploads/PH_NF_JP_DeviceProcess";
 
 const OverView = () => {
   const navigate = useNavigate();
@@ -29,6 +33,11 @@ const OverView = () => {
       <ListSubHeaderStyle ListLabel="OVERVIEW" />
       <ListItemButtonStyle ListbtnLabel="Dashboard" activePath="/dashboard" MenuClick={navigateDashboard} IconChildrens={<DashboardIcon fontSize="small" />} />
       <MasterFile />
+      <Transactions />
+      <ListSubHeaderStyle ListLabel="DATA UPLOAD" />
+      <OfflineMode />
+      <FieldDeviceProcess />
+      <PH_NF_JP_DeviceProcess />
       {/* {(accessToken.UserLevel == 'Schema Admin' || accessToken.UserLevel == 'Admin') && accessToken.UserLevel != 'COA User' ? <ListItemButtonStyle ListbtnLabel="My Portal" activePath="/dashboard/my-portal" MenuClick={navigateMyProtal} IconChildrens={<WebIcon fontSize="small" />} /> : ""} */}
       {/* <ListItemButtonStyle ListbtnLabel="Upload Documents" MenuClick={navigateDashboard} IconChildrens={<CloudUploadIcon fontSize="small" />} /> */}
       {/* {accessToken.UserLevel != 'COA User' ? <UploadDocuments /> : ""} */}

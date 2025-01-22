@@ -30,7 +30,7 @@ const GroupLineData = () => {
 
     const ColumnHeader = [
         {
-            field: 'groupline_name', headerName: 'Group Line Name', width: 900,
+            field: 'groupline_name', headerName: 'Group Line Name', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.groupline_name}

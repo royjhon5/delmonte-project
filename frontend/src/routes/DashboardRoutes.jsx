@@ -9,7 +9,7 @@ const PageNotFound = Loadable(lazy(() => import('../components/Page404/pageNotFo
 const UpdateFormPass = Loadable(lazy(() => import('../views/authentication/update-password/updatepass-container')));
 
 // masterfile
-const GroupLineList = Loadable(lazy(() => import('../views/masterfile/group_line')));
+const GroupLineList = Loadable(lazy(() => import('../views/Masterfile/group_line')));
 const EmployeeList = Loadable(lazy(() => import('../views/Masterfile/employee_list')));
 const DayTypeList = Loadable(lazy(() => import('../views/Masterfile/day_type')));
 // administrative
