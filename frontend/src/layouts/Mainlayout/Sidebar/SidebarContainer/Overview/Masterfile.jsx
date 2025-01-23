@@ -36,6 +36,7 @@ const MasterFile = () => {
     const navigateLocationList = () => { navigate('/dashboard/location-list'), colorCollapseBtn() }
     const navigateDepartmentList = () => { navigate('/dashboard/department-list'), colorCollapseBtn() }
     const navigateClientList = () => { navigate('/dashboard/client-list'), colorCollapseBtn() }
+    const navigateAccountMasterList = () => { navigate('/dashboard/account-master'), colorCollapseBtn() }
 
     const openCollapseBtn = () => {
         dispatch({ type: OPEN_MASTERFILE, openMasterFile: !open });
@@ -63,6 +64,7 @@ const MasterFile = () => {
             || location.pathname === '/dashboard/cost-center'
             || location.pathname === '/dashboard/location-list'
             || location.pathname === '/dashboard/department-list'
+            || location.pathname === '/dashboard/account-master'
         ) {
             dispatch({ type: COLOR_ADMINISTRATIVE, colorMasterFile: true });
         } else {
@@ -115,9 +117,9 @@ const MasterFile = () => {
                             onClick={navigateEmployeeList}
                         />
                         <CustomMenuButton
-                            label="Account To Charge"
-                            activePath="/dashboard/scanner-list"
-                            onClick={navigateGroupLine}
+                            label="Account Master List"
+                            activePath="/dashboard/account-master"
+                            onClick={navigateAccountMasterList}
                         />
                         <CustomMenuButton
                             label="Group Line List"
@@ -169,9 +171,9 @@ const MasterFile = () => {
                     onClick={navigateEmployeeList}
                 />
                 <ListBtn
-                    label="Account To Charge"
-                    activePath="/dashboard/scanner-list"
-                    onClick={navigateGroupLine}
+                    label="Account Master List"
+                    activePath="/dashboard/account-master"
+                    onClick={navigateAccountMasterList}
                 />
                 <ListBtn
                     label="Group Line List"

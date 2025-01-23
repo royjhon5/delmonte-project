@@ -22,10 +22,12 @@ module.exports.getAccountToCharge = async function (req, res) {
 module.exports.saveAccountToCharge = async function (req, res) {
 	const data = req.body
 	var params = {
-		tableName: "tblactivitylist",
+		tableName: "tblaccount_to_charge",
 		fieldValue: {
 			id: data.id,
-			activityname: data.activityname
+			activity_id_link: data.activity_id_link,
+			glcode_id_link: data.glcode_id_link,
+			costcenter_id_link: data.costcenter_id_link,
 		}
 	}
 	try {
@@ -42,7 +44,7 @@ module.exports.saveAccountToCharge = async function (req, res) {
 module.exports.deleteAccoubtToCharge = async function (req, res) {
     const data = req.query
 	var params = {
-		tableName: "tblactivitylist",
+		tableName: "tblaccount_to_charge",
 		where: ["id = ?"],
 		whereValue: [data.id],
 	}
