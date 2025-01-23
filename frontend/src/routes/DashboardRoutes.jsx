@@ -19,6 +19,7 @@ const CostCenterList = Loadable(lazy(() => import('../views/Masterfile/cost_cent
 const LocationList = Loadable(lazy(() => import('../views/Masterfile/location_list')));
 const DepartmentList = Loadable(lazy(() => import('../views/Masterfile/department_list')));
 const ClientList = Loadable(lazy(() => import('../views/Masterfile/client_list')));
+const AccountMasterList = Loadable(lazy(() => import('../views/Masterfile/account_master')));
 // administrative
 const UserList = Loadable(lazy(() => import('../views/Administrative/_UserList')));
 
@@ -112,6 +113,14 @@ const DashboardRoutes = {
 			element: (
 				<ProtectedRoute pageName='Client List'>
 					<ClientList />
+				</ProtectedRoute>
+			)
+		},
+		{
+			path: '/dashboard/account-master',
+			element: (
+				<ProtectedRoute pageName='Account Master'>
+					<AccountMasterList />
 				</ProtectedRoute>
 			)
 		},
