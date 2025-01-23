@@ -19,15 +19,11 @@ const CostCenterList = Loadable(lazy(() => import('../views/Masterfile/cost_cent
 const LocationList = Loadable(lazy(() => import('../views/Masterfile/location_list')));
 const DepartmentList = Loadable(lazy(() => import('../views/Masterfile/department_list')));
 const ClientList = Loadable(lazy(() => import('../views/Masterfile/client_list')));
-<<<<<<< HEAD
 
 // transaction
 const EmployeeTemplates = Loadable(lazy(() => import('../views/Transaction/employee_templates')));
 const DARPreparation = Loadable(lazy(() => import('../views/Transaction/dar_creation')));
 
-=======
-const AccountMasterList = Loadable(lazy(() => import('../views/Masterfile/account_master')));
->>>>>>> 61e1e422be1bbd45b62f1917d6151f76d9d4074c
 // administrative
 const UserList = Loadable(lazy(() => import('../views/Administrative/_UserList')));
 
@@ -124,7 +120,6 @@ const DashboardRoutes = {
 				</ProtectedRoute>
 			)
 		},
-<<<<<<< HEAD
 		// transaction
 		{
 			path: '/dashboard/employee-templates',
@@ -139,13 +134,6 @@ const DashboardRoutes = {
 			element: (
 				<ProtectedRoute pageName='User List'>
 					<DARPreparation />
-=======
-		{
-			path: '/dashboard/account-master',
-			element: (
-				<ProtectedRoute pageName='Account Master'>
-					<AccountMasterList />
->>>>>>> 61e1e422be1bbd45b62f1917d6151f76d9d4074c
 				</ProtectedRoute>
 			)
 		},

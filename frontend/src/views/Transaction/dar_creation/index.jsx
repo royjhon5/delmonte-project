@@ -12,7 +12,7 @@ const DARPreparation = () => {
         <Helmet>
             <title>DAR Preparation</title>
         </Helmet>
-        <Box sx={{ mb: '20px' }}>
+        <Box>
             <Stack sx={{
                 display: 'flex',
                 flexDirection: 'row',

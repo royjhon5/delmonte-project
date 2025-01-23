@@ -12,6 +12,7 @@ import { OPEN_CUSTOM_MODAL, OPEN_DELETESWAL } from "../../../../store/actions";
 import { useDispatch } from "react-redux";
 import DeleteSwal from "../../../../components/Swal/DeleteSwal";
 import SearchIcon from '@mui/icons-material/Search';
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 const DARdata = () => {
   const dispatch = useDispatch();
@@ -37,8 +38,8 @@ const DARdata = () => {
 
 
   const ColumnHeader = [
-    { field: 'id', headerName: 'Chapa ID', width: 100 },
-    { field: 'isAdmin', type: 'boolean', headerName: 'Full Name', width: 200 },
+    { field: 'id', headerName: 'Chapa ID', width: 120 },
+    { field: 'isAdmin', headerName: 'Full Name', width: 220, },
     {
         field: 'firstName',
         headerName: 'TIME IN',
@@ -50,10 +51,46 @@ const DARdata = () => {
         width: 100,
     },
     {
-        field: 'age',
-        headerName: 'Age',
+        field: 'ST',
+        headerName: 'ST',
         type: 'number',
-        width: 110,
+        width: 100,
+    },
+    {
+      field: 'OT',
+      headerName: 'OT',
+      type: 'number',
+      width: 100,
+    },
+    {
+      field: 'NF',
+      headerName: 'ND',
+      type: 'number',
+      width: 100,
+    },
+    {
+      field: 'ND-OT',
+      headerName: 'ND-OT',
+      type: 'number',
+      width: 100,
+    },
+    {
+      field: 'Activity',
+      headerName: 'Activity',
+      type: 'number',
+      width: 100,
+    },
+    {
+      field: 'gl',
+      headerName: 'GL',
+      type: 'number',
+      width: 100,
+    },
+    {
+      field: 'costcenter',
+      headerName: 'Cost Center',
+      type: 'number',
+      width: 100,
     },
   ];
 
@@ -138,64 +175,9 @@ const DARdata = () => {
     <Fragment>
     <DeleteSwal maxWidth="xs" onClick={DeleteData} />
     <Grid container spacing={2}>
-        <Grid item xs={12} md={3.5}>
-            <Paper sx={{padding: 2}}>
-                        <form noValidate onSubmit={handleSubmit}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12} md={12}>
-                                <FormControl variant="filled" fullWidth>
-                                    <InputLabel>Select Employee Template</InputLabel>
-                                    <FilledInput size="small"
-                                        disabled
-                                        label="Voucher Number"
-                                        endAdornment={
-                                        <InputAdornment position="end">
-                                            <Button size="small" variant="contained" ><SearchIcon /></Button>
-                                        </InputAdornment>
-                                        }
-                                    />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Location" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Department" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth type="date" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Shifting" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={12}>
-                                    <TextField fullWidth label="Day Type" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Prepared By" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Checked By" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Confirmed By" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Aprroved By" variant="outlined" size="small" />
-                                </Grid>
-                            
-                                <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1, justifyContent:'flex-end'}}>
-                                    {selectedRowData ? <Button variant="contained" size="large" onClick={handleSubmit}>Update</Button> : 
-                                    <Button variant="contained" size="large" onClick={handleSubmit}>Save</Button>}
-                                    <Button variant="contained" size="large" color="secondary" onClick={NewClearData}>New/Clear</Button>
-                                </Grid>
-                            </Grid>
-                        </form>                   
-            </Paper>
-        </Grid>
-        <Grid item xs={12} md={8.5}>
+        <Grid item xs={12} md={12}>
             <Paper>
-            <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
                     <Button variant="contained" size="small" onClick={openCustomModal}>Add Employee Template</Button>
                 </Stack>
@@ -207,6 +189,61 @@ const DARdata = () => {
                 slots={{ noRowsOverlay: NoData }}
                 columnGroupingModel={columnGroupingModel}
             />
+            </Paper>
+        </Grid>
+        <Grid item xs={12} md={12}>
+            <Paper sx={{padding: 2}}>
+                        <form noValidate onSubmit={handleSubmit}>
+                            <Grid container spacing={1}>
+                                <Grid item xs={12} md={3}>
+                                <FormControl variant="filled" fullWidth>
+                                    <InputLabel>Select Employee Template</InputLabel>
+                                    <FilledInput size="small"
+                                        disabled
+                                        label="Voucher Number"
+                                        endAdornment={
+                                        <InputAdornment position="end">
+                                            <Button size="small" variant="contained" ><SearchIcon fontSize="small" /></Button>
+                                        </InputAdornment>
+                                        }
+                                    />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Location" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Department" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth type="date" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Shifting" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Day Type" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Prepared By" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Checked By" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField fullWidth label="Confirmed By" variant="outlined" size="small" />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField fullWidth label="Aprroved By" variant="outlined" size="small" />
+                                </Grid>
+                            
+                                <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1, justifyContent:'flex-end'}}>
+                                    {selectedRowData ? <Button variant="contained" size="small" onClick={handleSubmit}>Update</Button> : 
+                                    <Button variant="contained" size="small" onClick={handleSubmit}>Save</Button>}
+                                    <Button variant="contained" size="small" color="secondary" onClick={NewClearData}>New/Clear</Button>
+                                </Grid>
+                            </Grid>
+                        </form>                   
             </Paper>
         </Grid>
     </Grid>
