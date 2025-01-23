@@ -15,6 +15,10 @@ export const initialState = {
     openSidebarMobile: false,
 
     openMasterFile: false,
+    openTransaction: false,
+    openOfflineMode: false,
+    openFieldDevice: false,
+    openPHNFJPDevice: false,
     openAccounting: false,
     openCashierPortal: false,
     openFinancialReport: false,
@@ -160,7 +164,26 @@ const customizationReducer = (state = initialState, action) => {
                 isUpdateForm: action.isUpdateForm
             };
 
-
+        case actionTypes.OPEN_TRANSACTION:
+            return {
+                ...state,
+                openTransaction: action.openTransaction
+            };
+        case actionTypes.OPEN_OFFLINEMODE:
+            return {
+                ...state,
+                openOfflineMode: action.openOfflineMode
+            };
+        case actionTypes.OPEN_FIELD_DEVICE:
+            return {
+                ...state,
+                openFieldDevice: action.openFieldDevice
+            };
+        case actionTypes.OPEN_PH_NF_JP_DEVICE:
+            return {
+                ...state,
+                openPHNFJPDevice: action.openPHNFJPDevice
+            };
         default:
             return state;
     }

@@ -9,26 +9,31 @@ import ListBtn from "../../../../../components/StyledListItemButton/CustomCollap
 import StyledPopover from "../../../../../components/StyledPopover";
 import CustomMenuButton from "../../../../../components/CustomMenuButton";
 import { useDispatch, useSelector } from "react-redux";
-import { OPEN_ACCOUNTING, OPEN_ADMINISTRATIVE, OPEN_CASHIERPORTAL, OPEN_FINANCIALREPORT, OPEN_MASTERFILE } from "../../../../../store/actions";
+import { OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../store/actions";
 import { SvgIconColors } from "../../../../../themes/palette";
+import { useNavigate } from "react-router-dom";
 
 const Transactions = () => {
   const theme = useTheme();  
   const sideActiveColor = SvgIconColors(theme.palette.appSettings)
-  const open = useSelector((state) => state.customization.openCashierPortal);
+  const open = useSelector((state) => state.customization.openTransaction);
   const activateColor = useSelector((state) => state.customization.colorCashierPortal)
   const dispatch = useDispatch();
-  const [anchorHere, setAnchorHere] = useState(null)
-  const popoverRef = useRef(null)
+  const [anchorHere, setAnchorHere] = useState(null);
+  const popoverRef = useRef(null);
   const openBool = Boolean(anchorHere);
-  const id = 'mouse-over-popover'
+  const id = 'mouse-over-popover';
+  const navigate = useNavigate()
+
+  const navigateEmployeeTemplates = () => { navigate('/dashboard/employee-templates')}
+  const navigateDarPrepartion = () => { navigate('/dashboard/dar-preparation')}
 
   const openCollapseBtn = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
-    dispatch({ type: OPEN_ACCOUNTING, openAccounting: false });
-    dispatch({ type: OPEN_CASHIERPORTAL, openCashierPortal: !open });
-    dispatch({ type: OPEN_FINANCIALREPORT, openFinancialReport: false });
-    dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false });
+    dispatch({ type: OPEN_TRANSACTION, openTransaction: !open });
+    dispatch({ type: OPEN_OFFLINEMODE, openOfflineMode: false });
+    dispatch({ type: OPEN_FIELD_DEVICE, openFieldDevice: false });
+    dispatch({ type: OPEN_PH_NF_JP_DEVICE, openPHNFJPDevice: false });
   }
 
   // const colorCollapseBtn = () => {
@@ -79,14 +84,42 @@ const Transactions = () => {
       menuButton={
         <>
         <CustomMenuButton 
-          label="Daily Cash Position Report"
+          label="Employee Templates PH/NF/JP"
+          activePath="/dashboard/employee-templates"
+          onClick={navigateEmployeeTemplates}
+        />
+        <CustomMenuButton 
+          label="Rate Templates Client"
+          
+        />
+        <CustomMenuButton 
+          label="DAR Creation"
+          activePath="/dashboard/dar-preparation"
+          onClick={navigateDarPrepartion}
+        />
+        <CustomMenuButton 
+          label="SOA Creation"
         />
         </>
       }
     />
     <Collapsebtn stateOpen={open}>
         <ListBtn
-          label="Daily Cash Position Report"
+          label="Employee Templates PH/NF/JP"
+          activePath="/dashboard/employee-templates"
+          onClick={navigateEmployeeTemplates}
+        />
+        <ListBtn
+          label="Rate Templates Client"
+          
+        />
+        <ListBtn
+          label="DAR Creation"
+          activePath="/dashboard/dar-preparation"
+          onClick={navigateDarPrepartion}
+        />
+        <ListBtn
+          label="SOA Creation"
         />
     </Collapsebtn>
     </>

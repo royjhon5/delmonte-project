@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Paper, Stack, TextField } from "@mui/material"
-import CustomDataGrid from "../../../components/CustomDataGrid";
+import CustomDataGrid from "../../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";

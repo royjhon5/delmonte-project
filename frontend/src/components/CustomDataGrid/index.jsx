@@ -2,20 +2,22 @@ import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material';
 
-const CustomDataGrid = ({ columns, rows, slots, loading, hideFooter, hideFooterPagination, maxHeight, height, gridOverLay, onRowClick }) => {
+const CustomDataGrid = ({ columns, rows, slots, loading, hideFooter, hideFooterPagination, maxHeight, height, gridOverLay, onRowClick, columnGroupingModel }) => {
   const theme = useTheme();
   return (
     <DataGrid
+      columnHeaderHeight={36}
       loading={loading}
       columns={columns}
       rows={rows}
       slots={slots}
-      rowHeight={47}
+      rowHeight={36}
       rowSelection={false}
       disableRowSelectionOnClick={false}
       hoverStateEnabled={true}
       onRowClick={onRowClick}
       hideFooter={hideFooter}
+      columnGroupingModel={columnGroupingModel}
       hideFooterPagination={hideFooterPagination}
       initialState={{
         pagination: { paginationModel: { pageSize: 25 } },
@@ -71,7 +73,8 @@ CustomDataGrid.propTypes = {
   maxHeight: PropTypes.number,
   height: PropTypes.number,
   gridOverLay: PropTypes.string,
-  onRowClick: PropTypes.any
+  onRowClick: PropTypes.any,
+  columnGroupingModel: PropTypes.array
 }
 
 

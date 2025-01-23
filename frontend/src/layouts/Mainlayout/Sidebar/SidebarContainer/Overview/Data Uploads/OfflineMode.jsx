@@ -9,13 +9,13 @@ import Collapsebtn from "../../../../../../components/StyledListItemButton/Custo
 import StyledPopover from "../../../../../../components/StyledPopover";
 import ListBtn from "../../../../../../components/StyledListItemButton/CustomCollapseListButton/ListBtn";
 import CustomMenuButton from "../../../../../../components/CustomMenuButton";
-import { OPEN_ACCOUNTING, OPEN_ADMINISTRATIVE, OPEN_CASHIERPORTAL, OPEN_FINANCIALREPORT, OPEN_MASTERFILE } from "../../../../../../store/actions";
+import { OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../../store/actions";
 import WifiOffIcon from '@mui/icons-material/WifiOff';
 
 const OfflineMode = () => {
   const theme = useTheme();  
   const sideActiveColor = SvgIconColors(theme.palette.appSettings)
-  const open = useSelector((state) => state.customization.openCashierPortal);
+  const open = useSelector((state) => state.customization.openOfflineMode);
   const activateColor = useSelector((state) => state.customization.colorCashierPortal)
   const dispatch = useDispatch();
   const [anchorHere, setAnchorHere] = useState(null)
@@ -23,13 +23,13 @@ const OfflineMode = () => {
   const openBool = Boolean(anchorHere);
   const id = 'mouse-over-popover'
 
-  const openCollapseBtn = () => {
-    dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
-    dispatch({ type: OPEN_ACCOUNTING, openAccounting: false });
-    dispatch({ type: OPEN_CASHIERPORTAL, openCashierPortal: !open });
-    dispatch({ type: OPEN_FINANCIALREPORT, openFinancialReport: false });
-    dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false });
-  }
+   const openCollapseBtn = () => {
+      dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
+      dispatch({ type: OPEN_TRANSACTION, openTransaction: false });
+      dispatch({ type: OPEN_OFFLINEMODE, openOfflineMode: !open });
+      dispatch({ type: OPEN_FIELD_DEVICE, openFieldDevice: false });
+      dispatch({ type: OPEN_PH_NF_JP_DEVICE, openPHNFJPDevice: false });
+    }
 
   // const colorCollapseBtn = () => {
   //   dispatch({ type: COLOR_MASTERFILE, colorMasterFile: false });
