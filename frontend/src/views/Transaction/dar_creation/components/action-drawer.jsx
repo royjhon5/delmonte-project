@@ -1,19 +1,14 @@
 import { Drawer, useTheme } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL } from "../../../../store/actions";
+import { OPEN_CUSTOM_MODAL } from "../../../../store/actions";
 import DataContainer from "./data-container";
 
 const ActionDrawer = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const open = useSelector((state) => state.customization.openCustomModal);
-    //boolean
-  const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
-    // end here
-  const toUpdateData = useSelector((state) => state.customization.formData);
   const CloseDialog = () => {
     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
-    dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
   }
 
 

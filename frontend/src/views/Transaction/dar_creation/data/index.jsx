@@ -154,7 +154,7 @@ const DARdata = () => {
                         <form noValidate onSubmit={handleSubmit}>
                             <Grid container spacing={1}>
                                 <Grid item xs={12} md={3}>
-                                <FormControl variant="filled" fullWidth>
+                                {/* <FormControl variant="filled" fullWidth>
                                     <InputLabel>Select Employee Template</InputLabel>
                                     <FilledInput size="small"
                                         disabled
@@ -165,7 +165,8 @@ const DARdata = () => {
                                         </InputAdornment>
                                         }
                                     />
-                                    </FormControl>
+                                    </FormControl> */}
+                                    <TextField fullWidth label="Employee Template" variant="outlined" size="small" />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Location" variant="outlined" size="small" />
@@ -196,9 +197,11 @@ const DARdata = () => {
                                 </Grid>
                             
                                 <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1, justifyContent:'flex-end'}}>
-                                    {selectedRowData ? <Button variant="contained" size="small" onClick={handleSubmit}>Update</Button> : 
-                                    <Button variant="contained" size="small" onClick={handleSubmit}>Save</Button>}
-                                    <Button variant="contained" size="small" color="secondary" onClick={NewClearData}>New/Clear</Button>
+                                    <Button variant="contained" size="small" onClick={handleSubmit}>CREATE NEW DAR</Button>
+                                    {selectedRowData ? <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>UPDATE DAR</Button> : 
+                                    <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>POST DAR</Button>}
+                                    <Button variant="contained" size="small" color="secondary" onClick={handleSubmit}>PRINT DAR</Button>
+                                    <Button variant="contained" size="small" color="info" onClick={NewClearData}>New/Clear</Button>
                                 </Grid>
                             </Grid>
                         </form>                   
