@@ -12,6 +12,7 @@ import { OPEN_CUSTOM_MODAL, OPEN_DELETESWAL } from "../../../../store/actions";
 import { useDispatch } from "react-redux";
 import DeleteSwal from "../../../../components/Swal/DeleteSwal";
 import SearchIcon from '@mui/icons-material/Search';
+import ActionDrawer from "../components/action-drawer";
 
 const DARdata = () => {
   const dispatch = useDispatch();
@@ -37,24 +38,17 @@ const DARdata = () => {
 
 
   const ColumnHeader = [
-    { field: 'id', headerName: 'Chapa ID', width: 100 },
-    { field: 'isAdmin', type: 'boolean', headerName: 'Full Name', width: 200 },
-    {
-        field: 'firstName',
-        headerName: 'TIME IN',
-        width: 100,
-    },
-    {
-        field: 'lastName',
-        headerName: 'TIME OUT',
-        width: 100,
-    },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
-    },
+    { field: 'id', headerName: 'Chapa ID', width: 120 },
+    { field: 'isAdmin', headerName: 'Full Name', width: 220, },
+    { field: 'firstName', headerName: 'TIME IN', width: 100, },
+    { field: 'lastName', headerName: 'TIME OUT', width: 100, },
+    { field: 'ST', headerName: 'ST', type: 'number', width: 100, },
+    { field: 'OT', headerName: 'OT', type: 'number', width: 100, },
+    { field: 'NF', headerName: 'ND', type: 'number', width: 100, },
+    { field: 'ND-OT', headerName: 'ND-OT', type: 'number', width: 100,},
+    { field: 'Activity', headerName: 'Activity', type: 'number', width: 100, },
+    { field: 'gl', headerName: 'GL', type: 'number', width: 100, },
+    { field: 'costcenter', headerName: 'Cost Center', type: 'number', width: 100, },
   ];
 
   const columnGroupingModel = [
@@ -130,19 +124,36 @@ const DARdata = () => {
     setDescription('');
   }
 
-  const openCustomModal = () => {
+  const openActionDrawer = () => {
     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
   }
 
   return (
     <Fragment>
+    <ActionDrawer />
     <DeleteSwal maxWidth="xs" onClick={DeleteData} />
-    <Grid container spacing={2}>
-        <Grid item xs={12} md={3.5}>
+    <Grid container spacing={0.5}>
+        <Grid item xs={12} md={12}>
+            <Paper>
+            <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
+                    <Button variant="contained" size="small" onClick={openActionDrawer}>Add DAR Details</Button>
+                </Stack>
+            <CustomDataGrid 
+                columns={ColumnHeader}
+                rows={SearchFilter(constMappedData)}
+                maxHeight={450}
+                height={450}
+                slots={{ noRowsOverlay: NoData }}
+                columnGroupingModel={columnGroupingModel}
+            />
+            </Paper>
+        </Grid>
+        <Grid item xs={12} md={12}>
             <Paper sx={{padding: 2}}>
                         <form noValidate onSubmit={handleSubmit}>
                             <Grid container spacing={1}>
-                                <Grid item xs={12} md={12}>
+                                <Grid item xs={12} md={3}>
                                 <FormControl variant="filled" fullWidth>
                                     <InputLabel>Select Employee Template</InputLabel>
                                     <FilledInput size="small"
@@ -150,31 +161,31 @@ const DARdata = () => {
                                         label="Voucher Number"
                                         endAdornment={
                                         <InputAdornment position="end">
-                                            <Button size="small" variant="contained" ><SearchIcon /></Button>
+                                            <Button size="small" variant="contained" ><SearchIcon fontSize="small" /></Button>
                                         </InputAdornment>
                                         }
                                     />
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Location" variant="outlined" size="small" />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Department" variant="outlined" size="small" />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth type="date" variant="outlined" size="small" />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Shifting" variant="outlined" size="small" />
                                 </Grid>
-                                <Grid item xs={12} md={12}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Day Type" variant="outlined" size="small" />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Prepared By" variant="outlined" size="small" />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Checked By" variant="outlined" size="small" />
                                 </Grid>
                                 <Grid item xs={12} md={6}>
@@ -185,28 +196,12 @@ const DARdata = () => {
                                 </Grid>
                             
                                 <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1, justifyContent:'flex-end'}}>
-                                    {selectedRowData ? <Button variant="contained" size="large" onClick={handleSubmit}>Update</Button> : 
-                                    <Button variant="contained" size="large" onClick={handleSubmit}>Save</Button>}
-                                    <Button variant="contained" size="large" color="secondary" onClick={NewClearData}>New/Clear</Button>
+                                    {selectedRowData ? <Button variant="contained" size="small" onClick={handleSubmit}>Update</Button> : 
+                                    <Button variant="contained" size="small" onClick={handleSubmit}>Save</Button>}
+                                    <Button variant="contained" size="small" color="secondary" onClick={NewClearData}>New/Clear</Button>
                                 </Grid>
                             </Grid>
                         </form>                   
-            </Paper>
-        </Grid>
-        <Grid item xs={12} md={8.5}>
-            <Paper>
-            <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" size="small" onClick={openCustomModal}>Add Employee Template</Button>
-                </Stack>
-            <CustomDataGrid 
-                columns={ColumnHeader}
-                rows={SearchFilter(constMappedData)}
-                maxHeight={450}
-                height={450}
-                slots={{ noRowsOverlay: NoData }}
-                columnGroupingModel={columnGroupingModel}
-            />
             </Paper>
         </Grid>
     </Grid>
