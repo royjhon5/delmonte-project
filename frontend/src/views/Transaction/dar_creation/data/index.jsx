@@ -1,4 +1,4 @@
-import { Box, Button, FilledInput, FormControl, Grid, IconButton, InputAdornment, InputLabel, Paper, Stack, TextField } from "@mui/material"
+import { Button, Grid, Paper, Stack, TextField } from "@mui/material"
 import { Fragment, useState } from "react";
 import CustomDataGrid from "../../../../components/CustomDataGrid";
 import NoData from "../../../../components/CustomDataTable/NoData";
@@ -8,11 +8,12 @@ import { hookContainer } from "../../../../hooks/globalQuery";
 import http from "../../../../api/http";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { OPEN_CUSTOM_MODAL, OPEN_DELETESWAL } from "../../../../store/actions";
+import { OPEN_CUSTOM_MODAL, OPEN_CUSTOM_SEARCH_MODAL, OPEN_DELETESWAL } from "../../../../store/actions";
 import { useDispatch } from "react-redux";
 import DeleteSwal from "../../../../components/Swal/DeleteSwal";
 import SearchIcon from '@mui/icons-material/Search';
 import ActionDrawer from "../components/action-drawer";
+import SearchTemplate from "../components/SearchTemplate";
 
 const DARdata = () => {
   const dispatch = useDispatch();
@@ -128,33 +129,23 @@ const DARdata = () => {
     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
   }
 
+  const openSearchTemplate = () => {
+    dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: true });
+  }
+
+
   return (
     <Fragment>
     <ActionDrawer />
+    <SearchTemplate />
     <DeleteSwal maxWidth="xs" onClick={DeleteData} />
     <Grid container spacing={0.5}>
-        <Grid item xs={12} md={12}>
-            <Paper>
-            <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" size="small" onClick={openActionDrawer}>Add DAR Details</Button>
-                </Stack>
-            <CustomDataGrid 
-                columns={ColumnHeader}
-                rows={SearchFilter(constMappedData)}
-                maxHeight={450}
-                height={450}
-                slots={{ noRowsOverlay: NoData }}
-                columnGroupingModel={columnGroupingModel}
-            />
-            </Paper>
-        </Grid>
-        <Grid item xs={12} md={12}>
+    <Grid item xs={12} md={12}>
             <Paper sx={{padding: 2}}>
                         <form noValidate onSubmit={handleSubmit}>
                             <Grid container spacing={1}>
                                 <Grid item xs={12} md={3}>
-                                <FormControl variant="filled" fullWidth>
+                                {/* <FormControl variant="filled" fullWidth>
                                     <InputLabel>Select Employee Template</InputLabel>
                                     <FilledInput size="small"
                                         disabled
@@ -165,7 +156,8 @@ const DARdata = () => {
                                         </InputAdornment>
                                         }
                                     />
-                                    </FormControl>
+                                    </FormControl> */}
+                                    <TextField fullWidth label="Employee Template" variant="outlined" size="small" />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
                                     <TextField fullWidth label="Location" variant="outlined" size="small" />
@@ -195,15 +187,34 @@ const DARdata = () => {
                                     <TextField fullWidth label="Aprroved By" variant="outlined" size="small" />
                                 </Grid>
                             
-                                <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1, justifyContent:'flex-end'}}>
-                                    {selectedRowData ? <Button variant="contained" size="small" onClick={handleSubmit}>Update</Button> : 
-                                    <Button variant="contained" size="small" onClick={handleSubmit}>Save</Button>}
-                                    <Button variant="contained" size="small" color="secondary" onClick={NewClearData}>New/Clear</Button>
+                                <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1}}>
+                                    <Button variant="contained" size="small" onClick={openSearchTemplate}>CREATE NEW DAR</Button>
+                                    {selectedRowData ? <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>UPDATE DAR</Button> : 
+                                    <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>POST DAR</Button>}
+                                    <Button variant="contained" size="small" color="secondary" onClick={handleSubmit}>PRINT DAR</Button>
+                                    <Button variant="contained" size="small" color="info" onClick={NewClearData}>New/Clear</Button>
                                 </Grid>
                             </Grid>
                         </form>                   
             </Paper>
         </Grid>
+        <Grid item xs={12} md={12}>
+            <Paper>
+            <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
+                    <Button variant="contained" size="small" onClick={openActionDrawer}>Add DAR Details</Button>
+                </Stack>
+            <CustomDataGrid 
+                columns={ColumnHeader}
+                rows={SearchFilter(constMappedData)}
+                maxHeight={450}
+                height={450}
+                slots={{ noRowsOverlay: NoData }}
+                columnGroupingModel={columnGroupingModel}
+            />
+            </Paper>
+        </Grid>
+        
     </Grid>
     </Fragment>
   )

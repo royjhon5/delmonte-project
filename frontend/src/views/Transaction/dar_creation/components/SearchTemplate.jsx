@@ -8,13 +8,13 @@ import { OPEN_CUSTOM_SEARCH_MODAL, SEARCH_SELECTED_DATA } from "../../../../stor
 import { useState } from "react";
 import { hookContainer } from "../../../../hooks/globalQuery";
 
-const SearchHeaderModal = () => {
+const SearchTemplate = () => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomSearchModal);
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
-        
     }
+
     const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
@@ -45,9 +45,9 @@ const SearchHeaderModal = () => {
             align: 'right',
             renderCell: (params) => {
                 const SelectedRow = () => {
+                    console.log(params);
                     dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
                     dispatch({ type: SEARCH_SELECTED_DATA, searchSelectedData: params.row });
-                    // RefreshData();
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
@@ -87,8 +87,8 @@ const SearchHeaderModal = () => {
     );
 }
 
-SearchHeaderModal.propTypes = {
+SearchTemplate.propTypes = {
     RefreshData: PropTypes.func,
 }
 
-export default SearchHeaderModal;
+export default SearchTemplate;
