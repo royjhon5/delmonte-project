@@ -8,7 +8,7 @@ import { OPEN_CUSTOM_SEARCH_MODAL, SEARCH_SELECTED_DATA } from "../../../../stor
 import { useState } from "react";
 import { hookContainer } from "../../../../hooks/globalQuery";
 
-const SearchHeaderModal = () => {
+const SearchTemplate = () => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomSearchModal);
     const CloseDialog = () => {
@@ -87,8 +87,8 @@ const SearchHeaderModal = () => {
     );
 }
 
-SearchHeaderModal.propTypes = {
+SearchTemplate.propTypes = {
     RefreshData: PropTypes.func,
 }
 
-export default SearchHeaderModal;
+export default SearchTemplate;
