@@ -15,7 +15,6 @@ const rawQueryModel = {
         });
     },
 
-
     AccountToChargeJoin: async function (params) {
         return new Promise((resolve, reject) => {
             const activityJoin = " LEFT JOIN tblactivitylist a ON a.id = el.activity_id_link ";
