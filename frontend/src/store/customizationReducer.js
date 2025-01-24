@@ -33,11 +33,16 @@ export const initialState = {
     // masterfile
     openCustomModal: false,
     formData: {},
+    openCustomHeaderModal: false,
+    formHeaderData: {},
+    openCustomSearchModal: false,
+    searchSelectedData: {},
 
     // common
     confirmDelete: false,
     swalConfirmation: false,
     isUpdateForm: false,
+    isUpdateHeaderForm: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -146,6 +151,26 @@ const customizationReducer = (state = initialState, action) => {
                 ...state,
                 formData: action.formData
             };
+        case actionTypes.OPEN_CUSTOM_HEADER_MODAL:
+            return {
+                ...state,
+                openCustomHeaderModal: action.openCustomHeaderModal
+            };
+        case actionTypes.FORM_HEADER_DATA:
+            return {
+                ...state,
+                formHeaderData: action.formHeaderData
+            };
+        case actionTypes.OPEN_CUSTOM_SEARCH_MODAL:
+            return {
+                ...state,
+                openCustomSearchModal: action.openCustomSearchModal
+            };
+        case actionTypes.SEARCH_SELECTED_DATA:
+            return {
+                ...state,
+                searchSelectedData: action.searchSelectedData
+            };
 
         // COMMON
         case actionTypes.OPEN_DELETESWAL:
@@ -162,6 +187,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isUpdateForm: action.isUpdateForm
+            };
+        case actionTypes.IS_UPDATE_HEADER_FORM:
+            return {
+                ...state,
+                isUpdateHeaderForm: action.isUpdateHeaderForm
             };
 
         case actionTypes.OPEN_TRANSACTION:

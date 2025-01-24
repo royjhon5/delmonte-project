@@ -37,8 +37,13 @@ export const IS_UPDATECASHVOUCHER = '@customization/IS_UPDATECASHVOUCHER';
 //MASTERFILE
 export const OPEN_CUSTOM_MODAL = '@customization/OPEN_CUSTOM_MODAL';
 export const FORM_DATA = '@customization/FORM_DATA';
+export const OPEN_CUSTOM_HEADER_MODAL = '@customization/OPEN_CUSTOM_HEADER_MODAL';
+export const FORM_HEADER_DATA = '@customization/FORM_HEADER_DATA';
+export const OPEN_CUSTOM_SEARCH_MODAL = '@customization/OPEN_CUSTOM_SEARCH_MODAL';
+export const SEARCH_SELECTED_DATA = '@customization/SEARCH_SELECTED_DATA';
 
 // COMMON
 export const IS_UPDATE_FORM = '@customization/IS_UPDATE_FORM';
+export const IS_UPDATE_HEADER_FORM = '@customization/IS_UPDATE_HEADER_FORM';
 export const OPEN_DELETESWAL = '@customization/OPEN_DELETESWAL';
 export const OPEN_SWALCONFIRMATION = '@customization/OPEN_SWALCONFIRMATION';
