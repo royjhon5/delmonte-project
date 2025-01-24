@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../../api/http";
 import { useEffect, useState } from "react";
 
-const ActionModal = ({ RefreshData }) => {
+const DetailModal = ({ RefreshData }) => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
@@ -109,8 +109,8 @@ const ActionModal = ({ RefreshData }) => {
     );
 }
 
-ActionModal.propTypes = {
+DetailModal.propTypes = {
     RefreshData: PropTypes.func,
 }
 
-export default ActionModal;
+export default DetailModal;
