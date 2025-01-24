@@ -14,8 +14,8 @@ const SearchHeaderModal = () => {
     const open = useSelector((state) => state.customization.openCustomSearchModal);
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
+        
     }
-
     const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
@@ -46,9 +46,9 @@ const SearchHeaderModal = () => {
             align: 'right',
             renderCell: (params) => {
                 const SelectedRow = () => {
-                    console.log(params);
                     dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
                     dispatch({ type: SEARCH_SELECTED_DATA, searchSelectedData: params.row });
+                    // RefreshData();
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>

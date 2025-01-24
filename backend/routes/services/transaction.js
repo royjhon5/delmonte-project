@@ -3,11 +3,14 @@ const EmployeeTempCtrl = require('../../controller/transaction/EmployeeTemplateC
 module.exports.routes = {
     post: [
         [ '/post-employeetemplateheader', EmployeeTempCtrl.saveEmployeeTemplateHeader ],
+        [ '/post-employeetemplatedetail', EmployeeTempCtrl.saveEmployeeTemplateDetail ],
     ], 
     get: [
         [ '/get-employeetemplateheader', EmployeeTempCtrl.getEmployeeTemplateHeader ],
+        [ '/get-employeetemplatedetail', EmployeeTempCtrl.getEmployeeTemplateDetail ],
     ], 
     remove: [
         [ '/remove-employeetemplateheader', EmployeeTempCtrl.deleteEmployeeTemplateHeader ],
+        [ '/remove-employeetemplatedetail', EmployeeTempCtrl.deleteEmployeeTemplateDetail ],
     ] 
 }

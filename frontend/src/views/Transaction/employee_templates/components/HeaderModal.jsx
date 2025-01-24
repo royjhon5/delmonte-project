@@ -63,7 +63,7 @@ const HeaderModal = ({ RefreshData }) => {
     const saveNewformVariable = useMutation({
         mutationFn: async (formVariable) => {
             const response = await http.post('/post-employeetemplateheader', formVariable);
-            if(response.data.id) formVariable.id = response.data.id;
+            if (response.data.id) formVariable.id = response.data.id;
             dispatch({ type: SEARCH_SELECTED_DATA, searchSelectedData: formVariable });
         },
         onSuccess: () => {
@@ -109,6 +109,23 @@ const HeaderModal = ({ RefreshData }) => {
         setCostCenter('');
     }
 
+    const assignChange = (type, id) => {
+        if (type == 'activity') {
+            const obj = accounttochargeList.filter(item => item.id.toString() == id)[0];
+            setActivity(obj.activityname);
+            setGLCode(obj.gl_code);
+            setCostCenter(obj.costcenter);
+        }
+        if (type == 'department') {
+            const obj = departmentList.filter(item => item.id.toString() == id)[0];
+            setDepartment(obj.department_name);
+        }
+        if (type == 'group') {
+            const obj = groupList.filter(item => item.id.toString() == id)[0];
+            setGroup(obj.groupline_name);
+        }
+    }
+
     return (
         <CustomDialog
             open={open}
@@ -118,7 +135,7 @@ const HeaderModal = ({ RefreshData }) => {
             DialogContents={
                 <Box sx={{ mt: 1 }}>
                     <TextField label="Template Name" value={TName} onChange={(e) => { setTName(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={account_master_idlink} onChange={(e) => { setAccountMasterLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={account_master_idlink} onChange={(e) => { setAccountMasterLinkID(e.target.value); assignChange('activity', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {accounttochargeList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
@@ -126,7 +143,7 @@ const HeaderModal = ({ RefreshData }) => {
                             </option>
                         ))}
                     </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Department" select value={department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Department" select value={department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value); assignChange('department', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {departmentList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
@@ -134,7 +151,7 @@ const HeaderModal = ({ RefreshData }) => {
                             </option>
                         ))}
                     </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={group_idlink} onChange={(e) => { setGroupLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={group_idlink} onChange={(e) => { setGroupLinkID(e.target.value); assignChange('group', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {groupList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
