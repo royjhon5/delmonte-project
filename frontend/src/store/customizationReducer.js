@@ -37,6 +37,7 @@ export const initialState = {
     formHeaderData: {},
     openCustomSearchModal: false,
     searchSelectedData: {},
+    openNewDar: false,
 
     // common
     confirmDelete: false,
@@ -213,6 +214,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 openPHNFJPDevice: action.openPHNFJPDevice
+            };
+        case actionTypes.OPEN_NEW_DAR:
+            return {
+                ...state,
+                openNewDar: action.openNewDar
             };
         default:
             return state;

@@ -8,12 +8,13 @@ import { hookContainer } from "../../../../hooks/globalQuery";
 import http from "../../../../api/http";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { OPEN_CUSTOM_MODAL, OPEN_CUSTOM_SEARCH_MODAL, OPEN_DELETESWAL } from "../../../../store/actions";
+import { OPEN_CUSTOM_MODAL, OPEN_CUSTOM_SEARCH_MODAL, OPEN_DELETESWAL, OPEN_NEW_DAR } from "../../../../store/actions";
 import { useDispatch } from "react-redux";
 import DeleteSwal from "../../../../components/Swal/DeleteSwal";
 import SearchIcon from '@mui/icons-material/Search';
 import ActionDrawer from "../components/action-drawer";
 import SearchTemplate from "../components/SearchTemplate";
+import NewDarHeader from "../components/new-dar";
 
 const DARdata = () => {
   const dispatch = useDispatch();
@@ -133,11 +134,16 @@ const DARdata = () => {
     dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: true });
   }
 
+  const openNewDar = () => {
+    dispatch({ type: OPEN_NEW_DAR, openNewDar: true });
+  }
+
 
   return (
     <Fragment>
     <ActionDrawer />
     <SearchTemplate />
+    <NewDarHeader />
     <DeleteSwal maxWidth="xs" onClick={DeleteData} />
     <Grid container spacing={0.5}>
     <Grid item xs={12} md={12}>
@@ -188,7 +194,8 @@ const DARdata = () => {
                                 </Grid>
                             
                                 <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1}}>
-                                    <Button variant="contained" size="small" onClick={openSearchTemplate}>CREATE NEW DAR</Button>
+                                    <Button variant="contained" size="small" onClick={openSearchTemplate}>SEARCH EMPLOYEE TEMPLATE</Button>
+                                    <Button variant="contained" size="small" onClick={openNewDar} >CREATE NEW DAR</Button>
                                     {selectedRowData ? <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>UPDATE DAR</Button> : 
                                     <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>POST DAR</Button>}
                                     <Button variant="contained" size="small" color="secondary" onClick={handleSubmit}>PRINT DAR</Button>

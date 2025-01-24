@@ -1,17 +1,22 @@
 import { Box, Button, Divider, Grid, IconButton, Stack, TextField, Typography } from "@mui/material"
 import { Fragment } from "react"
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL } from "../../../../store/actions";
 import CloseIcon from "../../../../components/svg-icons/CloseIcon";
 
 
 const DataContainer = () => {
   const dispatch = useDispatch();
+    //boolean
+  const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
+    // end here
+  const toUpdateData = useSelector((state) => state.customization.formData);
   const CloseDialog = () => {
     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
     dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
   }
+  
   return (
     <Fragment>
         <Stack sx={{
