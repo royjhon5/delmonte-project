@@ -38,6 +38,7 @@ export const initialState = {
     openCustomSearchModal: false,
     searchSelectedData: {},
     openNewDar: false,
+    openSearchTemplate: false,
 
     // common
     confirmDelete: false,
@@ -219,6 +220,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 openNewDar: action.openNewDar
+            };
+        case actionTypes.OPEN_SEARCH_TEMPLATE:
+            return {
+                ...state,
+                openSearchTemplate: action.openSearchTemplate
             };
         default:
             return state;

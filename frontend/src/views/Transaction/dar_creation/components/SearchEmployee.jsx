@@ -6,39 +6,45 @@ import { useState, useEffect } from "react";
 import { hookContainer } from "../../../../hooks/globalQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
-const SearchTemplateModal = (props) => {
+const SearchEmployeeModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
     const closeCurrentModal = () => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
+    const { data: mainDataHeader } = hookContainer('/get-employee');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.TName.toLowerCase().includes(search.toLowerCase())
+            row.chapa_id.toLowerCase().includes(search.toLowerCase()) ||
+            row.lastname.toLowerCase().includes(search.toLowerCase())
         );
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-employeetemplateheader']);
+        queryClient.invalidateQueries(['/get-employee']);
     }, [openModal]);
 
     const ColumnHeader = [
         {
-            field: 'TName', headerName: 'Template Name', width: 250,
+            field: 'chapa_id', headerName: 'Chapa ID', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.TName}
+                    {params.row.chapa_id}
                 </Box>
             ),
         },
-        { field: 'activityname', headerName: 'Activity', flex: 1, },
-        { field: 'department', headerName: 'Department', flex: 1, },
-        { field: 'emp_group', headerName: 'Group', flex: 1, },
+        {
+            field: 'name', headerName: 'Name', flex: 1,
+            renderCell: (params) => (
+                <Box>
+                    {params.row.firstname + " " + params.row.middlename + " " + params.row.lastname + " " + params.row.extname}
+                </Box>
+            ),
+        },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -61,7 +67,7 @@ const SearchTemplateModal = (props) => {
         <CustomDialog
             open={openModal}
             maxWidth={'lg'}
-            DialogTitles={"Search Employee Template Header"}
+            DialogTitles={"Search Employee"}
             onClose={() => { closeCurrentModal() }}
             DialogContents={
                 <Grid container spacing={2}>
@@ -85,4 +91,4 @@ const SearchTemplateModal = (props) => {
     );
 }
 
-export default SearchTemplateModal;
+export default SearchEmployeeModal;

@@ -1,0 +1,23 @@
+ALTER TABLE `tbldarhdr`
+  DROP `department_idlink`,
+  DROP `location_idlink`;
+ALTER TABLE `tbldarhdr` ADD `templatelink_id` INT NOT NULL AFTER `recieved_by_pos`, ADD `activity` VARCHAR(150) NOT NULL AFTER `templatelink_id`, ADD `department` VARCHAR(150) NOT NULL AFTER `activity`, ADD `location` VARCHAR(150) NOT NULL AFTER `department`, ADD `group_name` VARCHAR(150) NOT NULL AFTER `location`;
+ALTER TABLE `tbldarhdr` ADD `template_name` VARCHAR(150) NOT NULL AFTER `templatelink_id`;
+ALTER TABLE `tbldarhdr`
+  DROP `total_h_st`,
+  DROP `total_h_ot`,
+  DROP `total_h_nd`,
+  DROP `total_h_ndot`;
+ALTER TABLE `tbldarhdr` ADD `checked_by` VARCHAR(150) NOT NULL AFTER `recieved_by_pos`, ADD `checked_by_pos` VARCHAR(150) NOT NULL AFTER `checked_by`, ADD `confirmed_by` VARCHAR(150) NOT NULL AFTER `checked_by_pos`, ADD `confirmed_by_pos` VARCHAR(150) NOT NULL AFTER `confirmed_by`;
+ALTER TABLE `tbldarhdr` DROP `location`;
+ALTER TABLE `tbldarhdr` ADD `locationlink_id` INT NOT NULL AFTER `day_type_idlink`;
+ALTER TABLE `tbldarhdr` CHANGE `recieved_by` `approved_by` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, CHANGE `recieved_by_pos` `approved_by_pos` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `tbldardtl` ADD `gllink_id` INT NOT NULL AFTER `ndot`;
+ALTER TABLE `tbldardtl` ADD `costcenterlink_id` INT NOT NULL AFTER `gllink_id`;
+ALTER TABLE `tbldardtl` ADD `activitylink_id` INT NOT NULL AFTER `cost_center`, ADD `activity` VARCHAR(150) NOT NULL AFTER `activitylink_id`;
+ALTER TABLE `tbldardtl` CHANGE `time_in` `time_in` VARCHAR(4) NOT NULL COMMENT 'military time', CHANGE `time_out` `time_out` VARCHAR(4) NOT NULL COMMENT 'military time';
+ALTER TABLE `tbldardtl` CHANGE `activitylink_id` `activitylink_id` INT(11) NOT NULL COMMENT 'account to charge id';
+ALTER TABLE `tbldardtl`
+  DROP `gllink_id`,
+  DROP `costcenterlink_id`;
+ALTER TABLE `tbldardtl` CHANGE `activitylink_id` `activitylink_id` INT(11) NOT NULL COMMENT 'account to charge id | account_master_idlink';
