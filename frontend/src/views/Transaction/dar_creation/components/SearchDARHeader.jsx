@@ -6,39 +6,43 @@ import { useState, useEffect } from "react";
 import { hookContainer } from "../../../../hooks/globalQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
-const SearchTemplateModal = (props) => {
+const SearchDARHeaderModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
     const closeCurrentModal = () => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
+    const { data: mainDataHeader } = hookContainer('/get-darheader');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.TName.toLowerCase().includes(search.toLowerCase())
+            row.activity.toLowerCase().includes(search.toLowerCase()) ||
+            row.location_name.toLowerCase().includes(search.toLowerCase()) ||
+            row.group_name.toLowerCase().includes(search.toLowerCase()) ||
+            row.department.toLowerCase().includes(search.toLowerCase())
         );
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-employeetemplateheader']);
+        queryClient.invalidateQueries(['/get-darheader']);
     }, [openModal]);
 
     const ColumnHeader = [
         {
-            field: 'TName', headerName: 'Template Name', width: 250,
+            field: 'activity', headerName: 'Activity', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.TName}
+                    {params.row.activity}
                 </Box>
             ),
         },
-        { field: 'activityname', headerName: 'Activity', flex: 1, },
         { field: 'department', headerName: 'Department', flex: 1, },
-        { field: 'emp_group', headerName: 'Group', flex: 1, },
+        { field: 'location_name', headerName: 'Location', flex: 1, },
+        { field: 'group_name', headerName: 'Group', flex: 1, },
+        { field: 'dar_status', headerName: 'Status', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -85,4 +89,4 @@ const SearchTemplateModal = (props) => {
     );
 }
 
-export default SearchTemplateModal;
+export default SearchDARHeaderModal;

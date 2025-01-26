@@ -42,6 +42,7 @@ export const FORM_HEADER_DATA = '@customization/FORM_HEADER_DATA';
 export const OPEN_CUSTOM_SEARCH_MODAL = '@customization/OPEN_CUSTOM_SEARCH_MODAL';
 export const SEARCH_SELECTED_DATA = '@customization/SEARCH_SELECTED_DATA';
 export const OPEN_NEW_DAR = '@customization/OPEN_NEW_DAR';
+// export const OPEN_NEW_DAR = '@customization/OPEN_NEW_DAR';
 
 // COMMON
 export const IS_UPDATE_FORM = '@customization/IS_UPDATE_FORM';

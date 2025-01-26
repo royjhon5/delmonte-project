@@ -1,230 +1,320 @@
-import { Button, Grid, Paper, Stack, TextField } from "@mui/material"
-import { Fragment, useState } from "react";
+import { Box, Button, Grid, Paper, Stack, TextField, IconButton } from "@mui/material"
+import { Fragment, useState, useCallback } from "react";
 import CustomDataGrid from "../../../../components/CustomDataGrid";
 import NoData from "../../../../components/CustomDataTable/NoData";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { hookContainer } from "../../../../hooks/globalQuery";
 import http from "../../../../api/http";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { OPEN_CUSTOM_MODAL, OPEN_CUSTOM_SEARCH_MODAL, OPEN_DELETESWAL, OPEN_NEW_DAR } from "../../../../store/actions";
+import { OPEN_DELETESWAL, OPEN_SWALCONFIRMATION } from "../../../../store/actions";
 import { useDispatch } from "react-redux";
 import DeleteSwal from "../../../../components/Swal/DeleteSwal";
-import SearchIcon from '@mui/icons-material/Search';
-import ActionDrawer from "../components/action-drawer";
-import SearchTemplate from "../components/SearchTemplate";
-import NewDarHeader from "../components/new-dar";
+import CloseCancelSubmitSwal from "../../../../components/Swal/CloseCancelSubmitSwal";
+import NewDarHeader from "../components/NewDARHeader";
+import SearchDARHeaderModal from "../components/SearchDARHeader";
+import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
+import AddDARDetail from "../components/AddDARDetail.jsx";
 
 const DARdata = () => {
-  const dispatch = useDispatch();
-  const [search, setSearch] = useState('');
-  const queryClient = useQueryClient();
-  const { data: userData } = hookContainer('/get-users');
-  const [selectedRowData, setSelectedRowData] = useState(null);
-  const [selectedID, setSelectedID] = useState(0);
-  const [UserName, setUserName] = useState('');
-  const [userLevel, setUserLevel] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [descripTion, setDescription] = useState('');
-  const constMappedData = Array.isArray(userData) ? userData.map((row) => {
-    return { ...row, id: row.LoginID  };
-  }) : [];
-  const SearchFilter = (rows) => {
-    return rows.filter(row =>
-        row.Username.toLowerCase().includes(search.toLowerCase()) || 
-        row.UserLevel.toLowerCase().includes(search.toLowerCase())
-    );
-  };
+    const [loadSaving, setLoadSaving] = useState(false);
+    const dispatch = useDispatch();
 
-
-
-  const ColumnHeader = [
-    { field: 'id', headerName: 'Chapa ID', width: 120 },
-    { field: 'isAdmin', headerName: 'Full Name', width: 220, },
-    { field: 'firstName', headerName: 'TIME IN', width: 100, },
-    { field: 'lastName', headerName: 'TIME OUT', width: 100, },
-    { field: 'ST', headerName: 'ST', type: 'number', width: 100, },
-    { field: 'OT', headerName: 'OT', type: 'number', width: 100, },
-    { field: 'NF', headerName: 'ND', type: 'number', width: 100, },
-    { field: 'ND-OT', headerName: 'ND-OT', type: 'number', width: 100,},
-    { field: 'Activity', headerName: 'Activity', type: 'number', width: 100, },
-    { field: 'gl', headerName: 'GL', type: 'number', width: 100, },
-    { field: 'costcenter', headerName: 'Cost Center', type: 'number', width: 100, },
-  ];
-
-  const columnGroupingModel = [
-    {
-      groupId: 'internal_data',
-      headerName: '',
-      description: '',
-      children: [{ field: 'id' }, { field: 'isAdmin' }],
-    },
-    {
-      groupId: 'naming',
-      headerName: 'TIME',
-      freeReordering: true,
-      children: [{ field: 'lastName' }, { field: 'firstName' }],
-    },
-  ];
-
-
-  const handleSubmit = async () => {
-    const UserRegistrationData = { 
-      LoginID: selectedRowData ? selectedRowData.LoginID : 0,
-      Username: UserName,
-      UserLevel: userLevel, 
-      FullName: fullName,
-      Description: descripTion,
+    // header
+    const initialDataVariableHeader = {
+        id: "",
+        soa_no_link: "",
+        day_type_idlink: "",
+        locationlink_id: "",
+        xDate: "",
+        shift: "",
+        dar_status: "",
+        prepared_by: "",
+        prepared_by_pos: "",
+        approved_by: "",
+        approved_by_pos: "",
+        checked_by: "",
+        checked_by_pos: "",
+        confirmed_by: "",
+        confirmed_by_pos: "",
+        templatelink_id: "",
+        template_name: "",
+        activity: "",
+        department: "",
+        group_name: "",
     };
-    try {
-      await UserData.mutateAsync(UserRegistrationData);
-    } catch (error) {
-      console.error('Error saving cash voucher:', error);
-      toast.error('Failed to save cash voucher.');
+    const [dataVariableHeader, setDataVariableHeader] = useState(initialDataVariableHeader);
+
+    const updateDARHeader = () => {
+        setPassDataHeader(dataVariableHeader);
+        setOpenModal(true);
     }
-  };
-  const UserData = useMutation({
-    mutationFn: (UserRegistrationData) => http.post('/user_registration', UserRegistrationData),
-    onSuccess: () => {
-        queryClient.invalidateQueries(['/get-users']);
-        toast.success('New user has been saved.');
-        setSelectedRowData(null);
-        setUserName('');
-        setUserLevel('');
-        setFullName('');
-        setDescription('');
-    },
-    onError: (error) => {
-      toast.error(error)
+
+    const [deleteID, setDeleteID] = useState('');
+    const [deleteType, setDeleteType] = useState('');
+    const deleteData = async (id = 0) => {
+        if (id == 0) {
+            // header
+            if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+            setDeleteID(dataVariableHeader.id);
+            setDeleteType('header');
+        } else {
+            setDeleteID(id);
+            setDeleteType('detail');
+        }
+        dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
     }
-  });
-
-  const selectToDelete = (data) => {
-    setSelectedID(data);
-    dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
-  }
-
-  const deleteData = useMutation({
-    mutationFn: () => http.delete(`/delete-user?LoginID=${selectedID}`),
-    onSuccess: () => {
-      toast.success('Data has been deleted successfully.');
-      queryClient.invalidateQueries(['/get-users']);
-      dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
+    const confirmDelete = async () => {
+        setLoadSaving("Deleting...");
+        if (deleteType == 'header') {
+            const response = await http.delete(`/remove-darheader?id=${deleteID}`);
+            if (response.data.success) {
+                toast.success(response.data.message);
+                clearData();
+            } else toast.error(response.data.message);
+        } else {
+            const response = await http.delete(`/remove-dardetail?id=${deleteID}`);
+            if (response.data.success) {
+                toast.success(response.data.message);
+                loadDARDetail(dataVariableHeader.id);
+            } else toast.error(response.data.message);
+        }
+        dispatch({ type: OPEN_DELETESWAL, confirmDelete: false });
+        setLoadSaving(false);
     }
-  });
-  
-  const DeleteData = () => {
-    deleteData.mutate(selectedID);
-  };
 
-  const NewClearData = () => {
-    setSelectedRowData(null);
-    setUserName('');
-    setUserLevel('');
-    setFullName('');
-    setDescription('');
-  }
+    const postDarHeader = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        dispatch({ type: OPEN_SWALCONFIRMATION, swalConfirmation: true });
+    }
+    const confirmPostDarHeader = async () => {
+        setLoadSaving("Posting...");
+        const response = await http.post('/post-postdarheader', { id: dataVariableHeader.id });
+        if (response.data.success) {
+            toast.success(response.data.message);
+            setDataVariableHeader(prevState => ({
+                ...prevState,
+                dar_status: "POSTED",
+            }));
+        } else toast.error(response.data.message);
+        setLoadSaving(false);
+        dispatch({ type: OPEN_SWALCONFIRMATION, swalConfirmation: false });
+    }
 
-  const openActionDrawer = () => {
-    dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
-  }
+    // detail
+    const [constMappedData, setConstMappedData] = useState([]);
+    const loadDARDetail = useCallback(async (headerID = 0) => {
+        const response = await http.get(`/get-dardetail?header_id=${headerID}`);
+        setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
+            return { ...row, id: row.id }
+        }) : []);
+    }, []);
+    const [search, setSearch] = useState('');
+    const SearchFilter = (rows) => {
+        return rows.filter(row =>
+            row.ChapaID.toLowerCase().includes(search.toLowerCase()) ||
+            row.emp_lname.toLowerCase().includes(search.toLowerCase())
+        );
+    };
 
-  const openSearchTemplate = () => {
-    dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: true });
-  }
+    const ColumnHeader = [
+        {
+            field: 'ChapaID', headerName: 'Chapa ID', width: 150,
+            renderCell: (params) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {params.row.ChapaID}
+                </Box>
+            ),
+        },
+        {
+            field: 'fullname', headerName: 'Name', width: 250,
+            renderCell: (params) => (
+                <Box>
+                    {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
+                </Box>
+            ),
+        },
+        { field: 'activity', headerName: 'Activity', flex: 1, },
+        { field: 'time_in', headerName: 'Time In', flex: 1, },
+        { field: 'time_out', headerName: 'Time Out', flex: 1, },
+        { field: 'st', headerName: 'ST', flex: 1, },
+        { field: 'ot', headerName: 'OT', flex: 1, },
+        { field: 'nd', headerName: 'ND', flex: 1, },
+        { field: 'ndot', headerName: 'NDOT', flex: 1, },
+        { field: 'gl', headerName: 'GL Code', flex: 1, },
+        { field: 'cost_center', headerName: 'Cost Center', flex: 1, },
+        {
+            field: "action", headerAlign: 'right',
+            headerName: '',
+            width: 150,
+            align: 'right',
+            renderCell: (params) => {
+                const SelectedRow = () => {
+                    setPassDataDetail(params.row);
+                    setOpenModalDARDetail(true);
+                }
+                const selectToDelete = () => {
+                    deleteData(params.row.id);
+                    dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
+                }
+                return (
+                    <Box sx={{ paddingRight: 1 }}>
+                        <IconButton color="primary" size="small" onClick={SelectedRow}>
+                            <EditIcon fontSize="inherit" />
+                        </IconButton>
+                        <IconButton color="error" size="small" onClick={() => selectToDelete()}>
+                            <DeleteIcon fontSize="inherit" />
+                        </IconButton>
+                    </Box>
+                )
+            }
+        }
+    ];
 
-  const openNewDar = () => {
-    dispatch({ type: OPEN_NEW_DAR, openNewDar: true });
-  }
+    const addDARDetail = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        setOpenModalDARDetail(true);
+        setPassDataDetail(prevState => ({
+            ...prevState,
+            dar_idlink: dataVariableHeader.id,
+        }));
+    }
 
+    // modal
+    const [openModal, setOpenModal] = useState(false);
+    const [passDataHeader, setPassDataHeader] = useState({});
+    async function modalClose(params) {
+        setOpenModal(false);
+        setPassDataHeader({});
+        if (params) {
+            setDataVariableHeader(params);
+            loadDARDetail(params.id);
+        }
+    }
 
-  return (
-    <Fragment>
-    <ActionDrawer />
-    <SearchTemplate />
-    <NewDarHeader />
-    <DeleteSwal maxWidth="xs" onClick={DeleteData} />
-    <Grid container spacing={0.5}>
-    <Grid item xs={12} md={12}>
-            <Paper sx={{padding: 2}}>
-                        <form noValidate onSubmit={handleSubmit}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={12} md={3}>
-                                {/* <FormControl variant="filled" fullWidth>
-                                    <InputLabel>Select Employee Template</InputLabel>
-                                    <FilledInput size="small"
-                                        disabled
-                                        label="Voucher Number"
-                                        endAdornment={
-                                        <InputAdornment position="end">
-                                            <Button size="small" variant="contained" ><SearchIcon fontSize="small" /></Button>
-                                        </InputAdornment>
-                                        }
-                                    />
-                                    </FormControl> */}
-                                    <TextField fullWidth label="Employee Template" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Location" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Department" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth type="date" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Shifting" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Day Type" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Prepared By" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Checked By" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Confirmed By" variant="outlined" size="small" />
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Aprroved By" variant="outlined" size="small" />
-                                </Grid>
-                            
-                                <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1}}>
-                                    <Button variant="contained" size="small" onClick={openSearchTemplate}>SEARCH EMPLOYEE TEMPLATE</Button>
-                                    <Button variant="contained" size="small" onClick={openNewDar} >CREATE NEW DAR</Button>
-                                    {selectedRowData ? <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>UPDATE DAR</Button> : 
-                                    <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>POST DAR</Button>}
-                                    <Button variant="contained" size="small" color="secondary" onClick={handleSubmit}>PRINT DAR</Button>
-                                    <Button variant="contained" size="small" color="info" onClick={NewClearData}>New/Clear</Button>
-                                </Grid>
-                            </Grid>
-                        </form>                   
-            </Paper>
-        </Grid>
-        <Grid item xs={12} md={12}>
-            <Paper>
-            <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" size="small" onClick={openActionDrawer}>Add DAR Details</Button>
-                </Stack>
-            <CustomDataGrid 
-                columns={ColumnHeader}
-                rows={SearchFilter(constMappedData)}
-                maxHeight={450}
-                height={450}
-                slots={{ noRowsOverlay: NoData }}
-                columnGroupingModel={columnGroupingModel}
+    const [openModalSearchDARHeader, setOpenModalSearchDARHeader] = useState(false);
+    async function modalCloseSearchDARHeader(params) {
+        setOpenModalSearchDARHeader(false);
+        if (params) {
+            setDataVariableHeader(params);
+            loadDARDetail(params.id);
+        }
+    }
+
+    const [openModalDARDetail, setOpenModalDARDetail] = useState(false);
+    const [passDataDetail, setPassDataDetail] = useState({});
+    async function modalCloseDARDetail(params) {
+        setOpenModalDARDetail(false);
+        setPassDataDetail({});
+        if (params) {
+            loadDARDetail(dataVariableHeader.id);
+        }
+    }
+
+    const clearData = async (type = 'all') => {
+        setConstMappedData([]);
+        setDataVariableHeader(initialDataVariableHeader);
+    }
+
+    return (
+        <Fragment>
+            {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
+            <DeleteSwal maxWidth="xs" onClick={confirmDelete} />
+            <CloseCancelSubmitSwal maxWidth="xs" onClick={confirmPostDarHeader} confirmTitle={"Are you sure that the entered data is correct and you want to execute post?"} />
+            <NewDarHeader
+                openModal={openModal}
+                onCloseModal={modalClose}
+                passedData={passDataHeader}
             />
-            </Paper>
-        </Grid>
-        
-    </Grid>
-    </Fragment>
-  )
+            <SearchDARHeaderModal
+                openModal={openModalSearchDARHeader}
+                onCloseModal={modalCloseSearchDARHeader}
+            />
+            <AddDARDetail
+                openModal={openModalDARDetail}
+                onCloseModal={modalCloseDARDetail}
+                passedData={passDataDetail}
+            />
+            <Grid container spacing={0.5}>
+                <Grid item xs={12} md={12}>
+                    <Paper sx={{ padding: 2 }}>
+                        {/* <form noValidate onSubmit={handleSubmit}> */}
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Employee Template" value={dataVariableHeader.activity} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Location" value={dataVariableHeader.locationlink_id} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Department" value={dataVariableHeader.department} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth type="date" value={dataVariableHeader.xDate} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Shifting" value={dataVariableHeader.shift} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Day Type" value={dataVariableHeader.day_type_idlink} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Group Name" value={dataVariableHeader.group_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Prepared By" value={dataVariableHeader.prepared_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Checked By" value={dataVariableHeader.checked_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Confirmed By" value={dataVariableHeader.confirmed_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Aprroved By" value={dataVariableHeader.approved_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="STATUS" value={dataVariableHeader.dar_status} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+
+                            <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
+                                <Button variant="contained" size="small" onClick={() => { setOpenModalSearchDARHeader(true) }}>SEARCH DAR HEADER</Button>
+                                <Button variant="contained" size="small" onClick={() => { setOpenModal(true); }} >CREATE NEW DAR</Button>
+                                {dataVariableHeader.id && dataVariableHeader.dar_status == "ACTIVE" ?
+                                    <>
+                                        <Button variant="contained" size="small" color="warning" onClick={() => { updateDARHeader() }}>UPDATE DAR</Button>
+                                        <Button variant="contained" size="small" color="error" onClick={() => { deleteData() }}>DELETE DAR</Button>
+                                        <Button variant="contained" size="small" color="warning" onClick={() => { postDarHeader() }}>POST DAR</Button>
+                                    </>
+                                    : ""}
+                                <Button variant="contained" size="small" color="secondary" onClick={() => { setOpenModal(true) }}>PRINT DAR</Button>
+                                <Button variant="contained" size="small" color="info" onClick={clearData}>New/Clear</Button>
+                            </Grid>
+                        </Grid>
+                        {/* </form> */}
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    <Paper>
+                        <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
+                            <Box sx={{ display: 'flex', gap: '5px' }}>
+                                <Button variant="contained" size="small" onClick={() => { addDARDetail() }}>Add DAR Details</Button>
+                                <Button variant="contained" size="small" color="warning" onClick={() => { addDARDetail() }}>Transfer Employee</Button>
+                            </Box>
+                        </Stack>
+                        <CustomDataGrid
+                            columns={ColumnHeader}
+                            rows={SearchFilter(constMappedData)}
+                            maxHeight={450}
+                            height={450}
+                            slots={{ noRowsOverlay: NoData }}
+                        />
+                    </Paper>
+                </Grid>
+
+            </Grid>
+        </Fragment>
+    )
 }
 
 export default DARdata

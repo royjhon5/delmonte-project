@@ -3,7 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useTheme } f
 import { useDispatch, useSelector } from 'react-redux';
 import { OPEN_SWALCONFIRMATION } from '../../store/actions';
 
-const ConfirmationSwal = ({maxWidth, onClick}) => {
+const ConfirmationSwal = ({maxWidth, onClick, confirmTitle}) => {
   const theme = useTheme();
   const open = useSelector((state) => state.customization.swalConfirmation);
   const ChangeEnv = useSelector((state) => state.customization.changeSwalEnv);
@@ -32,7 +32,7 @@ const ConfirmationSwal = ({maxWidth, onClick}) => {
         padding: '0px 24px'
       }}
       >
-        {ChangeEnv ? 'Are you sure you want to CANCEL this transaction?' : 'Are you sure you want to CLOSE this transaction?'}
+        {confirmTitle ? confirmTitle : 'Are you sure?'}
       </DialogContent>
       <DialogActions 
             sx={{ 
@@ -51,6 +51,7 @@ const ConfirmationSwal = ({maxWidth, onClick}) => {
 ConfirmationSwal.propTypes = {
   maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
   onClick: PropTypes.func,
+  confirmTitle: PropTypes.func,
 }
 
 export default ConfirmationSwal
