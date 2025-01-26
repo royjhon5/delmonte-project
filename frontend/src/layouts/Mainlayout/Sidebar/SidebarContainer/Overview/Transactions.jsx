@@ -27,6 +27,7 @@ const Transactions = () => {
 
   const navigateEmployeeTemplates = () => { navigate('/dashboard/employee-templates')}
   const navigateDarPrepartion = () => { navigate('/dashboard/dar-preparation')}
+  const navigateSoaCreation = () => { navigate('/dashboard/soa-creation')}
 
   const openCollapseBtn = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
@@ -99,6 +100,8 @@ const Transactions = () => {
         />
         <CustomMenuButton 
           label="SOA Creation"
+          activePath="/dashboard/soa-creation"
+          onClick={navigateSoaCreation}
         />
         </>
       }
@@ -120,6 +123,8 @@ const Transactions = () => {
         />
         <ListBtn
           label="SOA Creation"
+          activePath="/dashboard/soa-creation"
+          onClick={navigateSoaCreation}
         />
     </Collapsebtn>
     </>
