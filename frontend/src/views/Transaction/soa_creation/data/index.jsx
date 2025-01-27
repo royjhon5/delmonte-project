@@ -40,33 +40,22 @@ const DARdata = () => {
 
 
   const ColumnHeader = [
-    { field: 'id', headerName: 'Chapa ID', width: 120 },
-    { field: 'isAdmin', headerName: 'Full Name', width: 220, },
-    { field: 'firstName', headerName: 'TIME IN', width: 100, },
-    { field: 'lastName', headerName: 'TIME OUT', width: 100, },
-    { field: 'ST', headerName: 'ST', type: 'number', width: 100, },
-    { field: 'OT', headerName: 'OT', type: 'number', width: 100, },
-    { field: 'NF', headerName: 'ND', type: 'number', width: 100, },
-    { field: 'ND-OT', headerName: 'ND-OT', type: 'number', width: 100,},
-    { field: 'Activity', headerName: 'Activity', type: 'number', width: 100, },
-    { field: 'gl', headerName: 'GL', type: 'number', width: 100, },
-    { field: 'costcenter', headerName: 'Cost Center', type: 'number', width: 100, },
+    { field: 'activity', headerName: 'Activity', width: 120 },
+    { field: 'GL', headerName: 'GL', width: 100, },
+    { field: 'Cost Center', headerName: 'Cost Center', width: 100, },
+    { field: 'ST HRS', headerName: 'ST HRS', width: 100, },
+    { field: 'OT HRS', headerName: 'OT HRS', type: 'number', width: 100, },
+    { field: 'ND HRS', headerName: 'ND HRS', type: 'number', width: 100, },
+    { field: 'ND-OT HRS', headerName: 'ND-OT HRS', type: 'number', width: 100, },
+    { field: 'ST RATES', headerName: 'ND-OT', type: 'number', width: 100,},
+    { field: 'ST AMNT', headerName: 'ST AMNT', type: 'number', width: 100, },
+    { field: 'OT AMNT', headerName: 'OT AMNT', type: 'number', width: 100, },
+    { field: 'ND AMNT', headerName: 'ND AMNT', type: 'number', width: 100, },
+    { field: 'ND-OT AMNT', headerName: 'ND-OT AMNT', type: 'number', width: 130, },
+    { field: 'TOTAL AMOUNT', headerName: 'TOTAL AMOUNT', type: 'number', width: 130, },
+    { field: 'HC', headerName: 'HC', type: 'number', width: 100, },
   ];
 
-  const columnGroupingModel = [
-    {
-      groupId: 'internal_data',
-      headerName: '',
-      description: '',
-      children: [{ field: 'id' }, { field: 'isAdmin' }],
-    },
-    {
-      groupId: 'naming',
-      headerName: 'TIME',
-      freeReordering: true,
-      children: [{ field: 'lastName' }, { field: 'firstName' }],
-    },
-  ];
 
 
   const handleSubmit = async () => {
@@ -151,55 +140,47 @@ const DARdata = () => {
                         <form noValidate onSubmit={handleSubmit}>
                             <Grid container spacing={1}>
                                 <Grid item xs={12} md={3}>
-                                {/* <FormControl variant="filled" fullWidth>
-                                    <InputLabel>Select Employee Template</InputLabel>
-                                    <FilledInput size="small"
-                                        disabled
-                                        label="Voucher Number"
-                                        endAdornment={
-                                        <InputAdornment position="end">
-                                            <Button size="small" variant="contained" ><SearchIcon fontSize="small" /></Button>
-                                        </InputAdornment>
-                                        }
-                                    />
-                                    </FormControl> */}
-                                    <TextField fullWidth label="Employee Template" variant="outlined" size="small" />
+                                    <TextField fullWidth label="SOA Number" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Location" variant="outlined" size="small" />
+                                    <TextField fullWidth label="Location" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Department" variant="outlined" size="small" />
+                                    <TextField fullWidth label="Department" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth type="date" variant="outlined" size="small" />
+                                    <TextField fullWidth type="date" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Shifting" variant="outlined" size="small" />
+                                    <TextField fullWidth label="Period Covered" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Day Type" variant="outlined" size="small" />
+                                    <TextField fullWidth label="Day Type" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Prepared By" variant="outlined" size="small" />
+                                    <TextField fullWidth label="Prepared By" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                                 <Grid item xs={12} md={3}>
-                                    <TextField fullWidth label="Checked By" variant="outlined" size="small" />
+                                    <TextField fullWidth label="Checked By" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Confirmed By" variant="outlined" size="small" />
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Confirmed By" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <TextField fullWidth label="Aprroved By" variant="outlined" size="small" />
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="Aprroved By" variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                </Grid>
+                                <Grid item xs={12} md={3}>
+                                    <TextField fullWidth label="STATUS" variant="outlined" size="small" inputProps={{ readOnly: true }} />
                                 </Grid>
                             
                                 <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1}}>
-                                    <Button variant="contained" size="small" onClick={openSearchTemplate}>SEARCH EMPLOYEE TEMPLATE</Button>
-                                    <Button variant="contained" size="small" onClick={openNewDar} >CREATE NEW DAR</Button>
-                                    {selectedRowData ? <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>UPDATE DAR</Button> : 
-                                    <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>POST DAR</Button>}
-                                    <Button variant="contained" size="small" color="secondary" onClick={handleSubmit}>PRINT DAR</Button>
-                                    <Button variant="contained" size="small" color="info" onClick={NewClearData}>New/Clear</Button>
+                                    <Button variant="contained" size="small" onClick={openSearchTemplate}>SEARCH POSTED DAR TEMPLATES</Button>
+                                    <Button variant="contained" size="small" onClick={openNewDar} >CREATE NEW SOA</Button>
+                                    {selectedRowData ? <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>UPDATE SOA</Button> : 
+                                    <Button variant="contained" size="small" color="warning" onClick={handleSubmit}>POST SOA</Button>}
+                                    <Button variant="contained" size="small" color="error" onClick={handleSubmit}>SUBMIT SOA</Button>
+                                    <Button variant="contained" size="small" color="secondary" onClick={handleSubmit}>PRINT SOA</Button>
+                                    <Button variant="contained" size="small" color="info" onClick={NewClearData}>NEW/CLEAR</Button>
                                 </Grid>
                             </Grid>
                         </form>                   
@@ -209,7 +190,7 @@ const DARdata = () => {
             <Paper>
             <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" size="small" onClick={openActionDrawer}>Add DAR Details</Button>
+                    <Button variant="contained" size="small" onClick={openActionDrawer}>ADD SOA DETAILS</Button>
                 </Stack>
             <CustomDataGrid 
                 columns={ColumnHeader}
@@ -217,7 +198,6 @@ const DARdata = () => {
                 maxHeight={450}
                 height={450}
                 slots={{ noRowsOverlay: NoData }}
-                columnGroupingModel={columnGroupingModel}
             />
             </Paper>
         </Grid>
