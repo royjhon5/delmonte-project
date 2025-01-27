@@ -42,6 +42,7 @@ const SearchDARHeaderModal = (props) => {
         { field: 'department', headerName: 'Department', flex: 1, },
         { field: 'location_name', headerName: 'Location', flex: 1, },
         { field: 'group_name', headerName: 'Group', flex: 1, },
+        { field: 'xDate', headerName: 'Date', flex: 1, },
         { field: 'dar_status', headerName: 'Status', flex: 1, },
         {
             field: "action", headerAlign: 'right',

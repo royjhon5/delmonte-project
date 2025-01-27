@@ -19,6 +19,27 @@ module.exports.getDARHeader = async function (req, res) {
 	}
 }
 
+module.exports.getDARHeaderAvailable = async function (req, res) {
+	const data = req.query
+	const daytype_name = "(SELECT a.dt_name FROM tbldaytype a WHERE a.id = tbldarhdr.day_type_idlink LIMIT 1) as daytype_name";
+	const location_name = "(SELECT a.location_name FROM tbllocationlist a WHERE a.id = tbldarhdr.locationlink_id LIMIT 1) as location_name";
+	var params = {
+		fields: ["*," + daytype_name + "," + location_name],
+		tableName: "tbldarhdr",
+		where: ["id <> ?", "xDate = ?", "dar_status = ?"],
+		whereValue: [data.header_id, data.date, "ACTIVE"]
+	}
+	try {
+		await select(params).then(function (response) {
+			if (response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 module.exports.saveDARHeader = async function (req, res) {
 	const data = req.body.dataVariable
 	var params = {
@@ -137,6 +158,25 @@ module.exports.saveDARDetail = async function (req, res) {
 	}
 }
 
+module.exports.transferDARDetail = async function (req, res) {
+	const data = req.body
+	var params = {
+		tableName: "tbldardtl",
+		fieldValue: {
+			ChapaID: data.chapa_id,
+			dar_idlink: data.dar_header_id,
+		}
+	}
+	try {
+		await update(params).then(async function (response) {
+			res.status(200).json(response);
+		})
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 module.exports.getDARDetail = async function (req, res) {
 	const data = req.query
 	var params = {
@@ -163,6 +203,9 @@ module.exports.deleteDARDetail = async function (req, res) {
 		tableName: "tbldardtl",
 		where: ["id = ?"],
 		whereValue: [data.id],
+	}
+	if(data.group){
+		params.groupBy(["ChapaID"]);
 	}
 	try {
 		var result = remove(params);

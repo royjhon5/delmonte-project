@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import SearchTemplateModal from "./SearchTemplate.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
+import dayjs from 'dayjs';
 
 const NewDarHeader = (props) => {
     const { openModal, onCloseModal, passedData } = props;
@@ -24,7 +25,7 @@ const NewDarHeader = (props) => {
         soa_no_link: "",
         day_type_idlink: "",
         locationlink_id: "",
-        xDate: "",
+        xDate: dayjs().format('YYYY-MM-DD'),
         shift: "",
         dar_status: "ACTIVE",
         prepared_by: "",

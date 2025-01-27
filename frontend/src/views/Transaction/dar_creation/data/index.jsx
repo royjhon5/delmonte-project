@@ -14,6 +14,7 @@ import NewDarHeader from "../components/NewDARHeader";
 import SearchDARHeaderModal from "../components/SearchDARHeader";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import AddDARDetail from "../components/AddDARDetail.jsx";
+import TransferEmployeeModal from "../components/TransferEmployee.jsx";
 
 const DARdata = () => {
     const [loadSaving, setLoadSaving] = useState(false);
@@ -179,6 +180,12 @@ const DARdata = () => {
         }));
     }
 
+    const transferEmployee = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        setOpenModalTransferEmployee(true);
+        setPassDataTransferEmployee({id: dataVariableHeader.id, date: dataVariableHeader.xDate}); // pass header id to get detail inside modal
+    }
+
     // modal
     const [openModal, setOpenModal] = useState(false);
     const [passDataHeader, setPassDataHeader] = useState({});
@@ -210,6 +217,16 @@ const DARdata = () => {
         }
     }
 
+    const [openModalTransferEmployee, setOpenModalTransferEmployee] = useState(false);
+    const [passDataTransferEmployee, setPassDataTransferEmployee] = useState({});
+    async function modalCloseDARTransferEmployee(params) {
+        setOpenModalTransferEmployee(false);
+        setPassDataTransferEmployee({});
+        if (params) {
+            loadDARDetail(dataVariableHeader.id);
+        }
+    }
+
     const clearData = async (type = 'all') => {
         setConstMappedData([]);
         setDataVariableHeader(initialDataVariableHeader);
@@ -219,7 +236,7 @@ const DARdata = () => {
         <Fragment>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
             <DeleteSwal maxWidth="xs" onClick={confirmDelete} />
-            <CloseCancelSubmitSwal maxWidth="xs" onClick={confirmPostDarHeader} confirmTitle={"Are you sure that the entered data is correct and you want to execute post?"} />
+            <CloseCancelSubmitSwal maxWidth="xs" onClick={confirmPostDarHeader} confirmTitle="Are you sure that the entered data is correct and you want to execute post?" />
             <NewDarHeader
                 openModal={openModal}
                 onCloseModal={modalClose}
@@ -233,6 +250,11 @@ const DARdata = () => {
                 openModal={openModalDARDetail}
                 onCloseModal={modalCloseDARDetail}
                 passedData={passDataDetail}
+            />
+            <TransferEmployeeModal
+                openModal={openModalTransferEmployee}
+                onCloseModal={modalCloseDARTransferEmployee}
+                passedData={passDataTransferEmployee}
             />
             <Grid container spacing={0.5}>
                 <Grid item xs={12} md={12}>
@@ -297,10 +319,12 @@ const DARdata = () => {
                     <Paper>
                         <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                            <Box sx={{ display: 'flex', gap: '5px' }}>
-                                <Button variant="contained" size="small" onClick={() => { addDARDetail() }}>Add DAR Details</Button>
-                                <Button variant="contained" size="small" color="warning" onClick={() => { addDARDetail() }}>Transfer Employee</Button>
-                            </Box>
+                            {dataVariableHeader.dar_status == "ACTIVE" ?
+                                <Box sx={{ display: 'flex', gap: '5px' }}>
+                                    <Button variant="contained" size="small" onClick={() => { addDARDetail() }}>Add DAR Details</Button>
+                                    <Button variant="contained" size="small" color="warning" onClick={() => { transferEmployee() }}>Transfer Employee</Button>
+                                </Box>
+                                : ""}
                         </Stack>
                         <CustomDataGrid
                             columns={ColumnHeader}
