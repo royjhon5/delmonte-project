@@ -6,44 +6,44 @@ import { useState, useEffect } from "react";
 import { hookContainer } from "../../../../hooks/globalQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
-const SearchDARHeaderModal = (props) => {
+const SearchSOAHeaderModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
     const closeCurrentModal = () => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-darheader');
+    const { data: mainDataHeader } = hookContainer('/get-soaheader');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.activity.toLowerCase().includes(search.toLowerCase()) ||
-            row.location_name.toLowerCase().includes(search.toLowerCase()) ||
-            row.group_name.toLowerCase().includes(search.toLowerCase()) ||
-            row.department.toLowerCase().includes(search.toLowerCase())
+            row.soa_no.toLowerCase().includes(search.toLowerCase()) ||
+            row.department.toLowerCase().includes(search.toLowerCase()) ||
+            row.location.toLowerCase().includes(search.toLowerCase())
         );
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-darheader']);
+        queryClient.invalidateQueries(['/get-soaheader']);
     }, [openModal]);
 
     const ColumnHeader = [
         {
-            field: 'activity', headerName: 'Activity', width: 250,
+            field: 'soa_no', headerName: 'SOA Number', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.activity}
+                    {params.row.soa_no}
                 </Box>
             ),
         },
         { field: 'department', headerName: 'Department', flex: 1, },
-        { field: 'location_name', headerName: 'Location', flex: 1, },
-        { field: 'group_name', headerName: 'Group', flex: 1, },
+        { field: 'location', headerName: 'Location', flex: 1, },
+        { field: 'daytype', headerName: 'Day Type', flex: 1, },
         { field: 'xDate', headerName: 'Date', flex: 1, },
-        { field: 'dar_status', headerName: 'Status', flex: 1, },
+        { field: 'period_coverage', headerName: 'Period Coverage', flex: 1, },
+        { field: 'soa_status', headerName: 'Status', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -66,7 +66,7 @@ const SearchDARHeaderModal = (props) => {
         <CustomDialog
             open={openModal}
             maxWidth={'lg'}
-            DialogTitles={"Search DAR Header"}
+            DialogTitles={"Search SOA Header"}
             onClose={() => { closeCurrentModal() }}
             DialogContents={
                 <Grid container spacing={2}>
@@ -90,4 +90,4 @@ const SearchDARHeaderModal = (props) => {
     );
 }
 
-export default SearchDARHeaderModal;
+export default SearchSOAHeaderModal;

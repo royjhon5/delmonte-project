@@ -6,10 +6,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import http from "../../../../api/http";
 import { toast } from "sonner";
-import { OPEN_DELETESWAL, OPEN_SWALCONFIRMATION } from "../../../../store/actions";
+import { OPEN_DELETESWAL } from "../../../../store/actions";
 import { useDispatch } from "react-redux";
 import DeleteSwal from "../../../../components/Swal/DeleteSwal";
-import CloseCancelSubmitSwal from "../../../../components/Swal/CloseCancelSubmitSwal";
+import ConfirmationSwal from "../../../../components/Swal/CloseCancelSubmitSwal2";
 import NewDarHeader from "../components/NewDARHeader";
 import SearchDARHeaderModal from "../components/SearchDARHeader";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
@@ -83,9 +83,13 @@ const DARdata = () => {
         setLoadSaving(false);
     }
 
+    const [openConfirmationPost, setOpenConfirmationPost] = useState(false);
+    async function confirmationPostClose() {
+        setOpenConfirmationPost(false);
+    }
     const postDarHeader = () => {
         if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
-        dispatch({ type: OPEN_SWALCONFIRMATION, swalConfirmation: true });
+        setOpenConfirmationPost(true);
     }
     const confirmPostDarHeader = async () => {
         setLoadSaving("Posting...");
@@ -98,7 +102,7 @@ const DARdata = () => {
             }));
         } else toast.error(response.data.message);
         setLoadSaving(false);
-        dispatch({ type: OPEN_SWALCONFIRMATION, swalConfirmation: false });
+        setOpenConfirmationPost(false);
     }
 
     // detail
@@ -150,10 +154,12 @@ const DARdata = () => {
             align: 'right',
             renderCell: (params) => {
                 const SelectedRow = () => {
+                    if (dataVariableHeader.dar_status == "POSTED") return toast.error("Cannot edit. DAR is already Posted.");
                     setPassDataDetail(params.row);
                     setOpenModalDARDetail(true);
                 }
                 const selectToDelete = () => {
+                    if (dataVariableHeader.dar_status == "POSTED") return toast.error("Cannot delete. DAR is already Posted.");
                     deleteData(params.row.id);
                     dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
                 }
@@ -183,7 +189,7 @@ const DARdata = () => {
     const transferEmployee = () => {
         if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
         setOpenModalTransferEmployee(true);
-        setPassDataTransferEmployee({id: dataVariableHeader.id, date: dataVariableHeader.xDate}); // pass header id to get detail inside modal
+        setPassDataTransferEmployee({ id: dataVariableHeader.id, date: dataVariableHeader.xDate }); // pass header id to get detail inside modal
     }
 
     // modal
@@ -236,7 +242,7 @@ const DARdata = () => {
         <Fragment>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
             <DeleteSwal maxWidth="xs" onClick={confirmDelete} />
-            <CloseCancelSubmitSwal maxWidth="xs" onClick={confirmPostDarHeader} confirmTitle="Are you sure that the entered data is correct and you want to execute post?" />
+            <ConfirmationSwal openConfirmation={openConfirmationPost} maxWidth="xs" onClose={confirmationPostClose} onConfirm={confirmPostDarHeader} confirmTitle="Are you sure that the entered data is correct and you want to execute post?" />
             <NewDarHeader
                 openModal={openModal}
                 onCloseModal={modalClose}

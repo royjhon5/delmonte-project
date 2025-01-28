@@ -4,9 +4,7 @@ import NoData from "../../../../components/CustomDataTable/NoData";
 import CustomDialog from "../../../../components/CustomDialog";
 import { useState, useEffect, useCallback } from "react";
 import http from "../../../../api/http.jsx";
-import CloseCancelSubmitSwal from "../../../../components/Swal/CloseCancelSubmitSwal";
-import { OPEN_SWALCONFIRMATION } from "../../../../store/actions";
-import { useDispatch } from "react-redux";
+import ConfirmationSwal from "../../../../components/Swal/CloseCancelSubmitSwal2";
 import { toast } from "sonner";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 
@@ -16,7 +14,6 @@ const TransferEmployeeModal = (props) => {
         onCloseModal(false);
     }
 
-    const dispatch = useDispatch();
     const [loadSaving, setLoadSaving] = useState(false);
 
     const [constMappedData, setConstMappedData] = useState([]);
@@ -45,6 +42,10 @@ const TransferEmployeeModal = (props) => {
         }) : []);
     }, []);
 
+    const [openConfirmationTransfer, setOpenConfirmationTransfer] = useState(false);
+    async function confirmationTransferClose() {
+        setOpenConfirmationTransfer(false);
+    }
     const [selectedDetailChapaID, setSelectedDetailChapaID] = useState('');
     const confirmTransferEmployee = async () => {
         setLoadSaving("Saving...");
@@ -57,7 +58,7 @@ const TransferEmployeeModal = (props) => {
             loadDARDetailAvailable(darID);
         } else toast.error(response.data.message);
         setLoadSaving(false);
-        dispatch({ type: OPEN_SWALCONFIRMATION, swalConfirmation: false });
+        setOpenConfirmationTransfer(false);
     }
 
     const ColumnHeader = [
@@ -86,7 +87,7 @@ const TransferEmployeeModal = (props) => {
                 const SelectedRow = () => {
                     if (!selectedDARID) return toast.error("Please select DAR Header you want this employee to transfer.");
                     setSelectedDetailChapaID(params.row.ChapaID);
-                    dispatch({ type: OPEN_SWALCONFIRMATION, swalConfirmation: true });
+                    setOpenConfirmationTransfer(true);
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
@@ -110,7 +111,13 @@ const TransferEmployeeModal = (props) => {
     return (
         <>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
-            <CloseCancelSubmitSwal maxWidth="xs" onClick={confirmTransferEmployee} confirmTitle="Are you sure you want to transfer this employee?" />
+            <ConfirmationSwal
+                openConfirmation={openConfirmationTransfer}
+                maxWidth="xs"
+                onClose={confirmationTransferClose}
+                onConfirm={confirmTransferEmployee}
+                confirmTitle="Are you sure you want to transfer this employee?"
+            />
             <CustomDialog
                 open={openModal}
                 maxWidth={'lg'}
