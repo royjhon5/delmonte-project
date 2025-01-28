@@ -51,7 +51,7 @@ const ConfirmationSwal = ({maxWidth, onClick, confirmTitle}) => {
 ConfirmationSwal.propTypes = {
   maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
   onClick: PropTypes.func,
-  confirmTitle: PropTypes.func,
+  confirmTitle: PropTypes.string,
 }
 
 export default ConfirmationSwal

@@ -9,6 +9,7 @@ module.exports.routes = {
         [ '/post-darheader', DARCtrl.saveDARHeader ],
         [ '/post-postdarheader', DARCtrl.postDARHeader ],
         [ '/post-dardetail', DARCtrl.saveDARDetail ],
+        [ '/post-transferdardetail', DARCtrl.transferDARDetail ],
     ], 
     get: [
         [ '/get-employeetemplateheader', EmployeeTempCtrl.getEmployeeTemplateHeader ],
@@ -16,6 +17,7 @@ module.exports.routes = {
         // 
         [ '/get-darheader', DARCtrl.getDARHeader ],
         [ '/get-dardetail', DARCtrl.getDARDetail ],
+        [ '/get-darheaderavailable', DARCtrl.getDARHeaderAvailable ],
         [ '/get-test-method', DARCtrl.testMethod ],
     ], 
     remove: [
