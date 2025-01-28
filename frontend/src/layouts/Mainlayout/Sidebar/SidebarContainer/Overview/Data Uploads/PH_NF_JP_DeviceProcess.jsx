@@ -9,7 +9,7 @@ import Collapsebtn from "../../../../../../components/StyledListItemButton/Custo
 import StyledPopover from "../../../../../../components/StyledPopover";
 import ListBtn from "../../../../../../components/StyledListItemButton/CustomCollapseListButton/ListBtn";
 import CustomMenuButton from "../../../../../../components/CustomMenuButton";
-import { OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../../store/actions";
+import { OPEN_ADMINISTRATIVE, OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../../store/actions";
 import MobileScreenShareIcon from '@mui/icons-material/MobileScreenShare';
 
 const PH_NF_JP_DeviceProcess = () => {
@@ -26,6 +26,7 @@ const PH_NF_JP_DeviceProcess = () => {
   const openCollapseBtn = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
     dispatch({ type: OPEN_TRANSACTION, openTransaction: false });
+    dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false  });
     dispatch({ type: OPEN_OFFLINEMODE, openOfflineMode: false });
     dispatch({ type: OPEN_FIELD_DEVICE, openFieldDevice: false });
     dispatch({ type: OPEN_PH_NF_JP_DEVICE, openPHNFJPDevice: !open });

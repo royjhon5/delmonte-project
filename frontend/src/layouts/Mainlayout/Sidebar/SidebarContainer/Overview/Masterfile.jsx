@@ -10,7 +10,7 @@ import StyledPopover from "../../../../../components/StyledPopover";
 import CustomMenuButton from "../../../../../components/CustomMenuButton";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { COLOR_ACCOUNTING, COLOR_ADMINISTRATIVE, COLOR_CASHIERPORTAL, COLOR_FINANCIALREPORT, COLOR_MASTERFILE, OPEN_ACCOUNTING, OPEN_ADMINISTRATIVE, OPEN_CASHIERPORTAL, OPEN_FINANCIALREPORT, OPEN_MASTERFILE } from "../../../../../store/actions";
+import { COLOR_ACCOUNTING, COLOR_ADMINISTRATIVE, COLOR_CASHIERPORTAL, COLOR_FINANCIALREPORT, COLOR_MASTERFILE, OPEN_ADMINISTRATIVE, OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../store/actions";
 import { SvgIconColors } from "../../../../../themes/palette";
 
 const MasterFile = () => {
@@ -40,10 +40,11 @@ const MasterFile = () => {
 
     const openCollapseBtn = () => {
         dispatch({ type: OPEN_MASTERFILE, openMasterFile: !open });
-        dispatch({ type: OPEN_ACCOUNTING, openAccounting: false });
-        dispatch({ type: OPEN_CASHIERPORTAL, openCashierPortal: false });
-        dispatch({ type: OPEN_FINANCIALREPORT, openFinancialReport: false });
-        dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false });
+        dispatch({ type: OPEN_TRANSACTION, openTransaction: false });
+        dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false  });
+        dispatch({ type: OPEN_OFFLINEMODE, openOfflineMode: false });
+        dispatch({ type: OPEN_FIELD_DEVICE, openFieldDevice: false });
+        dispatch({ type: OPEN_PH_NF_JP_DEVICE, openPHNFJPDevice: false });
     }
 
     const colorCollapseBtn = () => {

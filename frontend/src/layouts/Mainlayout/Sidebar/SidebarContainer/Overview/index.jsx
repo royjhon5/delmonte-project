@@ -10,6 +10,7 @@ import Transactions from "./Transactions";
 import OfflineMode from "./Data Uploads/OfflineMode";
 import FieldDeviceProcess from "./Data Uploads/Field_DeviceProcess";
 import PH_NF_JP_DeviceProcess from "./Data Uploads/PH_NF_JP_DeviceProcess";
+import Administrative from "./Administrative";
 
 const OverView = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const OverView = () => {
       <ListItemButtonStyle ListbtnLabel="Dashboard" activePath="/dashboard" MenuClick={navigateDashboard} IconChildrens={<DashboardIcon fontSize="small" />} />
       <MasterFile />
       <Transactions />
+      <Administrative /> 
       <ListSubHeaderStyle ListLabel="DATA UPLOAD" />
       <OfflineMode />
       <FieldDeviceProcess />

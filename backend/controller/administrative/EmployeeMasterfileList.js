@@ -2,42 +2,20 @@ const { select, insert, update, remove } = require("../../models/mainModel");
 const { getDateNow } = require("../../common/commonSettings");
 
 module.exports.getEmployeeMasterfile = async function (req, res) {
-    // Extract page and limit from query parameters, with defaults
-    const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 20; // Default to 20 records per page
-
-    // Calculate the offset
-    const offset = (page - 1) * limit;
-
-    var params = {
-        fields: ["*"],
-        tableName: "tblemployeemasterfile",
-        where: ["EmployeeStatus = ?"],
-        whereValue: ['ACTIVE'],
-        limit: limit,
-        offset: offset,
-    };
-
-    try {
-        await select(params).then(function(response){
-            if (response.success) {
-                res.status(200).json({
-                    pagination: {
-                        currentPage: page,
-                        pageSize: limit,
-                        totalRecords: response.totalRecords, // Ensure your `select` function supports returning total records.
-                        totalPages: Math.ceil(response.totalRecords / limit),
-                    },
-                });
-            } else {
-                res.status(200).json(response);
-            }
-        });
-    } catch (error) {
-        res.status(400).send({ error: 'Server Error' });
-        console.error(error);
-    }
-};
+	var params = {
+		fields: ["*"],
+		tableName: "tblemployeemasterfile",
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
 
 
 module.exports.saveEmployeeMasterFile = async function (req, res) {

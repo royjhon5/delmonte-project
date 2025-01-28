@@ -9,7 +9,7 @@ import ListBtn from "../../../../../components/StyledListItemButton/CustomCollap
 import StyledPopover from "../../../../../components/StyledPopover";
 import CustomMenuButton from "../../../../../components/CustomMenuButton";
 import { useDispatch, useSelector } from "react-redux";
-import { OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../store/actions";
+import { OPEN_ADMINISTRATIVE, OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../store/actions";
 import { SvgIconColors } from "../../../../../themes/palette";
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +32,7 @@ const Transactions = () => {
   const openCollapseBtn = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
     dispatch({ type: OPEN_TRANSACTION, openTransaction: !open });
+    dispatch({ type: OPEN_ADMINISTRATIVE, openAdministrative: false  });
     dispatch({ type: OPEN_OFFLINEMODE, openOfflineMode: false });
     dispatch({ type: OPEN_FIELD_DEVICE, openFieldDevice: false });
     dispatch({ type: OPEN_PH_NF_JP_DEVICE, openPHNFJPDevice: false });
