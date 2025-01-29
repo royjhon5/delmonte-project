@@ -11,6 +11,7 @@ import ListBtn from "../../../../../../components/StyledListItemButton/CustomCol
 import CustomMenuButton from "../../../../../../components/CustomMenuButton";
 import { OPEN_ADMINISTRATIVE, OPEN_FIELD_DEVICE, OPEN_MASTERFILE, OPEN_OFFLINEMODE, OPEN_PH_NF_JP_DEVICE, OPEN_TRANSACTION } from "../../../../../../store/actions";
 import MobileScreenShareIcon from '@mui/icons-material/MobileScreenShare';
+import { useNavigate } from "react-router-dom";
 
 const PH_NF_JP_DeviceProcess = () => {
   const theme = useTheme();  
@@ -22,6 +23,9 @@ const PH_NF_JP_DeviceProcess = () => {
   const popoverRef = useRef(null)
   const openBool = Boolean(anchorHere);
   const id = 'mouse-over-popover'
+  const navigate = useNavigate();
+
+  const navigateTo = () => {navigate('/dashboard/update-employee-location')}
 
   const openCollapseBtn = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
@@ -80,14 +84,18 @@ const PH_NF_JP_DeviceProcess = () => {
       menuButton={
         <>
         <CustomMenuButton 
-          label="Daily Cash Position Report"
+          label="Update / Export Employee Location"
+          activePath={"/dashboard/update-employee-location"}
+          onClick={navigateTo}
         />
         </>
       }
     />
     <Collapsebtn stateOpen={open}>
         <ListBtn
-          label="Daily Cash Position Report"
+          label="Update / Export Employee Location"
+          activePath={"/dashboard/update-employee-location"}
+          onClick={navigateTo}
         />
     </Collapsebtn>
     </>

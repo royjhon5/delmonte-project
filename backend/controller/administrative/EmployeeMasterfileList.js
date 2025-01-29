@@ -5,6 +5,8 @@ module.exports.getEmployeeMasterfile = async function (req, res) {
 	var params = {
 		fields: ["*"],
 		tableName: "tblemployeemasterfile",
+		where: ["EmployeeStatus = ?"],
+		whereValue: ['ACTIVE'],
 	}
 	try {
 		await select(params).then(function(response){
