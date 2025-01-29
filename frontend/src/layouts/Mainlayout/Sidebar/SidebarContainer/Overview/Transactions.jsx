@@ -26,6 +26,7 @@ const Transactions = () => {
   const navigate = useNavigate()
 
   const navigateEmployeeTemplates = () => { navigate('/dashboard/employee-templates')}
+  const navigateAccountRate = () => { navigate('/dashboard/account-rate')}
   const navigateDarPrepartion = () => { navigate('/dashboard/dar-preparation')}
   const navigateSoaCreation = () => { navigate('/dashboard/soa-creation')}
 
@@ -92,7 +93,8 @@ const Transactions = () => {
         />
         <CustomMenuButton 
           label="Rate Templates Client"
-          
+          activePath="/dashboard/account-rate"
+          onClick={navigateAccountRate}
         />
         <CustomMenuButton 
           label="DAR Creation"
@@ -115,7 +117,8 @@ const Transactions = () => {
         />
         <ListBtn
           label="Rate Templates Client"
-          
+          activePath="/dashboard/account-rate"
+          onClick={navigateAccountRate}
         />
         <ListBtn
           label="DAR Creation"

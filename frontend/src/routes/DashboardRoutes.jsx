@@ -24,6 +24,7 @@ const AccountMasterList = Loadable(lazy(() => import('../views/Masterfile/accoun
 
 // transaction
 const EmployeeTemplates = Loadable(lazy(() => import('../views/Transaction/employee_templates')));
+const AccountRate = Loadable(lazy(() => import('../views/Transaction/account_rate')));
 const DARPreparation = Loadable(lazy(() => import('../views/Transaction/dar_creation')));
 const SOACreation = Loadable(lazy(() => import('../views/Transaction/soa_creation')));
 
@@ -142,6 +143,14 @@ const DashboardRoutes = {
 			)
 		},
 		{
+			path: '/dashboard/account-rate',
+			element: (
+				<ProtectedRoute pageName='Account Rate'>
+					<AccountRate />
+				</ProtectedRoute>
+			)
+		},
+		{
 			path: '/dashboard/dar-preparation',
 			element: (
 				<ProtectedRoute pageName='User List'>
@@ -149,7 +158,6 @@ const DashboardRoutes = {
 				</ProtectedRoute>
 			)
 		},
-
 		{
 			path: '/dashboard/soa-creation',
 			element: (

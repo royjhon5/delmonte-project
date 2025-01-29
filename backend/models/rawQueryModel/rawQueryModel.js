@@ -44,6 +44,30 @@ const rawQueryModel = {
             });
         });
     },
+
+    AddDARDetailsToSOA: async function (params) {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
+                SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} GROUP BY dtl.activitylink_id`;
+            db.query(query, [], async (err, result) => {
+                console.log(result);
+                await result.forEach(element => {
+                    // get account rates here...
+                    
+                    // insert soa detail
+                    const query2 = `INSERT INTO tblsoa_dtl (soa_hdr_idlink, dar_hdr_link_id, activity_idlink, h_st, h_ot, h_nd, h_ndot, head_count, gl_account, cost_center, activity)
+                        VALUES (${params.soa_id}, "${params.id}", "${element.activitylink_id}", "${element.total_st}", "${element.total_ot}", "${element.total_nd}", "${element.total_ndot}", 
+                        "${element.head_count}", "${element.gl}", "${element.cost_center}", "${element.activity}")`;
+                        db.query(query2, [], (err2, result2) => {console.log(err2);});
+
+                    // update dar header to soa id link
+                    const query3 = `UPDATE tbldarhdr SET soa_no_link = ${params.soa_id} WHERE id = ${params.id}`;
+                        db.query(query3, [], (err3, result3) => {console.log(err3);});
+                });
+                resolve({ success: true, message: "successfully saved" });
+            });
+        });
+    },
 }
 
 module.exports = rawQueryModel;
