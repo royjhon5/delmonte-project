@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import SearchTemplateModal from "./SearchTemplate.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
+import SearchSignatoryModal from "../../dar_creation/components/SearchSignatory.jsx";
 import dayjs from 'dayjs';
 
 const NewSOAHeaderModal = (props) => {
@@ -50,21 +51,21 @@ const NewSOAHeaderModal = (props) => {
             ...prevState,
             [name]: value
         }));
-        if(name == 'dept_idlink') {
+        if (name == 'dept_idlink') {
             const selectedRow = filterIt(departmentList, value, "id");
             setDataVariable(prevState => ({
                 ...prevState,
                 department: selectedRow[0].department_name
             }));
         }
-        if(name == 'location_idlink') {
+        if (name == 'location_idlink') {
             const selectedRow = filterIt(locationList, value, "id");
             setDataVariable(prevState => ({
                 ...prevState,
                 location: selectedRow[0].location_name
             }));
         }
-        if(name == 'daytype_idlink') {
+        if (name == 'daytype_idlink') {
             const selectedRow = filterIt(dayTypeList, value, "id");
             setDataVariable(prevState => ({
                 ...prevState,
@@ -101,7 +102,47 @@ const NewSOAHeaderModal = (props) => {
         setLoadSaving(false);
     }
 
+    const [signatoryType, setSignatoryType] = useState(false);
+    const selectSignatory = (type) => {
+        setSignatoryType(type);
+        setOpenSignatoryModal(true);
+    }
+
     // modal
+    const [openSignatoryModal, setOpenSignatoryModal] = useState(false);
+    async function modalCloseSignatoryModal(params) {
+        setOpenSignatoryModal(false);
+        if (params) {
+            if (signatoryType == 1) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    prepared_by: params.name,
+                    preparedby_position: params.designation,
+                }));
+            }
+            if (signatoryType == 2) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    confirmed_by: params.name,
+                    confirmedby_position: params.designation,
+                }));
+            }
+            if (signatoryType == 3) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    checked_by: params.name,
+                    checkedby_position: params.designation,
+                }));
+            }
+            if (signatoryType == 4) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    approved_by: params.name,
+                    approvedby_position: params.designation,
+                }));
+            }
+        }
+    }
 
     // useEffects
     useEffect(() => {
@@ -111,6 +152,10 @@ const NewSOAHeaderModal = (props) => {
     return (
         <>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
+            <SearchSignatoryModal
+                openModal={openSignatoryModal}
+                onCloseModal={modalCloseSignatoryModal}
+            />
             <CustomDialog
                 open={openModal}
                 maxWidth={'lg'}
@@ -156,12 +201,60 @@ const NewSOAHeaderModal = (props) => {
                         </Grid>
                         <Grid container spacing={1}>
                             <Grid item xs={12} md={6}>
-                                <TextField label="Prepared By" value={dataVariable.prepared_by} onChange={updateDataVariable} name="prepared_by" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="Confirmed By" value={dataVariable.confirmed_by} onChange={updateDataVariable} name="confirmed_by" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Prepared By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Prepared By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(1) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.prepared_by} onChange={updateDataVariable} name="prepared_by"
+                                    />
+                                </FormControl>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Confirmed By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Confirmed By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(2) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.confirmed_by} onChange={updateDataVariable} name="confirmed_by"
+                                    />
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <TextField label="Checked By" value={dataVariable.checked_by} onChange={updateDataVariable} name="checked_by" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="Approved By" value={dataVariable.approved_by} onChange={updateDataVariable} name="approved_by" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Checked By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Checked By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(3) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.checked_by} onChange={updateDataVariable} name="checked_by"
+                                    />
+                                </FormControl>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Approved By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Approved By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(4) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.approved_by} onChange={updateDataVariable} name="approved_by"
+                                    />
+                                </FormControl>
                             </Grid>
                         </Grid>
                     </>

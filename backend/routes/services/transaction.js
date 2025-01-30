@@ -12,6 +12,7 @@ module.exports.routes = {
         ['/post-postdarheader', DARCtrl.postDARHeader],
         ['/post-dardetail', DARCtrl.saveDARDetail],
         ['/post-transferdardetail', DARCtrl.transferDARDetail],
+        ['/post-autocomputedar', DARCtrl.autoComputeDAR],
         //
         ['/post-soaheader', SOACtrl.saveSOAHeader],
         ['/post-postsoaheader', SOACtrl.postSOAHeader],
