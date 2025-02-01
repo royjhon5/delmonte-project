@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { Helmet } from "react-helmet-async";
 import OverlayImage from '../../../../assets/images/overlay_2.jpg'
 import OverlayImageTwo from '../../../../assets/images/overlay_4.jpg'
-import ErasTheme from '../../../../assets/company-logo/loginbg.png'
+import ErasTheme from '../../../../assets/images/backdraft.jpg'
 
 export default function SignInSide() {
   const theme = useTheme();
@@ -13,7 +13,7 @@ export default function SignInSide() {
   return (
     <Fragment>
         <Helmet>
-          <title>eRAS: Login</title>
+          <title>GSMPC: Login</title>
         </Helmet>
         <Grid container component="main" sx={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
         <Grid 
