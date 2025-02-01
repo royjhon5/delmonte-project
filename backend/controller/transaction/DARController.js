@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AutoInsertDetailTemplate } = require("../../models/rawQueryModel/rawQueryModel");
+const { AutoInsertDetailTemplate, AutoComputeDARTime } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getDARHeader = async function (req, res) {
 	const daytype_name = "(SELECT a.dt_name FROM tbldaytype a WHERE a.id = tbldarhdr.day_type_idlink LIMIT 1) as daytype_name";
@@ -177,6 +177,18 @@ module.exports.transferDARDetail = async function (req, res) {
 	}
 }
 
+module.exports.autoComputeDAR = async function (req, res) {
+	const data = req.body
+	try {
+		await AutoComputeDARTime({ id: data.id }).then(async function (response) {
+			res.status(200).json(response);
+		})
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 module.exports.getDARDetail = async function (req, res) {
 	const data = req.query
 	var params = {
@@ -186,6 +198,7 @@ module.exports.getDARDetail = async function (req, res) {
 		whereValue: [data.header_id],
 		orderBy: ["emp_lname ASC", "ChapaID ASC"]
 	}
+	if (data.group) params.groupBy = ['ChapaID'];
 	try {
 		await select(params).then(function (response) {
 			if (response.success) res.status(200).json(response.data);
@@ -204,7 +217,7 @@ module.exports.deleteDARDetail = async function (req, res) {
 		where: ["id = ?"],
 		whereValue: [data.id],
 	}
-	if(data.group){
+	if (data.group) {
 		params.groupBy(["ChapaID"]);
 	}
 	try {
@@ -220,7 +233,7 @@ module.exports.deleteDARDetail = async function (req, res) {
 
 module.exports.testMethod = async function (req, res) {
 	try {
-		await AutoInsertDetailTemplate({ id: 5, templatelink_id: 1 }).then(function (response) {
+		await AutoComputeDARTime({ id: 51 }).then(function (response) {
 			res.status(200).json(response);
 		})
 	} catch (error) {

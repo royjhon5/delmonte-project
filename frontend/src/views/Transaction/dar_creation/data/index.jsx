@@ -83,26 +83,48 @@ const DARdata = () => {
         setLoadSaving(false);
     }
 
-    const [openConfirmationPost, setOpenConfirmationPost] = useState(false);
-    async function confirmationPostClose() {
-        setOpenConfirmationPost(false);
+    const [confirmationType, setConfirmationType] = useState('');
+    const [confirmationTitle, setConfirmationTitle] = useState('');
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+    async function confirmationClose() {
+        setOpenConfirmation(false);
     }
+    const confirmConfirmation = async () => {
+        if (confirmationType == 'post') {
+            setLoadSaving("Posting...");
+            const response = await http.post('/post-postdarheader', { id: dataVariableHeader.id });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setDataVariableHeader(prevState => ({
+                    ...prevState,
+                    dar_status: "POSTED",
+                }));
+            } else toast.error(response.data.message);
+            setLoadSaving(false);
+        } else if (confirmationType == 'compute') {
+            setLoadSaving("Computing...");
+            const response = await http.post('/post-autocomputedar', { id: dataVariableHeader.id });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                loadDARDetail(dataVariableHeader.id);
+            } else toast.error(response.data.message);
+            setLoadSaving(false);
+        }
+        setOpenConfirmation(false);
+    }
+
     const postDarHeader = () => {
         if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
-        setOpenConfirmationPost(true);
+        setConfirmationType('post');
+        setConfirmationTitle('Are you sure that the entered data is correct and you want to execute post?');
+        setOpenConfirmation(true);
     }
-    const confirmPostDarHeader = async () => {
-        setLoadSaving("Posting...");
-        const response = await http.post('/post-postdarheader', { id: dataVariableHeader.id });
-        if (response.data.success) {
-            toast.success(response.data.message);
-            setDataVariableHeader(prevState => ({
-                ...prevState,
-                dar_status: "POSTED",
-            }));
-        } else toast.error(response.data.message);
-        setLoadSaving(false);
-        setOpenConfirmationPost(false);
+
+    const autoComputeTime = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        setConfirmationType('compute');
+        setConfirmationTitle('Are you sure you want to execute auto computation?');
+        setOpenConfirmation(true);
     }
 
     // detail
@@ -242,7 +264,12 @@ const DARdata = () => {
         <Fragment>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
             <DeleteSwal maxWidth="xs" onClick={confirmDelete} />
-            <ConfirmationSwal openConfirmation={openConfirmationPost} maxWidth="xs" onClose={confirmationPostClose} onConfirm={confirmPostDarHeader} confirmTitle="Are you sure that the entered data is correct and you want to execute post?" />
+            <ConfirmationSwal
+                openConfirmation={openConfirmation}
+                maxWidth="xs"
+                onClose={confirmationClose}
+                onConfirm={confirmConfirmation}
+                confirmTitle={confirmationTitle} />
             <NewDarHeader
                 openModal={openModal}
                 onCloseModal={modalClose}
@@ -271,7 +298,7 @@ const DARdata = () => {
                                 <TextField fullWidth label="Employee Template" value={dataVariableHeader.activity} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Location" value={dataVariableHeader.locationlink_id} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Location" value={dataVariableHeader.location_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Department" value={dataVariableHeader.department} variant="outlined" size="small" inputProps={{ readOnly: true }} />
@@ -283,7 +310,7 @@ const DARdata = () => {
                                 <TextField fullWidth label="Shifting" value={dataVariableHeader.shift} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Day Type" value={dataVariableHeader.day_type_idlink} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Day Type" value={dataVariableHeader.daytype_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Group Name" value={dataVariableHeader.group_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
@@ -327,6 +354,7 @@ const DARdata = () => {
                             <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
                             {dataVariableHeader.dar_status == "ACTIVE" ?
                                 <Box sx={{ display: 'flex', gap: '5px' }}>
+                                    <Button variant="contained" size="small" color="secondary" onClick={() => { autoComputeTime() }}>Auto Compute Time</Button>
                                     <Button variant="contained" size="small" onClick={() => { addDARDetail() }}>Add DAR Details</Button>
                                     <Button variant="contained" size="small" color="warning" onClick={() => { transferEmployee() }}>Transfer Employee</Button>
                                 </Box>

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import http from "../../../../api/http.jsx";
 import { useEffect, useState } from "react";
 import SearchTemplateModal from "./SearchTemplate.jsx";
+import SearchSignatoryModal from "./SearchSignatory.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
 import dayjs from 'dayjs';
@@ -41,6 +42,8 @@ const NewDarHeader = (props) => {
         activity: "",
         department: "",
         group_name: "",
+        location_name: "",
+        daytype_name: "",
     };
     const [dataVariable, setDataVariable] = useState(initialDataVariable);
     const updateDataVariable = e => {
@@ -49,7 +52,29 @@ const NewDarHeader = (props) => {
             ...prevState,
             [name]: value
         }));
+        if (name == 'locationlink_id') {
+            const selectedRow = filterIt(locationList, value, "id");
+            setDataVariable(prevState => ({
+                ...prevState,
+                location_name: selectedRow[0].location_name
+            }));
+        }
+        if (name == 'day_type_idlink') {
+            const selectedRow = filterIt(dayTypeList, value, "id");
+            setDataVariable(prevState => ({
+                ...prevState,
+                daytype_name: selectedRow[0].dt_name
+            }));
+        }
     };
+
+    function filterIt(arr, searchKey, keyValue = false) {
+        return arr.filter(function (obj) {
+            return Object.keys(obj).some(function (key) {
+                if (obj[(keyValue ? keyValue : key)].toString().includes(searchKey)) return obj;
+            })
+        });
+    }
 
     const clearData = async () => {
         setDataVariable(initialDataVariable);
@@ -60,7 +85,7 @@ const NewDarHeader = (props) => {
         const response = await http.post('/post-darheader', { dataVariable });
         if (response.data.success) {
             var returnData = dataVariable;
-            if(response.data.id) {
+            if (response.data.id) {
                 returnData.id = response.data.id;
             }
             toast.success(response.data.message);
@@ -68,6 +93,12 @@ const NewDarHeader = (props) => {
             setDataVariable(initialDataVariable); // set initial variables | clear fields
         } else toast.error(response.data.message);
         setLoadSaving(false);
+    }
+
+    const [signatoryType, setSignatoryType] = useState(false);
+    const selectSignatory = (type) => {
+        setSignatoryType(type);
+        setOpenSignatoryModal(true);
     }
 
     // modal
@@ -87,9 +118,44 @@ const NewDarHeader = (props) => {
         }
     }
 
+    const [openSignatoryModal, setOpenSignatoryModal] = useState(false);
+    async function modalCloseSignatoryModal(params) {
+        setOpenSignatoryModal(false);
+        if (params) {
+            if (signatoryType == 1) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    prepared_by: params.name,
+                    prepared_by_pos: params.designation,
+                }));
+            }
+            if (signatoryType == 2) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    approved_by: params.name,
+                    approved_by_pos: params.designation,
+                }));
+            }
+            if (signatoryType == 3) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    checked_by: params.name,
+                    checked_by_pos: params.designation,
+                }));
+            }
+            if (signatoryType == 4) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    confirmed_by: params.name,
+                    confirmed_by_pos: params.designation,
+                }));
+            }
+        }
+    }
+
     // useEffects
     useEffect(() => {
-        if(passedData.id) setDataVariable(passedData);
+        if (passedData.id) setDataVariable(passedData);
     }, [passedData]);
 
     return (
@@ -98,6 +164,10 @@ const NewDarHeader = (props) => {
             <SearchTemplateModal
                 openModal={openModalTemplate}
                 onCloseModal={modalClose}
+            />
+            <SearchSignatoryModal
+                openModal={openSignatoryModal}
+                onCloseModal={modalCloseSignatoryModal}
             />
             <CustomDialog
                 open={openModal}
@@ -108,11 +178,11 @@ const NewDarHeader = (props) => {
                     <>
                         <Grid container spacing={1} sx={{ mt: 1 }}>
                             <Grid item xs={12} md={6}>
-                                <FormControl variant="filled" fullWidth>
+                                <FormControl variant="outlined" fullWidth>
                                     <InputLabel>Select Employee Template (Activity)</InputLabel>
                                     <OutlinedInput size="medium"
                                         inputProps={{ readOnly: true }}
-                                        label="Voucher Number"
+                                        label="Select Employee Template (Activity)"
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalTemplate(true) }}><SearchIcon fontSize="small" /></Button>
@@ -149,13 +219,68 @@ const NewDarHeader = (props) => {
                                         </option>
                                     ))}
                                 </TextField>
-                                <TextField label="Prepared By" value={dataVariable.prepared_by} onChange={updateDataVariable} name="prepared_by" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="Confirmed By" value={dataVariable.confirmed_by} onChange={updateDataVariable} name="confirmed_by" fullWidth sx={{ mt: 1 }} size="medium" />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField type="date" value={dataVariable.xDate} onChange={updateDataVariable} name="xDate" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="Checked By" value={dataVariable.checked_by} onChange={updateDataVariable} name="checked_by" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="Approved By" value={dataVariable.approved_by} onChange={updateDataVariable} name="approved_by" fullWidth sx={{ mt: 1 }} size="medium" />
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Prepared By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Prepared By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(1) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.prepared_by} onChange={updateDataVariable} name="prepared_by"
+                                    />
+                                </FormControl>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Confirmed By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Confirmed By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(4) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.confirmed_by} onChange={updateDataVariable} name="confirmed_by"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Checked By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Checked By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(3) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.checked_by} onChange={updateDataVariable} name="checked_by"
+                                    />
+                                </FormControl>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Approved By</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Approved By"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(2) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.approved_by} onChange={updateDataVariable} name="approved_by"
+                                    />
+                                </FormControl>
                             </Grid>
                         </Grid>
                     </>
