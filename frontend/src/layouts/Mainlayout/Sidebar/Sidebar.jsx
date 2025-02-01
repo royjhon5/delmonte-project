@@ -4,6 +4,7 @@ import ToggleNavButton from "./ToggleButton";
 import PerfectScrollBar from 'react-perfect-scrollbar';
 import SidebarLogo from "./Logo";
 import SidebarContainer from "./SidebarContainer";
+import GSCLogo from "../../../assets/images/logogsc.png";
 
 export default function Sidebar() {
   const theme = useTheme();
@@ -25,6 +26,7 @@ export default function Sidebar() {
         },
       }}
     >
+      {GSCLogo}
       <Drawer sx={{
             width: theme.palette.appSettings.layout === 'vertical' ? 280 : theme.palette.appSettings.layout === 'horizontal' ? 0 : 88,
             flexShrink: 0,
