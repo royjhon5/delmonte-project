@@ -26,6 +26,7 @@ const Administrative = () => {
   const id = 'mouse-over-popover'
 
   const navigateSignatories = () => {navigate('/dashboard/signatories')}
+  const navigateUserList = () => {navigate('/dashboard/user-list')}
 
    const openCollapseBtn = () => {
       dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
@@ -84,7 +85,9 @@ const Administrative = () => {
       menuButton={
         <>
         <CustomMenuButton 
+          onClick={navigateUserList}
           label="User List"
+          activePath="/dashboard/user-list"
         />
         <CustomMenuButton 
           label="Signatories"
@@ -96,7 +99,9 @@ const Administrative = () => {
     />
     <Collapsebtn stateOpen={open}>
         <ListBtn
+          onClick={navigateUserList}
           label="User List"
+          activePath="/dashboard/user-list"
         />
         <ListBtn
           label="Signatories"
