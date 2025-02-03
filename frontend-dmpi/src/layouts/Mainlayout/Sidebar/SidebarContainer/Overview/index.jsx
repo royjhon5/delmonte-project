@@ -5,12 +5,10 @@ import CustomList from "../../../../../components/StyledListItemButton/CustomeLi
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useDispatch } from "react-redux";
 import { COLOR_ACCOUNTING, COLOR_ADMINISTRATIVE, COLOR_CASHIERPORTAL, COLOR_FINANCIALREPORT, COLOR_MASTERFILE, OPEN_ACCOUNTING, OPEN_ADMINISTRATIVE, OPEN_CASHIERPORTAL, OPEN_FINANCIALREPORT, OPEN_MASTERFILE } from "../../../../../store/actions";
-import MasterFile from "./Masterfile";
-import Transactions from "./Transactions";
-import OfflineMode from "./Data Uploads/OfflineMode";
-import FieldDeviceProcess from "./Data Uploads/Field_DeviceProcess";
-import PH_NF_JP_DeviceProcess from "./Data Uploads/PH_NF_JP_DeviceProcess";
-import Administrative from "./Administrative";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import SearchIcon from '@mui/icons-material/Search';
+import { Badge } from "@mui/material";
 
 const OverView = () => {
   const navigate = useNavigate();
@@ -33,13 +31,18 @@ const OverView = () => {
     <CustomList >
       <ListSubHeaderStyle ListLabel="OVERVIEW" />
       <ListItemButtonStyle ListbtnLabel="Dashboard" activePath="/dashboard" MenuClick={navigateDashboard} IconChildrens={<DashboardIcon fontSize="small" />} />
-      <MasterFile />
+      <Badge badgeContent={4} color="primary" size="small">
+        <ListItemButtonStyle ListbtnLabel="For Confirmation" MenuClick={navigateDashboard} IconChildrens={<CheckCircleIcon fontSize="small" />} />
+      </Badge>
+      <ListItemButtonStyle ListbtnLabel="For Approval" MenuClick={navigateDashboard} IconChildrens={<ThumbUpIcon fontSize="small" />} />
+      <ListItemButtonStyle ListbtnLabel="Search Previous Transaction" MenuClick={navigateDashboard} IconChildrens={<SearchIcon fontSize="small" />} />
+      {/* <MasterFile />
       <Transactions />
       <Administrative /> 
       <ListSubHeaderStyle ListLabel="DATA UPLOAD" />
       <OfflineMode />
       <FieldDeviceProcess />
-      <PH_NF_JP_DeviceProcess />
+      <PH_NF_JP_DeviceProcess /> */}
       {/* {(accessToken.UserLevel == 'Schema Admin' || accessToken.UserLevel == 'Admin') && accessToken.UserLevel != 'COA User' ? <ListItemButtonStyle ListbtnLabel="My Portal" activePath="/dashboard/my-portal" MenuClick={navigateMyProtal} IconChildrens={<WebIcon fontSize="small" />} /> : ""} */}
       {/* <ListItemButtonStyle ListbtnLabel="Upload Documents" MenuClick={navigateDashboard} IconChildrens={<CloudUploadIcon fontSize="small" />} /> */}
       {/* {accessToken.UserLevel != 'COA User' ? <UploadDocuments /> : ""} */}

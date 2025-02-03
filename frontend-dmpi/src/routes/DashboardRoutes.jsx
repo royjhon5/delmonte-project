@@ -32,6 +32,7 @@ const SOACreation = Loadable(lazy(() => import('../views/Transaction/soa_creatio
 const UserList = Loadable(lazy(() => import('../views/Administrative/_UserList')));
 const SignatoryList = Loadable(lazy(() => import('../views/Administrative/Signatory')));
 
+
 const DashboardRoutes = {
 	path: '/',
 	element: <MainLayout />,

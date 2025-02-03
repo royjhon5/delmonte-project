@@ -32,7 +32,7 @@ const ListItemButtonStyle = ({ListbtnLabel, activePath, MenuClick, IconChildrens
     >
       <Box 
         sx={{ 
-          display: theme.palette.appSettings.layout === 'horizontal' ? 'none' : 'flex', 
+          display: theme.palette.appSettings.layout === 'horizontal' ? 'vertical' : 'flex', 
           justifyContent:'center', 
           alignItems: 'center', 
           width: '24px', 
