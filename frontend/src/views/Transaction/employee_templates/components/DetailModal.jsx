@@ -48,8 +48,7 @@ const DetailModal = ({ RefreshData }) => {
                 </Box>
             ),
         },
-        { field: 'department_name', headerName: 'Department', flex: 1, },
-        { field: 'groupline_name', headerName: 'Group', flex: 1, },
+        { field: 'activityname', headerName: 'Activity', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -63,7 +62,11 @@ const DetailModal = ({ RefreshData }) => {
                         last_name: params.row.lastname,
                         first_name: params.row.firstname,
                         middle_name: params.row.middlename,
-                        ext_name: params.row.extname
+                        ext_name: params.row.extname,
+                        default_acitivity_idlink: params.row.default_activity_idlink,
+                        activityname: params.row.activityname,
+                        gl_code: params.row.gl_code,
+                        costcenter: params.row.costcenter,
                     };
                     try {
                         const response = await http.post('/post-employeetemplatedetail', formVariable);

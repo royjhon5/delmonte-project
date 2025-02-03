@@ -26,7 +26,6 @@ const EmployeeTemplatesData = () => {
     const defaultHeaderData = {
         id: '',
         TName: '',
-        activityname: '',
         department: '',
         emp_group: '',
         shifting: '',
@@ -74,6 +73,9 @@ const EmployeeTemplatesData = () => {
                 </Box>
             ),
         },
+        { field: 'activityname', headerName: 'Activity', flex: 1, },
+        { field: 'gl_code', headerName: 'GL Code', flex: 1, },
+        { field: 'costcenter', headerName: 'Cost Center', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -171,7 +173,6 @@ const EmployeeTemplatesData = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={12}>
                                 <TextField label="Template Name" value={headerData.TName} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="Activity" value={headerData.activityname} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
                                 <TextField label="Department" value={headerData.department} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
                                 <TextField label="Group" value={headerData.emp_group} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
                                 <TextField label="Shifting" value={headerData.shifting} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />

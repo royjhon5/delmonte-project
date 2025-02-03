@@ -28,6 +28,8 @@ module.exports.routes = {
         ['/get-darheader', DARCtrl.getDARHeader],
         ['/get-dardetail', DARCtrl.getDARDetail],
         ['/get-darheaderavailable', DARCtrl.getDARHeaderAvailable],
+        ['/get-dardetailbychapa', DARCtrl.getDARDetailByChapa],
+        ['/get-daremployeetime', DARCtrl.getDAREmployeeTime],
         ['/get-test-method', DARCtrl.testMethod],
         // 
         ['/get-soaheader', SOACtrl.getSOAHeader],

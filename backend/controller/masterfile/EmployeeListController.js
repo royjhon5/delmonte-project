@@ -34,6 +34,9 @@ module.exports.saveEmployeeData = async function (req, res) {
 			assigned_department_idlink: data.assigned_department_idlink,
 			assigned_group_idlink: data.assigned_group_idlink,
 			default_activity_idlink: data.default_activity_idlink,
+			activityname: data.activityname,
+			gl_code: data.gl_code,
+			costcenter: data.costcenter,
 		}
 	}
 	try {

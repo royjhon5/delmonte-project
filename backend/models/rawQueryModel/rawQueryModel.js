@@ -5,9 +5,8 @@ const rawQueryModel = {
         return new Promise((resolve, reject) => {
             const locationJoin = " LEFT JOIN tbllocationlist l ON l.id = el.assigned_location_idlink ";
             const departmentJoin = " LEFT JOIN tbldepartment d ON d.id = el.assigned_department_idlink ";
-            const activityJoin = " LEFT JOIN tblactivitylist a ON a.id = el.default_activity_idlink ";
             const groupLineJoin = " LEFT JOIN tblgroupline_list g ON g.id = el.assigned_group_idlink ";
-            const query = 'SELECT el.*, l.location_name, d.department_name, a.activityname, g.groupline_name  FROM tblemployeelist el ' + locationJoin + departmentJoin + activityJoin + groupLineJoin;
+            const query = 'SELECT el.*, l.location_name, d.department_name, g.groupline_name  FROM tblemployeelist el ' + locationJoin + departmentJoin + groupLineJoin;
             db.query(query, params.paramValue, (err, result) => {
                 if (err) return reject(err);
                 resolve({ success: true, data: result });
@@ -42,7 +41,7 @@ const rawQueryModel = {
                         // insert dardtl
                         const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, gl, cost_center, activitylink_id, activity)
                             VALUES (${params.id}, "${element.ChapaID}", "${element.last_name}", "${element.first_name}", "${element.middle_name}", "${element.ext_name}", "${timeIn}", "${element.gl_code}", "${element.costcenter}", 
-                            "${element.account_master_idlink}", "${element.activityname}")`;
+                            "${element.default_acitivity_idlink}", "${element.activityname}")`;
                         db.query(query2, [], (err2, result2) => { console.log(err2); });
                     });
                 });
@@ -56,16 +55,39 @@ const rawQueryModel = {
             const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
                 SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} GROUP BY dtl.activitylink_id`;
             db.query(query, [], async (err, result) => {
-                console.log(result);
                 await result.forEach(element => {
                     // get account rates here...
-
-                    // insert soa detail
-                    const query2 = `INSERT INTO tblsoa_dtl (soa_hdr_idlink, dar_hdr_link_id, activity_idlink, h_st, h_ot, h_nd, h_ndot, head_count, gl_account, cost_center, activity)
-                        VALUES (${params.soa_id}, "${params.id}", "${element.activitylink_id}", "${element.total_st}", "${element.total_ot}", "${element.total_nd}", "${element.total_ndot}", 
-                        "${element.head_count}", "${element.gl}", "${element.cost_center}", "${element.activity}")`;
-                    db.query(query2, [], (err2, result2) => { console.log(err2); });
-
+                    const accountRateSql = `SELECT * FROM tblaccount_rates WHERE activitylink_id = ${element.activitylink_id} LIMIT 1`;
+                    db.query(accountRateSql, [], async (errRate, resultRate) => {
+                        console.log(resultRate);
+                        let c_rates_st = 0;
+                        let c_rates_ot = 0;
+                        let c_rates_nd = 0;
+                        let c_rates_ndot = 0;
+                        let amount_st = 0;
+                        let amount_ot = 0;
+                        let amount_nd = 0;
+                        let amount_ndot = 0;
+                        let total_amount = 0;
+                        if (resultRate.length > 0) {
+                            c_rates_st = resultRate[0].st_rate;
+                            c_rates_ot = resultRate[0].ot_rate;
+                            c_rates_nd = resultRate[0].nd_rate;
+                            c_rates_ndot = resultRate[0].ndot_rate;
+                            amount_st = parseFloat(resultRate[0].st_rate) * parseFloat(element.total_st);
+                            amount_ot = parseFloat(resultRate[0].ot_rate) * parseFloat(element.total_ot);
+                            amount_nd = parseFloat(resultRate[0].nd_rate) * parseFloat(element.total_nd);
+                            amount_ndot = parseFloat(resultRate[0].ndot_rate) * parseFloat(element.total_ndot);
+                            total_amount = amount_st + amount_ot + amount_nd + amount_ndot;
+                        }
+                        // insert soa detail
+                        const query2 = `INSERT INTO tblsoa_dtl (soa_hdr_idlink, dar_hdr_link_id, activity_idlink, h_st, h_ot, h_nd, h_ndot, head_count, gl_account, cost_center, activity,
+                            c_rates_st, c_rates_ot, c_rates_nd, c_rates_ndot, amount_st, amount_ot, amount_nd, amount_ndot, total_amount)
+                            VALUES (${params.soa_id}, "${params.id}", "${element.activitylink_id}", "${element.total_st}", "${element.total_ot}", "${element.total_nd}", "${element.total_ndot}", 
+                            "${element.head_count}", "${element.gl}", "${element.cost_center}", "${element.activity}", "${c_rates_st}", "${c_rates_ot}", "${c_rates_nd}", 
+                            "${c_rates_ndot}", "${amount_st}", "${amount_ot}", "${amount_nd}", "${amount_ndot}", "${total_amount}")`;
+                        db.query(query2, [], (err2, result2) => { console.log(err2); });
+                    })
                     // update dar header to soa id link
                     const query3 = `UPDATE tbldarhdr SET soa_no_link = ${params.soa_id} WHERE id = ${params.id}`;
                     db.query(query3, [], (err3, result3) => { console.log(err3); });
@@ -102,9 +124,12 @@ const rawQueryModel = {
                                 time_out = timeOut;
                                 // save if ST if ot and nt are empty
                                 let ST = diff;
-                                // update dar detail set time out and (st, if not ot and ndot)
-                                const query3 = `UPDATE tbldardtl SET time_out = "${time_out}", st = "${ST}" WHERE id = ${element.id}`;
+                                // update dar detail set time out
+                                const query3 = `UPDATE tbldardtl SET time_out = "${time_out}" WHERE id = ${element.id}`;
                                 db.query(query3, [], (err3, result3) => { console.log(err3); });
+                                // update st where no value on ot and ndot
+                                const query4 = `UPDATE tbldardtl SET st = "${ST}" WHERE id = ${element.id} AND ot = 0 AND ndot = 0`;
+                                db.query(query4, [], (err4, result4) => { console.log(err4); });
                             });
                             chapaCounter = 1; // reset to 1
                         } else { // in else, time out will be the next record time in
@@ -117,9 +142,12 @@ const rawQueryModel = {
                             time_out = result[arrayCounter].time_in;
                             // save if ST if ot and nt are empty
                             let ST = diff;
-                            // update dar detail set time out and (st, if not ot and ndot)
-                            const query3 = `UPDATE tbldardtl SET time_out = "${time_out}", st = "${ST}" WHERE id = ${element.id}`;
+                            // update dar detail set time out
+                            const query3 = `UPDATE tbldardtl SET time_out = "${time_out}" WHERE id = ${element.id}`;
                             db.query(query3, [], (err3, result3) => { console.log(err3); });
+                            // update st where no value on ot and ndot
+                            const query4 = `UPDATE tbldardtl SET st = "${ST}" WHERE id = ${element.id} AND ot = 0 AND ndot = 0`;
+                            db.query(query4, [], (err4, result4) => { console.log(err4); });
                             chapaCounter += 1; // increment
                         }
                         arrayCounter += 1; // increment array counter
@@ -141,6 +169,41 @@ const rawQueryModel = {
         });
     },
 
+    DARDetailTime: async function (params) {
+        return new Promise((resolve, reject) => {
+            // timeIn and person name
+            let timeIn = "N/A";
+            let timeOut = "N/A";
+            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${params.chapa_id}" and auth_date = "${params.date}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
+            db.query(queryDTR, [], async (errDTR, resultDTR) => {
+                if (resultDTR.length > 0) {
+                    timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];;
+                    // timeOut
+                    const queryDTR2 = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${params.chapa_id}" and auth_date = "${params.date}" ORDER BY auth_datetime DESC`; // get first time in
+                    db.query(queryDTR2, [], async (errDTR2, resultDTR2) => {
+                        if (resultDTR2.length > 1) {
+                            timeOut = resultDTR2[0].auth_time.split(':')[0] + "" + resultDTR2[0].auth_time.split(':')[1];;
+                        }
+                        console.log([{ time_in: timeIn, time_out: timeOut }]);
+                        resolve({ success: true, data: [{ time_in: timeIn, time_out: timeOut }] });
+                    });
+                }
+                resolve({ success: true, data: [{ time_in: timeIn, time_out: timeOut }] });
+            });
+        });
+    },
+
+    // print
+    PrintDARDetails: async function (params) {
+        return new Promise((resolve, reject) => {
+            const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
+            const query = `SELECT hdr.department, dtl.*, ${daytype}  FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink and hdr.id = ${params.id} ORDER BY dtl.activity ASC, dtl.ChapaID ASC`;
+            db.query(query, params.paramValue, (err, result) => {
+                if (err) return reject(err);
+                resolve({ success: true, data: result });
+            });
+        });
+    },
 }
 
 module.exports = rawQueryModel;

@@ -160,11 +160,12 @@ module.exports.saveSOADetail = async function (req, res) {
 module.exports.getSOADetail = async function (req, res) {
 	const data = req.query
 	var params = {
-		fields: ["*"],
+		fields: ["*, SUM(h_st) as thst, SUM(h_ot) as thot, SUM(h_nd) as thnd, SUM(h_ndot) as thndot, SUM(amount_st) as tast, SUM(amount_ot) as taot, SUM(amount_nd) as tand, SUM(amount_ndot) as tandot, SUM(total_amount) as tta, SUM(head_count) as thc"],
 		tableName: "tblsoa_dtl",
 		where: ["soa_hdr_idlink = ?"],
 		whereValue: [data.header_id],
-		orderBy: ["activity ASC"]
+		groupBy: ["activity_idlink"],
+		orderBy: ["activity ASC"],
 	}
 	try {
 		await select(params).then(function (response) {

@@ -102,6 +102,7 @@ const AddDARDetail = (props) => {
     // useEffects
     useEffect(() => {
         if (passedData.id) setDataVariable(passedData);
+        else if (passedData.ChapaID) setDataVariable(passedData);
         else if (passedData.dar_idlink) {
             setDataVariable(prevState => ({
                 ...prevState,
@@ -167,13 +168,13 @@ const AddDARDetail = (props) => {
                         <Grid container spacing={1}>
                             <Grid item xs={12} md={6}>
                                 <TextField label="Time In" value={dataVariable.time_in} onChange={updateDataVariable} name="time_in" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ maxLength: 4 }} placeholder="e.g. 2300" />
-                                <TextField label="ST" value={dataVariable.st} onChange={updateDataVariable} name="st" placeholder="Automatically computed" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="ND" value={dataVariable.nd} onChange={updateDataVariable} name="nd" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <TextField label="ST" type="number" step="0.01" value={dataVariable.st} onChange={updateDataVariable} name="st" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <TextField label="ND" type="number" step="0.01" value={dataVariable.nd} onChange={updateDataVariable} name="nd" fullWidth sx={{ mt: 1 }} size="medium" />
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <TextField label="Time Out" value={dataVariable.time_out} onChange={updateDataVariable} name="time_out" placeholder="Automatically computed" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="OT" value={dataVariable.ot} onChange={updateDataVariable} name="ot" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="NDOT" value={dataVariable.ndot} onChange={updateDataVariable} name="ndot" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <TextField label="Time Out" value={dataVariable.time_out} onChange={updateDataVariable} name="time_out" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <TextField label="OT" type="number" step="0.01" value={dataVariable.ot} onChange={updateDataVariable} name="ot" fullWidth sx={{ mt: 1 }} size="medium" />
+                                <TextField label="NDOT" type="number" step="0.01" value={dataVariable.ndot} onChange={updateDataVariable} name="ndot" fullWidth sx={{ mt: 1 }} size="medium" />
                             </Grid>
                         </Grid>
                     </>
