@@ -24,27 +24,15 @@ module.exports.PrintDARDetails = async function (req, res) {
                 return res.status(500).send({ error: 'HTML template file not found' });
             }
             const html = fs.readFileSync(htmlPath, 'utf8');
-            var options = {
-                format: "A3",
+            console.log(html);
+            const options = {
+                format: "A4",
                 orientation: "portrait",
-                border: "10mm",
-                header: {
-                    height: "45mm",
-                    contents: '<div style="text-align: center;">Author: Shyam Hajare</div>'
-                },
-                footer: {
-                    height: "28mm",
-                    contents: {
-                        first: 'Cover page',
-                        2: 'Second page', // Any page number is working. 1-based index
-                        default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-                        last: 'Last Page'
-                    }
-                }
+                border: "1mm",
             };
             const document = {
                 html: html,
-                records: {
+                data: {
                     records: mappedResults
                 },
                 type: 'buffer'
