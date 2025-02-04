@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AutoInsertDetailTemplate, AutoComputeDARTime } = require("../../models/rawQueryModel/rawQueryModel");
+const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getDARHeader = async function (req, res) {
 	const daytype_name = "(SELECT a.dt_name FROM tbldaytype a WHERE a.id = tbldarhdr.day_type_idlink LIMIT 1) as daytype_name";
@@ -62,7 +62,6 @@ module.exports.saveDARHeader = async function (req, res) {
 			confirmed_by_pos: data.confirmed_by_pos ? data.confirmed_by_pos : "",
 			templatelink_id: data.templatelink_id ? data.templatelink_id : "",
 			template_name: data.template_name ? data.template_name : "",
-			activity: data.activity ? data.activity : "",
 			department: data.department ? data.department : "",
 			group_name: data.group_name ? data.group_name : "",
 		}
@@ -136,10 +135,10 @@ module.exports.saveDARDetail = async function (req, res) {
 			emp_ext_name: data.emp_ext_name,
 			time_in: data.time_in,
 			time_out: data.time_out,
-			st: data.st,
-			ot: data.ot,
-			nd: data.nd,
-			ndot: data.ndot,
+			st: data.st ? data.st : 0,
+			ot: data.ot ? data.ot : 0,
+			nd: data.nd ? data.nd : 0,
+			ndot: data.ndot ? data.ndot : 0,
 			gl: data.gl,
 			cost_center: data.cost_center,
 			activitylink_id: data.activitylink_id,
@@ -210,6 +209,40 @@ module.exports.getDARDetail = async function (req, res) {
 	}
 }
 
+module.exports.getDARDetailByChapa = async function (req, res) {
+	const data = req.query
+	var params = {
+		fields: ["*"],
+		tableName: "tbldardtl",
+		where: ["dar_idlink = ?", "ChapaID = ?"],
+		whereValue: [data.header_id, data.chapa_id],
+		orderBy: ["id ASC"]
+	}
+	try {
+		await select(params).then(function (response) {
+			if (response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
+module.exports.getDAREmployeeTime = async function (req, res) {
+	const data = req.query
+	try {
+		await DARDetailTime({ chapa_id: data.chapa_id, date: data.date }).then(function (response) {
+			console.log(response);
+			if (response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 module.exports.deleteDARDetail = async function (req, res) {
 	const data = req.query
 	var params = {
@@ -233,7 +266,7 @@ module.exports.deleteDARDetail = async function (req, res) {
 
 module.exports.testMethod = async function (req, res) {
 	try {
-		await AutoComputeDARTime({ id: 51 }).then(function (response) {
+		await DARDetailTime({ chapa_id: "934064", date: "2025-02-03" }).then(function (response) {
 			res.status(200).json(response);
 		})
 	} catch (error) {

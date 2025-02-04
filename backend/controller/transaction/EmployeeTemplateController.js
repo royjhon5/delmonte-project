@@ -24,7 +24,6 @@ module.exports.saveEmployeeTemplateHeader = async function (req, res) {
 		fieldValue: {
 			id: data.id,
 			TName: data.TName,
-			account_master_idlink: data.account_master_idlink,
 			location_idlink: data.location_idlink,
 			department_idlink: data.department_idlink,
 			group_idlink: data.group_idlink,
@@ -32,9 +31,6 @@ module.exports.saveEmployeeTemplateHeader = async function (req, res) {
 			location: data.location,
 			department: data.department,
 			emp_group: data.emp_group,
-			activityname: data.activityname,
-			gl_code: data.gl_code,
-			costcenter: data.costcenter
 		}
 	}
 	try {
@@ -57,7 +53,8 @@ module.exports.deleteEmployeeTemplateHeader = async function (req, res) {
 	}
 	try {
 		var result = remove(params);
-		result.then(function (response) {
+		result.then(async function (response) {
+			await remove({ tableName: "tbltemplates_employeedtl", where: ["template_employehdr_idlink = ?"], whereValue: [data.id] }); // delete details
 			res.status(200).json(response);
 		})
 	} catch (error) {
@@ -78,19 +75,25 @@ module.exports.saveEmployeeTemplateDetail = async function (req, res) {
 			last_name: data.last_name,
 			first_name: data.first_name,
 			middle_name: data.middle_name,
-			ext_name: data.ext_name
+			ext_name: data.ext_name,
+			default_acitivity_idlink: data.default_acitivity_idlink,
+			activityname: data.activityname,
+			gl_code: data.gl_code,
+			costcenter: data.costcenter,
 		},
 
 	}
+	$template_name = "(SELECT hdr.TName FROM tbltemplates_employeehdr hdr WHERE hdr.id = tbltemplates_employeedtl.template_employehdr_idlink LIMIT 1) as template_name";
 	var checkParams = {
+		fields: ["*," + $template_name],
 		tableName: "tbltemplates_employeedtl",
-		where: ["ChapaID = ?", "template_employehdr_idlink = ?"],
-		whereValue: [data.ChapaID, data.template_employehdr_idlink],
+		where: ["ChapaID = ?"],
+		whereValue: [data.ChapaID],
 	}
 	try {
 		// check exists
 		await select(checkParams).then(async function (response) {
-			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Employee already exists in the template." });
+			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Cannot add. Employee already exists in a template: "+response.data[0].template_name+"." });
 			else {
 				// save if not exists
 				var result = await data.id > 0 ? update(params) : insert(params);

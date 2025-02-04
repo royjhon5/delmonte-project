@@ -102,6 +102,17 @@ const SOAdata = () => {
         setOpenConfirmationPost(false);
     }
 
+    const printDar = async () => {
+        // window.open(linkToBackend + "/print-summary-by-date-range?dataVariable[DocTypeLinkID]=" + dataVariable.DocTypeLinkID +
+        //     "&dataVariable[byCat]=" + dataVariable.byCat +
+        //     "&dataVariable[DateFrom]=" + dataVariable.DateFrom +
+        //     "&dataVariable[DateTo]=" + dataVariable.DateTo +
+        //     "&dataVariable[GeneratedBy]=" + accessToken.Fname +
+        //     "&dataVariable[userID]=" + accessToken.userID +
+        //     "&dataVariable[checkReport]=0"
+        //     , "_blank");
+    }
+
     // details
     const [constMappedData, setConstMappedData] = useState([]);
     const loadSOADetail = useCallback(async (headerID = 0) => {
@@ -130,16 +141,27 @@ const SOAdata = () => {
         },
         { field: 'gl_account', headerName: 'GL', width: 120, },
         { field: 'cost_center', headerName: 'Cost Center', width: 120, },
-        { field: 'h_st', headerName: 'ST HRS', type: 'number', width: 100, },
-        { field: 'h_ot', headerName: 'OT HRS', type: 'number', width: 100, },
-        { field: 'h_nd', headerName: 'ND HRS', type: 'number', width: 100, },
-        { field: 'h_ndot', headerName: 'ND-OT HRS', type: 'number', width: 100, },
-        { field: 'amount_st', headerName: 'ST AMNT', type: 'number', width: 100, },
-        { field: 'amount_ot', headerName: 'OT AMNT', type: 'number', width: 100, },
-        { field: 'amount_nd', headerName: 'ND AMNT', type: 'number', width: 100, },
-        { field: 'amount_ndot', headerName: 'ND-OT AMNT', type: 'number', width: 130, },
-        { field: 'total_amount', headerName: 'TOTAL AMOUNT', type: 'number', width: 130, },
-        { field: 'head_count', headerName: 'HC', type: 'number', width: 100, },
+        { field: 'thst', headerName: 'ST HRS', type: 'number', width: 100, },
+        { field: 'thot', headerName: 'OT HRS', type: 'number', width: 100, },
+        { field: 'thnd', headerName: 'ND HRS', type: 'number', width: 100, },
+        { field: 'thndot', headerName: 'ND-OT HRS', type: 'number', width: 100, },
+        { field: 'c_rates_st', headerName: 'ST RATE', type: 'number', width: 100, },
+        { field: 'c_rates_ot', headerName: 'OT RATE', type: 'number', width: 100, },
+        { field: 'c_rates_nd', headerName: 'ND RATE', type: 'number', width: 100, },
+        { field: 'c_rates_ndot', headerName: 'ND-OT RATE', type: 'number', width: 100, },
+        { field: 'tast', headerName: 'ST AMNT', type: 'number', width: 100, },
+        { field: 'taot', headerName: 'OT AMNT', type: 'number', width: 100, },
+        { field: 'tand', headerName: 'ND AMNT', type: 'number', width: 100, },
+        { field: 'tandot', headerName: 'ND-OT AMNT', type: 'number', width: 100, },
+        { field: 'tta', headerName: 'TOTAL AMOUNT', type: 'number', width: 130, },
+        {
+            field: 'thc', headerName: 'HC', width: 100, type: 'number',
+            renderCell: (params) => (
+                <Box sx={{ paddingRight: 1 }}>
+                    {params.row.thc}
+                </Box>
+            ),
+        },
     ];
 
     const addSOADetail = () => {
@@ -255,7 +277,7 @@ const SOAdata = () => {
                                         <Button variant="contained" size="small" color="warning" onClick={() => { postSOAHeader() }}>POST SOA</Button>
                                     </>
                                     : ""}
-                                <Button variant="contained" size="small" color="secondary" onClick={() => { setOpenModal(true) }}>PRINT SOA</Button>
+                                <Button variant="contained" size="small" color="secondary" onClick={() => { printDar() }}>PRINT SOA</Button>
                                 <Button variant="contained" size="small" color="info" onClick={clearData}>New/Clear</Button>
                             </Grid>
                         </Grid>

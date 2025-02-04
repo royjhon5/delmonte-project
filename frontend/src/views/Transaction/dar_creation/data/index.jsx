@@ -15,6 +15,8 @@ import SearchDARHeaderModal from "../components/SearchDARHeader";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import AddDARDetail from "../components/AddDARDetail.jsx";
 import TransferEmployeeModal from "../components/TransferEmployee.jsx";
+import DARBreakdownModal from "../components/DARBreakdown.jsx";
+import { linkToBackend } from '../../../../store/constant';
 
 const DARdata = () => {
     const [loadSaving, setLoadSaving] = useState(false);
@@ -42,6 +44,8 @@ const DARdata = () => {
         activity: "",
         department: "",
         group_name: "",
+        location_name: "",
+        daytype_name: "",
     };
     const [dataVariableHeader, setDataVariableHeader] = useState(initialDataVariableHeader);
 
@@ -185,11 +189,29 @@ const DARdata = () => {
                     deleteData(params.row.id);
                     dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
                 }
+                const selectDARBreakdown = () => {
+                    if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+                    const personName = params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name;
+                    setOpenDARBreakdown(true);
+                    setPassDataDARBreakDown({ 
+                        id: dataVariableHeader.id, 
+                        date: dataVariableHeader.xDate, 
+                        ChapaID: params.row.ChapaID, 
+                        personName: personName,
+                        emp_fname: params.row.emp_fname,
+                        emp_mname: params.row.emp_mname,
+                        emp_lname: params.row.emp_lname,
+                        emp_ext_name: params.row.emp_ext_name,
+                    });
+                }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
-                        <IconButton color="primary" size="small" onClick={SelectedRow}>
+                        <IconButton color="primary" size="small" onClick={selectDARBreakdown}>
                             <EditIcon fontSize="inherit" />
                         </IconButton>
+                        {/* <IconButton color="primary" size="small" onClick={SelectedRow}>
+                            <EditIcon fontSize="inherit" />
+                        </IconButton> */}
                         <IconButton color="error" size="small" onClick={() => selectToDelete()}>
                             <DeleteIcon fontSize="inherit" />
                         </IconButton>
@@ -212,6 +234,11 @@ const DARdata = () => {
         if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
         setOpenModalTransferEmployee(true);
         setPassDataTransferEmployee({ id: dataVariableHeader.id, date: dataVariableHeader.xDate }); // pass header id to get detail inside modal
+    }
+
+    const printDAR = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        window.open(linkToBackend + `/get-printdardetails?id=${dataVariableHeader.id}`, "_blank");
     }
 
     // modal
@@ -255,6 +282,16 @@ const DARdata = () => {
         }
     }
 
+    const [openModalDARBreakdown, setOpenDARBreakdown] = useState(false);
+    const [passDataDARBreakdown, setPassDataDARBreakDown] = useState({});
+    async function modalCloseDARBreakdown(params) {
+        setOpenDARBreakdown(false);
+        setPassDataDARBreakDown({});
+        if (params) {
+            loadDARDetail(dataVariableHeader.id);
+        }
+    }
+
     const clearData = async (type = 'all') => {
         setConstMappedData([]);
         setDataVariableHeader(initialDataVariableHeader);
@@ -289,13 +326,18 @@ const DARdata = () => {
                 onCloseModal={modalCloseDARTransferEmployee}
                 passedData={passDataTransferEmployee}
             />
+            <DARBreakdownModal
+                openModal={openModalDARBreakdown}
+                onCloseModal={modalCloseDARBreakdown}
+                passedData={passDataDARBreakdown}
+            />
             <Grid container spacing={0.5}>
                 <Grid item xs={12} md={12}>
                     <Paper sx={{ padding: 2 }}>
                         {/* <form noValidate onSubmit={handleSubmit}> */}
                         <Grid container spacing={1}>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Employee Template" value={dataVariableHeader.activity} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Employee Template" value={dataVariableHeader.template_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Location" value={dataVariableHeader.location_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
@@ -341,7 +383,7 @@ const DARdata = () => {
                                         <Button variant="contained" size="small" color="warning" onClick={() => { postDarHeader() }}>POST DAR</Button>
                                     </>
                                     : ""}
-                                <Button variant="contained" size="small" color="secondary" onClick={() => { setOpenModal(true) }}>PRINT DAR</Button>
+                                <Button variant="contained" size="small" color="secondary" onClick={() => { printDAR() }}>PRINT DAR</Button>
                                 <Button variant="contained" size="small" color="info" onClick={clearData}>New/Clear</Button>
                             </Grid>
                         </Grid>

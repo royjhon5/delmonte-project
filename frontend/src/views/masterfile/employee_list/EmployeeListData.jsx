@@ -40,37 +40,37 @@ const EmployeeListData = () => {
             ),
         },
         {
-            field: 'fullname', headerName: 'Fullname', width: 250,
+            field: 'fullname', headerName: 'Fullname', flex: 1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.firstname + " " + data.row.middlename + " " + data.row.lastname + " " + data.row.extname}
                 </Box>
             ),
         },
-        {
-            field: 'location_name', headerName: 'Location', width: 250,
-            renderCell: (data) => (
-                <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.location_name}
-                </Box>
-            ),
-        },
-        {
-            field: 'department_name', headerName: 'Department', width: 250,
-            renderCell: (data) => (
-                <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.department_name}
-                </Box>
-            ),
-        },
-        {
-            field: 'groupline_name', headerName: 'Group', width: 250,
-            renderCell: (data) => (
-                <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.groupline_name}
-                </Box>
-            ),
-        },
+        // {
+        //     field: 'location_name', headerName: 'Location', width: 250,
+        //     renderCell: (data) => (
+        //         <Box sx={{ paddingLeft: 1 }}>
+        //             {data.row.location_name}
+        //         </Box>
+        //     ),
+        // },
+        // {
+        //     field: 'department_name', headerName: 'Department', width: 250,
+        //     renderCell: (data) => (
+        //         <Box sx={{ paddingLeft: 1 }}>
+        //             {data.row.department_name}
+        //         </Box>
+        //     ),
+        // },
+        // {
+        //     field: 'groupline_name', headerName: 'Group', width: 250,
+        //     renderCell: (data) => (
+        //         <Box sx={{ paddingLeft: 1 }}>
+        //             {data.row.groupline_name}
+        //         </Box>
+        //     ),
+        // },
         {
             field: 'activityname', headerName: 'Activity', width: 250,
             renderCell: (data) => (
@@ -82,7 +82,7 @@ const EmployeeListData = () => {
         {
             field: "action", headerAlign: 'right',
             headerName: '',
-            width: 70,
+            flex: 1,
             align: 'right',
             renderCell: (data) => {
                 const SelectData = () => {

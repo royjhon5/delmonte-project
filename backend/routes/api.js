@@ -5,7 +5,8 @@ const arrayRoutesSvc = [
     require('./services/authSvc'),
     require('./services/masterfile'),
     require('./services/administrativeSvc'),
-    require('./services/transaction')
+    require('./services/transaction'),
+    require('./services/reports')
 ];
 
 arrayRoutesSvc.forEach(routeSvc => {

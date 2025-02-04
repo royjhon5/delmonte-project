@@ -35,9 +35,8 @@ const SearchHeaderModal = () => {
                 </Box>
             ),
         },
-        { field: 'activityname', headerName: 'Activity', flex: 1, },
-        { field: 'department', headerName: 'Department', flex: 1, },
         { field: 'emp_group', headerName: 'Group', flex: 1, },
+        { field: 'department', headerName: 'Department', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',

@@ -42,6 +42,7 @@ export const initialState = {
 
     // common
     confirmDelete: false,
+    confirmDelete2: false,
     swalConfirmation: false,
     isUpdateForm: false,
     isUpdateHeaderForm: false,
@@ -179,6 +180,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 confirmDelete: action.confirmDelete
+            };
+        case actionTypes.OPEN_DELETESWAL2:
+            return {
+                ...state,
+                confirmDelete2: action.confirmDelete2
             };
         case actionTypes.OPEN_SWALCONFIRMATION:
             return {

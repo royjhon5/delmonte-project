@@ -1,0 +1,8 @@
+ALTER TABLE `tbltemplates_employeedtl` ADD `activityname` VARCHAR(155) NOT NULL AFTER `default_acitivity_idlink`, ADD `gl_code` VARCHAR(155) NOT NULL AFTER `activityname`, ADD `costcenter` VARCHAR(155) NOT NULL AFTER `gl_code`;
+ALTER TABLE `tbltemplates_employeehdr`
+  DROP `account_master_idlink`,
+  DROP `activityname`,
+  DROP `gl_code`,
+  DROP `costcenter`;
+ALTER TABLE `tblemployeelist` ADD `activityname` VARCHAR(155) NOT NULL AFTER `default_activity_idlink`, ADD `gl_code` VARCHAR(155) NOT NULL AFTER `activityname`, ADD `costcenter` VARCHAR(155) NOT NULL AFTER `gl_code`;
+ALTER TABLE `tbldarhdr` DROP `activity`;

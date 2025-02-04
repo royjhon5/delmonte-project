@@ -39,7 +39,6 @@ const NewDarHeader = (props) => {
         confirmed_by_pos: "",
         templatelink_id: "",
         template_name: "",
-        activity: "",
         department: "",
         group_name: "",
         location_name: "",
@@ -179,16 +178,16 @@ const NewDarHeader = (props) => {
                         <Grid container spacing={1} sx={{ mt: 1 }}>
                             <Grid item xs={12} md={6}>
                                 <FormControl variant="outlined" fullWidth>
-                                    <InputLabel>Select Employee Template (Activity)</InputLabel>
+                                    <InputLabel>Select Employee Template</InputLabel>
                                     <OutlinedInput size="medium"
                                         inputProps={{ readOnly: true }}
-                                        label="Select Employee Template (Activity)"
+                                        label="Select Employee Template"
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalTemplate(true) }}><SearchIcon fontSize="small" /></Button>
                                             </InputAdornment>
                                         }
-                                        value={dataVariable.activity} onChange={updateDataVariable} name="activity"
+                                        value={dataVariable.template_name} onChange={updateDataVariable} name="template_name"
                                     />
                                 </FormControl>
                                 <TextField label="Department" value={dataVariable.department} onChange={updateDataVariable} name="department" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />

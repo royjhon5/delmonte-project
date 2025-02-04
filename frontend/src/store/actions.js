@@ -48,4 +48,5 @@ export const OPEN_NEW_DAR = '@customization/OPEN_NEW_DAR';
 export const IS_UPDATE_FORM = '@customization/IS_UPDATE_FORM';
 export const IS_UPDATE_HEADER_FORM = '@customization/IS_UPDATE_HEADER_FORM';
 export const OPEN_DELETESWAL = '@customization/OPEN_DELETESWAL';
+export const OPEN_DELETESWAL2 = '@customization/OPEN_DELETESWAL2';
 export const OPEN_SWALCONFIRMATION = '@customization/OPEN_SWALCONFIRMATION';

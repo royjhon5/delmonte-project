@@ -14,7 +14,8 @@ const AddGroupLine = ({ RefreshData }) => {
     const { data: locationList } = hookContainer('/get-location');
     const { data: departmentList } = hookContainer('/get-department');
     const { data: groupList } = hookContainer('/get-group');
-    const { data: activityList } = hookContainer('/get-activity');
+    // const { data: activityList } = hookContainer('/get-activity');
+    const { data: accounttochargeList } = hookContainer('/get-accounttocharge');
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
     const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
@@ -29,6 +30,9 @@ const AddGroupLine = ({ RefreshData }) => {
     const [assigned_department_idlink, setDepartmentLinkID] = useState('');
     const [assigned_group_idlink, setGroupLinkID] = useState('');
     const [default_activity_idlink, setActivityLinkID] = useState('');
+    const [activityname, setActivity] = useState('');
+    const [gl_code, setGLCode] = useState('');
+    const [costcenter, setCostCenter] = useState('');
 
     const CloseDialog = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false });
@@ -47,6 +51,9 @@ const AddGroupLine = ({ RefreshData }) => {
             assigned_department_idlink: assigned_department_idlink,
             assigned_group_idlink: assigned_group_idlink,
             default_activity_idlink: default_activity_idlink,
+            activityname: activityname,
+            gl_code: gl_code,
+            costcenter: costcenter,
         };
         try {
             await saveUpdateDataExecute.mutateAsync(saveUpdateData);
@@ -80,6 +87,15 @@ const AddGroupLine = ({ RefreshData }) => {
         setActivityLinkID('');
     }
 
+    const assignChange = (type, id) => {
+        if (type == 'activity') {
+            const obj = accounttochargeList.filter(item => item.id.toString() == id)[0];
+            setActivity(obj.activityname);
+            setGLCode(obj.gl_code);
+            setCostCenter(obj.costcenter);
+        }
+    }
+
     useEffect(() => {
         if (isToUpdate) {
             setChapaID(toUpdateData.chapa_id);
@@ -107,7 +123,7 @@ const AddGroupLine = ({ RefreshData }) => {
                     <TextField label="Middlename" value={middlename} onChange={(e) => { setMiddlename(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                     <TextField label="Lastname" value={lastname} onChange={(e) => { setLastname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
                     <TextField label="Extname" value={extname} onChange={(e) => { setExtname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Location" select value={assigned_location_idlink} onChange={(e) => { setLocationLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    {/* <TextField sx={{ mt: 1 }} size="medium" label="Select Location" select value={assigned_location_idlink} onChange={(e) => { setLocationLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {locationList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
@@ -130,12 +146,12 @@ const AddGroupLine = ({ RefreshData }) => {
                                 {option.groupline_name}
                             </option>
                         ))}
-                    </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={default_activity_idlink} onChange={(e) => { setActivityLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    </TextField> */}
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Default Activity" select value={default_activity_idlink} onChange={(e) => { setActivityLinkID(e.target.value); assignChange('activity', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
-                        {activityList?.map((option) => (
+                        {accounttochargeList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
-                                {option.activityname}
+                                {option.activityname + " | " + option.gl_code + " | " + option.costcenter}
                             </option>
                         ))}
                     </TextField>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>DAR Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 10px;
+        }
+
+        table tr {
+            page-break-before: always;
+        }
+
+        th,
+        td {
+            padding: 3px;
+            text-align: left;
+            /* border: 1px solid black !important; */
+        }
+
+        h3,
+        h4 {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center; margin-bottom: 2px;">
+        <h3>GENERAL SERVICES MULTIPURPOSE COOPERATIVE</h3>
+        <h4>DAILY ACCOMPLISHMENT REPORT</h4>
+    </div>
+    <div style=" margin-bottom: 25px;">
+
+    </div>
+    <!-- <h5>Document Category: {{this.docType}}</h5> -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th rowspan="2">CHAPA NO.</th>
+                <th rowspan="2">Name</th>
+                <th colspan="2">Time</th>
+                <th colspan="3">No. of Hours Worked</th>
+                <th rowspan="2">ND-O.T</th>
+                <th rowspan="2">Signature</th>
+                <th rowspan="2">REMARKS</th>
+                <th colspan="2">UNIT CHARGE</th>
+            </tr>
+            <tr>
+                <th>IN</th>
+                <th>OUT</th>
+                <th>ST</th>
+                <th>OT</th>
+                <th>ND</th>
+                <th>GL</th>
+                <th>CC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each records}}
+            <tr>
+                <td style="font-size: 11.5px;">{{this.ChapaID}}</td>
+                <td style="font-size: 11.5px;">{{this.emp_lname}}, {{this.emp_fname}} {{this.emp_mname}}
+                    {{this.emp_ext_name}}</td>
+                <td style="font-size: 11.5px; ">{{this.time_in}}</td>
+                <td style="font-size: 11.5px;">{{this.time_out}}</td>
+                <td style="font-size: 11.5px;">{{this.st}}</td>
+                <td style="font-size: 11.5px;">{{this.ot}}</td>
+                <td style="font-size: 11.5px;">{{this.nd}}</td>
+                <td style="font-size: 11.5px;">{{this.ndot}}</td>
+                <td style="font-size: 11.5px;"></td>
+                <td style="font-size: 11.5px;"></td>
+                <td style="font-size: 11.5px;">{{this.gl}}</td>
+                <td style="font-size: 11.5px;">{{this.cost_center}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    <div style="font-size:10px;">
+
+    </div>
+</body>
+
+</html>

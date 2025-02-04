@@ -25,7 +25,6 @@ const HeaderModal = ({ RefreshData }) => {
         clearData();
     }
     const [TName, setTName] = useState('');
-    const [account_master_idlink, setAccountMasterLinkID] = useState('');
     const [location_idlink, setLocationLinkID] = useState('');
     const [department_idlink, setDepartmentLinkID] = useState('');
     const [group_idlink, setGroupLinkID] = useState('');
@@ -33,15 +32,11 @@ const HeaderModal = ({ RefreshData }) => {
     const [location, setLocation] = useState('');
     const [department, setDepartment] = useState('');
     const [emp_group, setGroup] = useState('');
-    const [activityname, setActivity] = useState('');
-    const [gl_code, setGLCode] = useState('');
-    const [costcenter, setCostCenter] = useState('');
 
     const SaveOrUpdateData = async () => {
         var formVariable = {
             id: isToUpdate ? toUpdateData.id : 0,
             TName: TName,
-            account_master_idlink: account_master_idlink,
             location_idlink: location_idlink,
             department_idlink: department_idlink,
             group_idlink: group_idlink,
@@ -49,9 +44,6 @@ const HeaderModal = ({ RefreshData }) => {
             location: location,
             department: department,
             emp_group: emp_group,
-            activityname: activityname,
-            gl_code: gl_code,
-            costcenter: costcenter,
         };
         try {
             await saveNewformVariable.mutateAsync(formVariable);
@@ -80,7 +72,6 @@ const HeaderModal = ({ RefreshData }) => {
     useEffect(() => {
         if (isToUpdate) {
             setTName(toUpdateData.TName);
-            setAccountMasterLinkID(toUpdateData.account_master_idlink);
             setLocationLinkID(toUpdateData.location_idlink);
             setDepartmentLinkID(toUpdateData.department_idlink);
             setGroupLinkID(toUpdateData.group_idlink);
@@ -88,15 +79,11 @@ const HeaderModal = ({ RefreshData }) => {
             setLocation(toUpdateData.location);
             setDepartment(toUpdateData.department);
             setGroup(toUpdateData.emp_group);
-            setActivity(toUpdateData.activityname);
-            setGLCode(toUpdateData.gl_code);
-            setCostCenter(toUpdateData.costcenter);
         }
     }, [isToUpdate, toUpdateData])
 
     const clearData = () => {
         setTName('');
-        setAccountMasterLinkID('');
         setLocationLinkID('');
         setDepartmentLinkID('');
         setGroupLinkID('');
@@ -104,9 +91,6 @@ const HeaderModal = ({ RefreshData }) => {
         setLocation('');
         setDepartment('');
         setGroup('');
-        setActivity('');
-        setGLCode('');
-        setCostCenter('');
     }
 
     const assignChange = (type, id) => {
@@ -135,11 +119,11 @@ const HeaderModal = ({ RefreshData }) => {
             DialogContents={
                 <Box sx={{ mt: 1 }}>
                     <TextField label="Template Name" value={TName} onChange={(e) => { setTName(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={account_master_idlink} onChange={(e) => { setAccountMasterLinkID(e.target.value); assignChange('activity', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={group_idlink} onChange={(e) => { setGroupLinkID(e.target.value); assignChange('group', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
-                        {accounttochargeList?.map((option) => (
+                        {groupList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
-                                {option.activityname + " | " + option.gl_code + " | " + option.costcenter}
+                                {option.groupline_name}
                             </option>
                         ))}
                     </TextField>
@@ -148,14 +132,6 @@ const HeaderModal = ({ RefreshData }) => {
                         {departmentList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
                                 {option.department_name}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={group_idlink} onChange={(e) => { setGroupLinkID(e.target.value); assignChange('group', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {groupList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.groupline_name}
                             </option>
                         ))}
                     </TextField>
