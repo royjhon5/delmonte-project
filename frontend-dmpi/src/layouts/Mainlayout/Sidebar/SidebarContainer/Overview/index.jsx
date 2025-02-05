@@ -16,6 +16,8 @@ const OverView = () => {
   const dispatch = useDispatch();
   const navigateDashboard = () => { navigate('/dashboard'), dispatchFalse() }
   const navigateUserList = () => { navigate('/dashboard/user-list'), dispatchFalse() }
+  const navigateForConfirmation = () => { navigate('/dashboard/for-confirmation'), dispatchFalse() }
+  const navigateForApproval = () => { navigate('/dashboard/for-approval'), dispatchFalse() }
 
   const dispatchFalse = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
@@ -44,10 +46,12 @@ const OverView = () => {
       <ListSubHeaderStyle ListLabel="OVERVIEW" />
       <ListItemButtonStyle ListbtnLabel="Dashboard" activePath="/dashboard" MenuClick={navigateDashboard} IconChildrens={<DashboardIcon fontSize="small" />} />
       <StyledBadge badgeContent={4} color="primary" size="small">
-        <ListItemButtonStyle ListbtnLabel="For Confirmation" MenuClick={navigateDashboard} IconChildrens={<CheckCircleIcon fontSize="small" />} />
+        <ListItemButtonStyle activePath="/dashboard/for-confirmation" ListbtnLabel="For Confirmation" MenuClick={navigateForConfirmation} IconChildrens={<CheckCircleIcon fontSize="small" />} />
       </StyledBadge>
-      <ListItemButtonStyle ListbtnLabel="For Approval" MenuClick={navigateDashboard} IconChildrens={<ThumbUpIcon fontSize="small" />} />
-      <ListItemButtonStyle ListbtnLabel="Search Transaction" MenuClick={navigateDashboard} IconChildrens={<SearchIcon fontSize="small" />} />
+      <StyledBadge badgeContent={2} color="secondary" size="small">
+        <ListItemButtonStyle ListbtnLabel="For Approval" activePath="/dashboard/for-approval"  MenuClick={navigateForApproval} IconChildrens={<ThumbUpIcon fontSize="small" />} />
+      </StyledBadge>
+      <ListItemButtonStyle ListbtnLabel="Search Transaction" MenuClick={navigateForApproval} IconChildrens={<SearchIcon fontSize="small" />} />
       <ListItemButtonStyle activePath="/dashboard/user-list" ListbtnLabel="User List" MenuClick={navigateUserList} IconChildrens={<PersonIcon fontSize="small" />} />
       {/* <MasterFile />
       <Transactions />
