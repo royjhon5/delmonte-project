@@ -237,7 +237,7 @@ const UserListData = () => {
                                   <img
                                       src={
                                         preview ||
-                                        `http://localhost:8000/admin-profile/`
+                                        `http://localhost:8000/uploads/profile_picture/croppedImage.png`
                                         }
                                       style={{ maxWidth: '100%' }}
                                   />
@@ -364,8 +364,8 @@ const UserListData = () => {
             <CustomDataGrid 
                 columns={ColumnHeader}
                 rows={SearchFilter(constMappedData)}
-                maxHeight={450}
-                height={450}
+                maxHeight={400}
+                height={400}
                 slots={{ noRowsOverlay: NoData }}
             />
             </Paper>
