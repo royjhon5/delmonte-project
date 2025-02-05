@@ -10,7 +10,7 @@ module.exports.routes = {
     ], 
     get: [
         [ '/get-users', UserCtrl.getUsers ],
-        [ '/get-forconfirmation', UserCtrl.getUsers ],
+        [ '/get-forconfirmation', UserCtrl.getForConfirmation ],
     ], 
     remove: [
         [ '/logout', Ctrl.userLogout ],
