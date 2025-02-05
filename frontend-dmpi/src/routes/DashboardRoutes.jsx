@@ -10,6 +10,8 @@ const UpdateFormPass = Loadable(lazy(() => import('../views/authentication/updat
 
 // administrative
 const UserList = Loadable(lazy(() => import('../views/Administrative/_UserList')));
+const ConfirmationModule = Loadable(lazy(() => import('../views/Administrative/ForConfirmation')));
+const ApprovalModule = Loadable(lazy(() => import('../views/Administrative/ForApproval')));
 
 
 const DashboardRoutes = {
@@ -31,6 +33,24 @@ const DashboardRoutes = {
 			element: (
 				<ProtectedRoute pageName='User List'>
 					<UserList />
+				</ProtectedRoute>
+			)
+		},
+
+		{
+			path: '/dashboard/for-confirmation',
+			element: (
+				<ProtectedRoute pageName='User List'>
+					<ConfirmationModule />
+				</ProtectedRoute>
+			)
+		},
+
+		{
+			path: '/dashboard/for-approval',
+			element: (
+				<ProtectedRoute pageName='User List'>
+					<ApprovalModule />
 				</ProtectedRoute>
 			)
 		},
