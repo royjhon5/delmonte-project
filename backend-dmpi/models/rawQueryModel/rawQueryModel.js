@@ -68,6 +68,15 @@ const rawQueryModel = {
             });
         });
     },
+
+    GetForConfirmation: async function () {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT dhdr.*, shdr.* FROM darhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link WHERE shdr.soa_status = "SUBMITTED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+            db.query(query, [], async (err, result) => {
+                resolve({ success: true, data: result });
+            });
+        });
+    },
 }
 
 module.exports = rawQueryModel;
