@@ -11,6 +11,8 @@ module.exports.PrintDARDetails = async function (req, res) {
         const response = await PrintDARDetails({ id: data.id });
         if (response.success) {
             const result = response.data;
+            const totals = response.totals;
+            const signatory = response.signatory;
             const mappedResults = result.map(reportData => {
                 const currentDateTime = dayjs().format('MM/DD/YYYY HH:mm:ss');
                 return {
@@ -24,16 +26,23 @@ module.exports.PrintDARDetails = async function (req, res) {
                 return res.status(500).send({ error: 'HTML template file not found' });
             }
             const html = fs.readFileSync(htmlPath, 'utf8');
-            console.log(html);
             const options = {
                 format: "A4",
                 orientation: "portrait",
                 border: "1mm",
+                footer: {
+                    height: "8mm",
+                    contents: {
+                        default: '<div style="width:100%; text-align:center;"><span style="color: #444;">Page {{page}}</span>/<span>{{pages}}</span></div>', // fallback value
+                    }
+                }
             };
             const document = {
                 html: html,
                 data: {
-                    records: mappedResults
+                    records: mappedResults,
+                    totals: totals,
+                    signatory: signatory,
                 },
                 type: 'buffer'
             };
