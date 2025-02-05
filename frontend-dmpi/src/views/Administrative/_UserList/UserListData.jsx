@@ -14,6 +14,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import ModalCrop from "../../../components/ModalCrop";
 import UploadPictureIcon from "../../../components/svg-icons/UploadPictureIcon";
 import { useTheme } from "@emotion/react";
+import { CheckmarkIcon } from "react-hot-toast";
 
 const UserListData = () => {
   const theme = useTheme();
@@ -25,19 +26,22 @@ const UserListData = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const MAX_FILE_SIZE = 3 * 1024 * 1024;
   const [file, setFile] = useState(null);
+  const [filepath_esignature, setFilePathESignature] = useState('');
   const [src, setSrc] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [preview, setPreview] = useState(null);
   const { data: userData, loading } = hookContainer('/get-users');
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedID, setSelectedID] = useState(0);
+  console.log(filepath_esignature[0]);
 
   const [username, setUsername] = useState('');
   const [position, setPosition] = useState('');
   const [client_name, setClientName] = useState('');
   const [fullName, setFullName] = useState('');
-  const [filepath_profilepicture, setFilePathProfilePicture] = useState('');
-  const [filepath_esignature, setFilePathESignature] = useState('');
+  const [roles, setRoles] = useState('');
+  const [personal_key, setPersonalKey] = useState('');
+  
 
   const convertBytesToMB = (bytes) => (bytes / (1024 * 1024)).toFixed(2);
   const constMappedData = Array.isArray(userData) ? userData.map((row) => {
@@ -114,36 +118,40 @@ const UserListData = () => {
     inputRef.current.click();
   };
 
-
-  const handleSubmit = async () => {
-    const UserRegistrationData = { 
-      LoginID: selectedRowData ? selectedRowData.LoginID : 0,
-      Username: username,
-      Position: position, 
-      Client_name: client_name,
-      FullName: fullName,
-      filepath_profilepicture: filepath_profilepicture,
-      filepath_esignature: filepath_esignature
-    };
-    try {
-      await UserData.mutateAsync(UserRegistrationData);
-    } catch (error) {
-      console.error('Error saving cash voucher:', error);
-      toast.error('Failed to save cash voucher.');
-    }
-  };
-  const UserData = useMutation({
-    mutationFn: (UserRegistrationData) => http.post('/user_registration', UserRegistrationData),
-    onSuccess: () => {
-        queryClient.invalidateQueries(['/get-users']);
-        toast.success('New user has been saved.');
-        setSelectedRowData(null);
-        setFullName('');
-    },
-    onError: (error) => {
-      toast.error(error)
-    }
-  });
+  const handleUpload = async () => {
+    if(!file) return toast.error('Error: No image has been attached.');
+    try { 
+      const uploadProfPic = new FormData();
+      const uploadESig = new FormData();
+      uploadProfPic.append('filename', file.name);
+      uploadProfPic.append('file', file);
+      uploadESig.append('efilename', filepath_esignature[0].name);
+      uploadESig.append('efile', filepath_esignature[0]);
+      const uploadProf  = await http.post('/upload-profile', uploadProfPic, { headers: { 'Content-Type': 'multipart/form-data'}});
+      const uploadSign  = await http.post('/upload-esignature', uploadESig, { headers: { 'Content-Type': 'multipart/form-data'}});
+      if (!uploadProf.data.success) return alert(uploadProf.data.message);
+      if (!uploadSign.data.success) return alert(uploadProf.data.message);
+      const saveResponse = await http.post('/register', {
+        LoginID: 0,
+        Username: username,
+        Position: position,
+        roles: roles,
+        personal_key: personal_key,
+        Client_name: client_name,
+        FullName: fullName,
+        filepath_profilepicture: file.name,
+        filepath_esignature: filepath_esignature[0].name,
+      });
+      if (saveResponse.status === 200) {
+        toast.success('File and data saved successfully!');
+        NewClearData(); 
+      } else {
+        toast.error('Error saving data. Please try again.');
+      }
+    } catch(error) {
+      console.error(error);
+    } 
+  }
 
   const selectToDelete = (data) => {
     setSelectedID(data);
@@ -165,7 +173,14 @@ const UserListData = () => {
 
   const NewClearData = () => {
     setSelectedRowData(null);
+    setUsername('');
     setFullName('');
+    setPosition('');
+    setClientName('');
+    setRoles('');
+    setPersonalKey('');
+    setFile(null);
+    setFilePathESignature('');
   }
 
   return (
@@ -175,18 +190,18 @@ const UserListData = () => {
     <Grid container spacing={1}>
       
         <Grid item xs={12} md={4}>
-        <form noValidate onSubmit={handleSubmit}>
-            <Paper sx={{ padding: '80px 24px 40px', textAlign: 'center', position: 'relative', zIndex: 0 }}>
+        <form noValidate onSubmit={handleUpload}>
+            <Paper sx={{ padding: '30px 24px 27px', textAlign: 'center', position: 'relative', zIndex: 0 }}>
             <div>
                     <Box role="presentation" tabIndex="0" sx={{
-                            padding: '8px',
-                            margin: 'auto',
-                            width: '144px',
-                            height: '144px',
-                            cursor: 'pointer',
-                            overflow: 'hidden',
-                            borderRadius: '50%',
-                            border :'1px dashed rgba(145, 158, 171, 0.2)'
+                      padding: '8px',
+                      margin: 'auto',
+                      width: '144px',
+                      height: '144px',
+                      cursor: 'pointer',
+                      overflow: 'hidden',
+                      borderRadius: '50%',
+                      border :'1px dashed rgba(145, 158, 171, 0.2)'
                     }} 
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
@@ -295,33 +310,37 @@ const UserListData = () => {
             <Paper sx={{padding:2}}>
                 <Grid container spacing={1}>
                     <Grid item xs={12} md={6}>
-                        <TextField variant='outlined' size="small" label="Username" fullWidth />
+                        <TextField variant='outlined' value={username} onChange={(e) => {setUsername(e.target.value)}} size="small" label="Username" fullWidth />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <TextField variant='outlined' size="small" label="Full name" fullWidth />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                        <TextField variant='outlined' size="small" label="Position" fullWidth />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField variant='outlined' size="small" label="Client Name" fullWidth />
+                        <TextField variant='outlined' value={fullName} onChange={(e) => {setFullName(e.target.value)}} size="small" label="Full name" fullWidth />
                     </Grid>
 
+                    <Grid item xs={12} md={6}>
+                        <TextField variant='outlined' value={position} onChange={(e) => {setPosition(e.target.value)}} size="small" label="Position" fullWidth />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <TextField variant='outlined' value={client_name} onChange={(e) => {setClientName(e.target.value)}} size="small" label="Client Name" fullWidth />
+                    </Grid>
+
 
                     <Grid item xs={12} md={6}>
-                    <TextField size="small" label="Select Rules" select SelectProps={{ native: true, }} fullWidth>
+                    <TextField size="small" label="Select Roles" select SelectProps={{ native: true, }} value={roles} onChange={(e) => {setRoles(e.target.value)}} fullWidth>
                         <option></option>
-                        <option>Approver</option>
-                        <option>Verifier / Confirm</option>
+                        <option value="Approver">Approver</option>
+                        <option value="Verifier">Verifier / Confirm</option>
                     </TextField>
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <TextField variant='outlined' size="small" label="Personal Key" fullWidth />
+                        <TextField variant='outlined' value={personal_key} onChange={(e) => {setPersonalKey(e.target.value)}} size="small" label="Personal Key" fullWidth />
                     </Grid>
                     <Grid item xs={12} md={12}>
-                      <Button fullWidth variant="contained" component="label" color="info">Upload Signature <input type="file" hidden /></Button>
+                      <Button fullWidth variant="contained" 
+                      startIcon={<Box component="div" sx={{ display: filepath_esignature !== '' ? "block" : "none" }}><CheckmarkIcon color="primary" /></Box>}
+                      value={filepath_esignature}  
+                      component="label" color="warning">
+                      {filepath_esignature !== '' ? `Signature Uploaded - Filename: ${filepath_esignature[0].name}` : "Upload Signature"} <input type="file" onChange={(e) => {setFilePathESignature(e.target.files)}} hidden /></Button>
                     </Grid>
 
                     <Grid item xs={12} md={12} sx={{ mt:2, mb:0.5 }}>
@@ -329,7 +348,7 @@ const UserListData = () => {
                     </Grid>
 
                     <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap:1, justifyContent: 'flex-end'}}>
-                        <Button variant="contained">Save</Button>
+                        <Button variant="contained" onClick={handleUpload}>Save</Button>
                         <Button variant="contained" color="secondary" onClick={NewClearData}>NEW/CLEAR</Button>
                     </Grid>
                 </Grid>

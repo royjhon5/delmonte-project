@@ -42,10 +42,10 @@ module.exports.uploadESignature = async function (req, res) {
 			},
 			filename: function (req, file, cb) {
 				const data = req.body;
-				cb(null, data.filename)
+				cb(null, data.efilename)
 			}
 		})
-	}).single('file');
+	}).single('efile');
 	try {
 		await upload(req, res, function (err) {
 			if (err instanceof multer.MulterError) {
@@ -65,11 +65,39 @@ module.exports.uploadESignature = async function (req, res) {
 }
 
 
-module.exports.UserRegistration = async function (req, res) { 
+module.exports.getUsers = async function (req, res) {
+	var params = {
+		fields: ["*"],
+		tableName: "tbllogin",
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
+
+module.exports.UserRegistration = async function (req, res) {
 	const data = req.body;
 	const saltRounds = 10;
 	try {
 		const hashedPassword = await bcrypt.hash('Default@123', saltRounds);
+		let oldProfilePicturePath = null;
+		let oldSignaturePath = null;
+		if (data.LoginID > 0) {
+			const existingUser = await query(`SELECT filepath_profilepicture FROM tbllogin WHERE LoginID = ?`, [data.LoginID]);
+			if (existingUser.length > 0) {
+				oldProfilePicturePath = existingUser[0].filepath_profilepicture;
+				oldSignaturePath = existingUser[0].filepath_esignature;
+			}
+		}
+		const newProfilePicturePath = path.join(process.env.PROFILE_PICTURE_PATH, data.filepath_profilepicture);
+		const newSignaturePath = path.join(process.env.E_SIGNATURE_PATH, data.filepath_esignature);
 		const params = {
 			tableName: "tbllogin",
 			fieldValue: {
@@ -77,15 +105,33 @@ module.exports.UserRegistration = async function (req, res) {
 				Username: data.Username,
 				Password: hashedPassword,
 				Position: data.Position,
-                Client_name: data.Client_name,
+				roles: data.roles,
+				personal_key: data.personal_key,
+				Client_name: data.Client_name,
 				FullName: data.FullName,
-                filepath_profilepicture: path.join(process.env.PROFILE_PICTURE_PATH, data.filepath_profilepicture),
-                filepath_esignature: path.join(process.env.E_SIGNATURE_PATH, data.filepath_esignature),
+				filepath_profilepicture: newProfilePicturePath,
+				filepath_esignature: newSignaturePath,
 			}
 		};
 		const result = await (data.LoginID > 0 ? update(params) : insert(params));
+		if (data.LoginID > 0 && oldProfilePicturePath && oldProfilePicturePath !== newProfilePicturePath) {
+			fs.unlink(oldProfilePicturePath, (err) => {
+				if (err) {
+					console.error("Failed to delete old profile picture:", err);
+				} else {
+					console.log("Old profile picture deleted successfully.");
+				}
+			});
+		} else if (data.LoginID > 0 && oldSignaturePath && oldSignaturePath !== newSignaturePath) {
+			fs.unlink(oldSignaturePath, (err) => {
+				if (err) {
+					console.error("Failed to delete old signature:", err);
+				} else {
+					console.log("Old signature deleted successfully.");
+				}
+			});
+		}
 		res.status(200).json(result);
-
 	} catch (error) {
 		res.status(400).json({ error: 'Server Error' });
 		console.error(error);
