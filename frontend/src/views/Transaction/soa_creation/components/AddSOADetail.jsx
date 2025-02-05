@@ -33,7 +33,6 @@ const AddSOADetailModal = (props) => {
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.activity.toLowerCase().includes(search.toLowerCase()) ||
             row.department.toLowerCase().includes(search.toLowerCase()) ||
             row.group_name.toLowerCase().includes(search.toLowerCase())
         );
@@ -41,15 +40,15 @@ const AddSOADetailModal = (props) => {
 
     const ColumnHeader = [
         {
-            field: 'activity', headerName: 'Activity', width: 250,
+            field: 'template_name', headerName: 'Template Name', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.activity}
+                    {params.row.template_name}
                 </Box>
             ),
         },
-        { field: 'department', headerName: 'Department', flex: 1 },
         { field: 'group_name', headerName: 'Group', flex: 1 },
+        { field: 'department', headerName: 'Department', flex: 1 },
         { field: 'shift', headerName: 'Shift', flex: 1 },
         {
             field: "action", headerAlign: 'right',
