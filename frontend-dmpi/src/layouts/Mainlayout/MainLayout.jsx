@@ -18,7 +18,7 @@ const MainLayout = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    await http('/get-department').then(() => {
+    await http('/get-users').then(() => {
     })
     setLoading(false)
   }
