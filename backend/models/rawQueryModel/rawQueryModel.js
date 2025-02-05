@@ -35,8 +35,8 @@ const rawQueryModel = {
                     // select dar header date
                     const darQuery = `SELECT * FROM tbldarhdr WHERE id = ${params.id} LIMIT 1`;
                     db.query(darQuery, [], async (errDar, resultDar) => {
-                        if(resultDar.length > 0) {
-                             // get dar time in from device here...
+                        if (resultDar.length > 0) {
+                            // get dar time in from device here...
                             const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_date = "${resultDar[0].xDate}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
                                 let timeIn = "0000";
@@ -202,12 +202,85 @@ const rawQueryModel = {
 
     // print
     PrintDARDetails: async function (params) {
+        let resultData = [];
+        let totalST = 0;
+        let totalOT = 0;
+        let totalND = 0;
+        let totalNDOT = 0;
+        let totalHC = 1;
+        let cntr = 1;
         return new Promise((resolve, reject) => {
             const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
-            const query = `SELECT hdr.department, dtl.*, ${daytype}  FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink and hdr.id = ${params.id} ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC`;
+            const query = `SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink and hdr.id = ${params.id} ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC`;
             db.query(query, params.paramValue, (err, result) => {
                 if (err) return reject(err);
-                resolve({ success: true, data: result });
+                let lastChapa = result[0].ChapaID;
+                let prepared_by = result[0].prepared_by;
+                let checked_by = result[0].checked_by;
+                resultData.push({
+                    ChapaID: "",
+                    emp_lname: result[0].activity.toUpperCase(),
+                    emp_fname: "",
+                    emp_mname: "",
+                    emp_ext_name: "",
+                    time_in: "",
+                    time_out: "",
+                    st: "",
+                    ot: "",
+                    nd: "",
+                    ndot: "",
+                    gl: "",
+                    glcost_center: "",
+                    daytype: result[0].daytype,
+                    department: result[0].department,
+                    xDate: result[0].xDate,
+                    shift: result[0].shift
+                });
+                result.forEach(element => {
+                    if (lastChapa != element.ChapaID) {
+                        lastChapa = element.ChapaID; // update variable
+                        totalHC += 1;
+                        cntr = 1;
+                        resultData.push({
+                            ChapaID: "",
+                            emp_lname: element.activity.toUpperCase(),
+                            emp_fname: "",
+                            emp_mname: "",
+                            emp_ext_name: "",
+                            time_in: "",
+                            time_out: "",
+                            st: "",
+                            ot: "",
+                            nd: "",
+                            ndot: "",
+                            gl: "",
+                            glcost_center: "",
+                            daytype: element.daytype,
+                            department: element.department,
+                            xDate: element.xDate,
+                            shift: element.shift
+                        });
+                    }
+                    if(cntr > 1) {
+                        element.ChapaID = "";
+                        element.emp_lname = "";
+                        element.emp_fname = "";
+                        element.emp_mname = "";
+                        element.emp_ext_name = "";
+                    }
+                    resultData.push(element);
+                    totalST += parseFloat(element.st);
+                    totalOT += parseFloat(element.ot);
+                    totalND += parseFloat(element.nd);
+                    totalNDOT += parseFloat(element.ndot);
+                    cntr += 1;
+                })
+                resolve({
+                    success: true,
+                    data: resultData,
+                    totals: { totalHC: totalHC, totalST: totalST, totalOT: totalOT, totalND: totalND, totalNDOT: totalNDOT },
+                    signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() }
+                });
             });
         });
     },
