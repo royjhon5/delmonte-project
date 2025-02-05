@@ -8,12 +8,14 @@ import { COLOR_ACCOUNTING, COLOR_ADMINISTRATIVE, COLOR_CASHIERPORTAL, COLOR_FINA
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import SearchIcon from '@mui/icons-material/Search';
-import { Badge } from "@mui/material";
+import { Badge, styled } from "@mui/material";
+import PersonIcon from '@mui/icons-material/Person';
 
 const OverView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const navigateDashboard = () => { navigate('/dashboard'), dispatchFalse() }
+  const navigateUserList = () => { navigate('/dashboard/user-list'), dispatchFalse() }
 
   const dispatchFalse = () => {
     dispatch({ type: OPEN_MASTERFILE, openMasterFile: false });
@@ -27,15 +29,26 @@ const OverView = () => {
     dispatch({ type: COLOR_FINANCIALREPORT, colorFinancialReport: false });
     dispatch({ type: COLOR_ADMINISTRATIVE, colorAdministrative: false });
   }
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      right: -3,
+      top: 13,
+      border: `1px solid ${theme.palette.background.paper}`,
+      padding: '0 4px',
+    },
+  }));
+
+
   return (
     <CustomList >
       <ListSubHeaderStyle ListLabel="OVERVIEW" />
       <ListItemButtonStyle ListbtnLabel="Dashboard" activePath="/dashboard" MenuClick={navigateDashboard} IconChildrens={<DashboardIcon fontSize="small" />} />
-      <Badge badgeContent={4} color="primary" size="small">
+      <StyledBadge badgeContent={4} color="primary" size="small">
         <ListItemButtonStyle ListbtnLabel="For Confirmation" MenuClick={navigateDashboard} IconChildrens={<CheckCircleIcon fontSize="small" />} />
-      </Badge>
+      </StyledBadge>
       <ListItemButtonStyle ListbtnLabel="For Approval" MenuClick={navigateDashboard} IconChildrens={<ThumbUpIcon fontSize="small" />} />
-      <ListItemButtonStyle ListbtnLabel="Search Previous Transaction" MenuClick={navigateDashboard} IconChildrens={<SearchIcon fontSize="small" />} />
+      <ListItemButtonStyle ListbtnLabel="Search Transaction" MenuClick={navigateDashboard} IconChildrens={<SearchIcon fontSize="small" />} />
+      <ListItemButtonStyle activePath="/dashboard/user-list" ListbtnLabel="User List" MenuClick={navigateUserList} IconChildrens={<PersonIcon fontSize="small" />} />
       {/* <MasterFile />
       <Transactions />
       <Administrative /> 
