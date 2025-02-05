@@ -1,7 +1,7 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
 const path = require('path');
 const bcrypt = require('bcrypt');
-const { GetForConfirmation } = require("../../models/rawQueryModel/rawQueryModel");
+const { GetForConfirmation, GetForApproval } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.uploadProfilePicture = async function (req, res) {
 	const multer = require('multer');
@@ -142,6 +142,7 @@ module.exports.UserRegistration = async function (req, res) {
 module.exports.getForConfirmation = async function (req, res) {
 	try {
 		await GetForConfirmation().then(function (response) {
+			console.log(response);
 			if (response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
@@ -151,3 +152,37 @@ module.exports.getForConfirmation = async function (req, res) {
 	}
 };
 
+module.exports.getForApproval = async function (req, res) {
+	try {
+		await GetForApproval().then(function (response) {
+			console.log(response);
+			if (response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+};
+
+module.exports.changeStatusSOA = async function (req, res) {
+	const data = req.body.dataVariable; // dependi sa pag send sa data, pwede e remove ang dataVariable kung di mugana
+	var params = {
+		tableName: "tblsoahdr",
+		fieldValue: {
+			id: data.id,
+			soa_status: data.soa_status, // changed status variable e.g. CONFIRMED, DISAPPROVED, APPROVED
+			status_remarks: data.status_remarks, // add status remarks e.g. Disapproved because...
+		},
+
+	}
+	try {
+		var result = await data.id > 0 ? update(params) : insert(params); // pero update ra gamit ani
+		result.then(function (response) {
+			res.status(200).json(response);
+		})
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
