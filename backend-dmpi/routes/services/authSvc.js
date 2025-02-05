@@ -6,10 +6,11 @@ module.exports.routes = {
         [ '/login', Ctrl.LogIn ],
         [ '/register', UserCtrl.UserRegistration ],
         [ '/upload-profile', UserCtrl.uploadProfilePicture ],
-        [ '/upload-esignature', UserCtrl.uploadESignature ],
+        [ '/upload-esignature', UserCtrl.getForConfirmation ],
     ], 
     get: [
         [ '/get-users', UserCtrl.getUsers ],
+        [ '/get-forconfirmation', UserCtrl.getUsers ],
     ], 
     remove: [
         [ '/logout', Ctrl.userLogout ],

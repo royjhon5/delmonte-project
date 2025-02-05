@@ -113,27 +113,31 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 						}
 					}
 				});
-				
-				// ws.cell(1, 1, 1, 10, true).string(heading1).style(centerStyle); // row, column
-				// ws.cell(2, 1, 2, 10, true).string("As of " + months[parseInt(await getDateNow('month')) - 1] + " " + await getDateNow('day') + ", " + await getDateNow('year')).style(centerStyle);
 
-				// var row = 3;
-				// row += 2; // add space
-				// ws.cell(row, 1).string("Chapa ID").style(borderedStyle);
-				// ws.cell(row, 2).string("Lastname").style(borderedStyle);
-				// ws.cell(row, 3).string("Firstname").style(borderedStyle);
-				// ws.cell(row, 4).string("Middlename").style(borderedStyle);
-				// ws.cell(row, 5).string("Extname").style(borderedStyle);
-				// ws.cell(row, 6).string("Fullname").style(borderedStyle);
-				var row = 0;
+				ws.cell(1, 1).string("Rule:");
+				ws.cell(2, 1).string("1.The items with asterisk are required.");
+				ws.cell(3, 1).string("2.Gender 1:Male 2:Female");
+				ws.cell(4, 1).string("3.Date Format:YYYY/MM/DD");
+				ws.cell(5, 1).string("4.Separate the card numbers with semicolon.");
+				ws.cell(6, 1).string("5.If the card number is started with 0, add ' before 0. For example, '012345.");
+				ws.cell(7, 1).string("6.Separate the organization heirarchies with /.");
+				ws.cell(8, 1).string("7.Format of Room No.:Take room 1 as an example, the room No. should be 1 or 1-1-1-1(Project-Building-Unit-Room No.).");
+				
+				ws.cell(9, 1).string("*Person ID");
+				ws.cell(9, 2).string("*Organization");
+				ws.cell(9, 3).string("*Person Name");
+				ws.cell(9, 4).string("*Gender");
+				ws.cell(9, 5).string("Contact");
+				ws.cell(9, 6).string("Email");
+				ws.cell(9, 7).string("Effective Time");
+				ws.cell(9, 8).string("Expiry Time");
+				ws.cell(9, 9).string("Card No.");
+				ws.cell(9, 10).string("Room No.");
+				ws.cell(9, 11).string("Floor No.");
+
+				var row = 9;
 				mappedResults.map(item => {
 					row += 1; // add space
-					// ws.cell(row, 1).string(item.ChapaID_Old).style(borderedStyle);
-					// ws.cell(row, 2).string(item.LName).style(borderedStyle);
-					// ws.cell(row, 3).string(item.FName).style(borderedStyle);
-					// ws.cell(row, 4).string(item.MName).style(borderedStyle);
-					// ws.cell(row, 5).string(item.ExtName).style(borderedStyle);
-					// ws.cell(row, 6).string(item.FName + " " + item.LName).style(borderedStyle);
 					ws.cell(row, 1).string("'"+item.EmpID);
 					ws.cell(row, 2).string("Employee");
 					ws.cell(row, 3).string(item.FName + " " + item.MName + " " + item.LName + " " + item.ExtName + " - " + item.ChapaID_Old);
