@@ -1,2 +1,0 @@
-ALTER TABLE `tbltemplates_employeehdr` ADD `account_master_idlink` INT NOT NULL COMMENT 'tblaccount_to_charge id' AFTER `TName`;
-ALTER TABLE `tbltemplates_employeehdr` ADD `activityname` VARCHAR(150) NOT NULL AFTER `emp_group`, ADD `gl_code` VARCHAR(150) NOT NULL AFTER `activityname`, ADD `costcenter` VARCHAR(150) NOT NULL AFTER `gl_code`;

@@ -71,8 +71,19 @@ const rawQueryModel = {
 
     GetForConfirmation: async function () {
         return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, shdr.* FROM darhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link WHERE shdr.soa_status = "SUBMITTED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+            const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
             db.query(query, [], async (err, result) => {
+                console.log(result);
+                resolve({ success: true, data: result });
+            });
+        });
+    },
+
+    GetForApproval: async function () {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "CONFIRMED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+            db.query(query, [], async (err, result) => {
+                console.log(result);
                 resolve({ success: true, data: result });
             });
         });
