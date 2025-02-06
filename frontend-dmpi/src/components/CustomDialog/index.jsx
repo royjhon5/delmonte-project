@@ -2,10 +2,11 @@ import PropTypes from 'prop-types'
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography, useTheme } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 
-const CustomDialog = ({onClose, open, DialogTitles, DialogContents, DialogAction, maxWidth}) => {
+const CustomDialog = ({onClose, open, DialogTitles, DialogContents, DialogAction, maxWidth, fullScreen}) => {
   const theme = useTheme();
   return (
-    <Dialog 
+    <Dialog
+    fullScreen={fullScreen} 
     maxWidth={maxWidth}
     fullWidth={true}
     onClose={onClose} 
@@ -50,7 +51,8 @@ CustomDialog.propTypes = {
     DialogTitles: PropTypes.string,
     DialogContents: PropTypes.node,
     DialogAction: PropTypes.node, 
-    maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl'])
+    maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
+    fullScreen: PropTypes.bool
 }
 
 

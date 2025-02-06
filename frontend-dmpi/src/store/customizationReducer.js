@@ -45,6 +45,8 @@ export const initialState = {
     swalConfirmation: false,
     isUpdateForm: false,
     isUpdateHeaderForm: false,
+    openConfirm: false,
+    openDisapprove: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -226,6 +228,16 @@ const customizationReducer = (state = initialState, action) => {
                 ...state,
                 openSearchTemplate: action.openSearchTemplate
             };
+        case actionTypes.OPEN_CONFIRM:
+            return {
+                ...state,
+                openConfirm: action.openConfirm
+            };    
+        case actionTypes.OPEN_DISAPPROVE:
+            return {
+                ...state,
+                openDisapprove: action.openDisapprove
+            }; 
         default:
             return state;
     }

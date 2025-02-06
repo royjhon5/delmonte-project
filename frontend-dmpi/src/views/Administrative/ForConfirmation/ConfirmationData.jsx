@@ -1,62 +1,67 @@
-import { Box, IconButton, Paper, Stack, TextField } from "@mui/material"
+import { Box, Button, Paper, Stack, TextField } from "@mui/material"
 import CustomDataGrid from "../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL, OPEN_DELETESWAL, FORM_DATA } from "../../../store/actions";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import DeleteSwal from "../../../components/Swal/DeleteSwal";
-import http from "../../../api/http";
-import { toast } from "sonner";
+import { IS_UPDATE_FORM, OPEN_CUSTOM_MODAL, FORM_DATA } from "../../../store/actions";
+// import { useQueryClient } from "@tanstack/react-query";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ViewDataDialog from "./components/view-data-dialog";
 
 const ConfirmationData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
-    const queryClient = useQueryClient();
-    const [selectedID, setSelectedID] = useState(0);
-    const { data: mainData } = hookContainer('/get-signatory');
+    // const queryClient = useQueryClient();
+    // const [selectedID, setSelectedID] = useState(0);
+    const { data: mainData } = hookContainer('/get-forconfirmation');
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.name.toLowerCase().includes(search.toLowerCase())
+            row.soa_no.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
         {
-            field: 'name', headerName: 'DAR No', flex:1,
+            field: 'id', headerName: 'DAR No', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.name}
+                    {data.row.id}
                 </Box>
             ),
         },
         {
-            field: 'designation', headerName: 'SOA No', flex:1,
+            field: 'soa_no', headerName: 'SOA No', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.designation}
+                    {data.row.soa_no}
                 </Box>
             ),
         },
         {
-            field: 'Status', headerName: 'Status', flex:1,
+            field: 'xDate', headerName: 'Date', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.designation}
+                    {data.row.xDate}
                 </Box>
             ),
         },
         {
-            field: 'remarks', headerName: 'Remarks', flex:1,
+            field: 'soa_status', headerName: 'Status', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.designation}
+                    {data.row.soa_status}
+                </Box>
+            ),
+        },
+        {
+            field: 'status_remarks', headerName: 'Remarks', flex:1,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.status_remarks}
                 </Box>
             ),
         },
@@ -78,39 +83,21 @@ const ConfirmationData = () => {
                 };
                 return (
                     <Box sx={{ paddingRight: 1 }}>
-                        <IconButton color="primary" size="small" onClick={SelectData}>
+                        {/* <IconButton color="primary" size="small" onClick={SelectData}>
                             <EditIcon fontSize="inherit" />
-                        </IconButton>
-                        <IconButton color="error" size="small" onClick={() => selectToDelete(data.row.id)}>
-                            <DeleteIcon fontSize="inherit" />
-                        </IconButton>
+                        </IconButton> */}
+                        <Button startIcon={<VisibilityIcon fontSize="inherit" />} variant="contained" color="primary" size="small" onClick={SelectData}>
+                            View
+                        </Button>
                     </Box>
                 )
             }
         }
     ];
 
-    const selectToDelete = (data) => {
-        setSelectedID(data);
-        dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
-    }
-
-    const deleteData = useMutation({
-        mutationFn: () => http.delete(`/delete-signatory?id=${selectedID}`),
-        onSuccess: () => {
-            toast.success('Data has been deleted successfully.');
-            queryClient.invalidateQueries(['/get-signatory']);
-            dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
-        }
-    });
-
-    const DeleteData = () => {
-        deleteData.mutate(selectedID);
-    };
-
     return (
         <>
-            <DeleteSwal maxWidth="xs" onClick={DeleteData} />
+            <ViewDataDialog />
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
