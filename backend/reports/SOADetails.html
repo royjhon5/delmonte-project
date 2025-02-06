@@ -75,7 +75,7 @@
                 <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;">NO.</span></th>
                 <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;margin-left: 15%;">ACTIVITY</span></th>
                 <th colspan="3" style="text-align: center;">ACCOUNT TO CHARGE</th>
-                <th colspan="4" style="text-align: center;">HOURS RENDERED<br><i>(REGULAR DAY)</i></th>
+                <th colspan="4" style="text-align: center;">HOURS RENDERED<br><i>({{#ifCond this.records.length ">" 0}}{{records.[0].daytype}}{{/ifCond}})</i></th>
                 <th style="text-align: center;">RATES</span></th>
                 <th colspan="4" style="text-align: center;">ACCOUNT</th>
                 <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;margin-left: 15%;">TOTAL AMOUNT</span></th>

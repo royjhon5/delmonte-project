@@ -24,23 +24,19 @@ const AccountRateData = () => {
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.activity.toLowerCase().includes(search.toLowerCase()) ||
-            row.costcenter.toLowerCase().includes(search.toLowerCase()) ||
-            row.gl.toLowerCase().includes(search.toLowerCase())
+            row.daytype.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
         {
-            field: 'activity', headerName: 'Activity', width: 150,
+            field: 'daytype', headerName: 'Day Type', width: 350,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.activity}
+                    {data.row.daytype}
                 </Box>
             ),
         },
-        { field: 'costcenter', headerName: 'Cost Center', flex: 1 },
-        { field: 'gl', headerName: 'GL Code', flex: 1 },
         { field: 'st_rate', headerName: 'ST Rate', flex: 1 },
         { field: 'ot_rate', headerName: 'OT Rate', flex: 1 },
         { field: 'nd_rate', headerName: 'ND Rate', flex: 1 },
@@ -54,7 +50,7 @@ const AccountRateData = () => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
-                        activitylink_id: data.row.activitylink_id,
+                        daytype_link: data.row.daytype_link,
                         st_rate: data.row.st_rate,
                         ot_rate: data.row.ot_rate,
                         nd_rate: data.row.nd_rate,

@@ -58,12 +58,12 @@ const rawQueryModel = {
 
     AddDARDetailsToSOA: async function (params) {
         return new Promise((resolve, reject) => {
-            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
+            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, hdr.daytype_idlink, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
                 SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} GROUP BY dtl.activitylink_id`;
             db.query(query, [], async (err, result) => {
                 await result.forEach(element => {
                     // get account rates here...
-                    const accountRateSql = `SELECT * FROM tblaccount_rates WHERE activitylink_id = ${element.activitylink_id} LIMIT 1`;
+                    const accountRateSql = `SELECT * FROM tblaccount_rates WHERE daytype_link = ${element.daytype_idlink} LIMIT 1`;
                     db.query(accountRateSql, [], async (errRate, resultRate) => {
                         let c_rates_st = 0;
                         let c_rates_ot = 0;

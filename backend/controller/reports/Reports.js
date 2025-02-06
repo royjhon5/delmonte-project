@@ -126,3 +126,20 @@ module.exports.PrintSOADetails = async function (req, res) {
         res.status(400).send({ error: 'Server Error' });
     }
 };
+
+module.exports.displayImage = async function(req, res) {
+    const data = req.query;
+    fs.readFile(
+        `../backend/images/sample.jpg`,
+        function (err, image) {
+            if (err) {
+                res.status(400).send({ error: 'Image not found.' });
+            }
+           
+            res.setHeader('Content-Type', 'image/jpg');
+            res.setHeader('Content-Length', ''); // Image size here
+            res.setHeader('Access-Control-Allow-Origin', '*'); // If needs to be public
+            res.send(image);
+        }
+    );
+};

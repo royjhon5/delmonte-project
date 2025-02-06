@@ -1,11 +1,9 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
 
 module.exports.getAccountRateList = async function (req, res) {
-	const activity = "(SELECT a.activityname FROM tblactivitylist a, tblaccount_to_charge b WHERE a.id = b.activity_id_link AND b.id = tblaccount_rates.activitylink_id LIMIT 1) as activity";
-	const costcenter = "(SELECT a.costcenter FROM tblcostcenterlist a, tblaccount_to_charge b WHERE a.id = b.costcenter_id_link AND b.id = tblaccount_rates.activitylink_id LIMIT 1) as costcenter";
-	const gl = "(SELECT a.gl_code FROM tblgl_list a, tblaccount_to_charge b WHERE a.id = b.glcode_id_link AND b.id = tblaccount_rates.activitylink_id LIMIT 1) as gl";
+	const daytype = "(SELECT dt_name FROM tbldaytype WHERE id = tblaccount_rates.daytype_link LIMIT 1) as daytype";
 	var params = {
-		fields: ["*," + activity + "," + costcenter + "," + gl],
+		fields: ["*," + daytype],
 		tableName: "tblaccount_rates",
 	}
 	try {
@@ -25,7 +23,7 @@ module.exports.saveAccountRateData = async function (req, res) {
 		tableName: "tblaccount_rates",
 		fieldValue: {
 			id: data.id,
-			activitylink_id: data.activitylink_id,
+			daytype_link: data.daytype_link,
 			st_rate: data.st_rate,
 			ot_rate: data.ot_rate,
 			nd_rate: data.nd_rate,
@@ -34,13 +32,13 @@ module.exports.saveAccountRateData = async function (req, res) {
 	}
 	var checkParams = {
 		tableName: "tblaccount_rates",
-		where: ["activitylink_id = ?", "id <> ?"],
-		whereValue: [data.activitylink_id, data.id],
+		where: ["daytype_link = ?", "id <> ?"],
+		whereValue: [data.daytype_link, data.id],
 	}
 	try {
 		// check exists
 		await select(checkParams).then(async function (response) {
-			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Activity already exists in the rate template." });
+			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Day Type already exists in the rate master." });
 			else {
 				// save if not exists
 				var result = await data.id > 0 ? update(params) : insert(params);

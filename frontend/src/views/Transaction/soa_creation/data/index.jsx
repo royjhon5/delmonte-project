@@ -81,26 +81,49 @@ const SOAdata = () => {
         setLoadSaving(false);
     }
 
-    const [openConfirmationPost, setOpenConfirmationPost] = useState(false);
-    async function confirmationPostClose() {
-        setOpenConfirmationPost(false);
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+    const [confirmationTitle, setConfirmationTitle] = useState("");
+    const [confirmationType, setConfirmationType] = useState("");
+    async function confirmationClose() {
+        setOpenConfirmation(false);
     }
     const postSOAHeader = () => {
         if (!dataVariableHeader.id) return toast.error("Please select SOA Header to continue.");
-        setOpenConfirmationPost(true);
+        setConfirmationTitle("Are you sure that the entered data is correct and you want to execute post?");
+        setConfirmationType("post");
+        setOpenConfirmation(true);
     }
-    const confirmPostSOAHeader = async () => {
-        setLoadSaving("Posting...");
-        const response = await http.post('/post-postsoaheader', { id: dataVariableHeader.id });
-        if (response.data.success) {
-            toast.success(response.data.message);
-            setDataVariableHeader(prevState => ({
-                ...prevState,
-                soa_status: "POSTED",
-            }));
-        } else toast.error(response.data.message);
-        setLoadSaving(false);
-        setOpenConfirmationPost(false);
+    const submitSOAHeader = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select SOA Header to continue.");
+        setConfirmationTitle("Are you sure you want to submit this SOA to dmpi?");
+        setConfirmationType("submit");
+        setOpenConfirmation(true);
+    }
+    const confirmConfirmation = async () => {
+        if(confirmationType == 'post') {
+            setLoadSaving("Posting...");
+            const response = await http.post('/post-postsoaheader', { id: dataVariableHeader.id });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setDataVariableHeader(prevState => ({
+                    ...prevState,
+                    soa_status: "POSTED",
+                }));
+            } else toast.error(response.data.message);
+            setLoadSaving(false);
+        } else {
+            setLoadSaving("Posting...");
+            const response = await http.post('/post-submitsoaheader', { id: dataVariableHeader.id });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setDataVariableHeader(prevState => ({
+                    ...prevState,
+                    soa_status: "SUBMITTED",
+                }));
+            } else toast.error(response.data.message);
+            setLoadSaving(false);
+        }
+        setOpenConfirmation(false);
     }
 
     const printSOA = async () => {
@@ -207,7 +230,7 @@ const SOAdata = () => {
     return (
         <Fragment>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
-            <ConfirmationSwal openConfirmation={openConfirmationPost} maxWidth="xs" onClose={confirmationPostClose} onConfirm={confirmPostSOAHeader} confirmTitle="Are you sure that the entered data is correct and you want to execute post?" />
+            <ConfirmationSwal openConfirmation={openConfirmation} maxWidth="xs" onClose={confirmationClose} onConfirm={confirmConfirmation} confirmTitle={confirmationTitle} />
             <DeleteSwal maxWidth="xs" onClick={confirmDelete} />
             <NewSOAHeaderModal
                 openModal={openModal}
@@ -271,6 +294,9 @@ const SOAdata = () => {
                                         <Button variant="contained" size="small" color="error" onClick={() => { deleteData() }}>DELETE SOA</Button>
                                         <Button variant="contained" size="small" color="warning" onClick={() => { postSOAHeader() }}>POST SOA</Button>
                                     </>
+                                    : ""}
+                                {dataVariableHeader.id && dataVariableHeader.soa_status == "POSTED" ?
+                                    <Button variant="contained" size="small" color="warning" onClick={() => { submitSOAHeader() }}>SUBMIT SOA</Button>
                                     : ""}
                                 <Button variant="contained" size="small" color="secondary" onClick={() => { printSOA() }}>PRINT SOA</Button>
                                 <Button variant="contained" size="small" color="info" onClick={clearData}>New/Clear</Button>

@@ -1,0 +1,1 @@
+ALTER TABLE `tblaccount_rates` CHANGE `activitylink_id` `daytype_link` INT(11) NOT NULL;
