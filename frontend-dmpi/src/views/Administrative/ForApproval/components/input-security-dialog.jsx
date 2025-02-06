@@ -1,20 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
-import { OPEN_DISAPPROVE } from "../../../../store/actions";
+import { OPEN_CONFIRM } from "../../../../store/actions";
 import CustomDialog from "../../../../components/CustomDialog";
 import { Box, Button, Grid, TextField } from "@mui/material";
 
 
-const DisapproveDialog = () => {
+const InputSecurityDialog = () => {
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.customization.openDisapprove);
-  const CloseDialog = () => { dispatch({ type: OPEN_DISAPPROVE, openDisapprove: false }); }
+  const open = useSelector((state) => state.customization.openConfirm);
+  const CloseDialog = () => { dispatch({ type: OPEN_CONFIRM, openConfirm: false }); }
   
   return (
     <CustomDialog 
         open={open}
         onClose={CloseDialog}
         maxWidth={'xs'}
-        DialogTitles={"Remarks / Notes / Reason for Disapproval"}
+        DialogTitles={"Input Security Key to Confirm"}
         DialogContents={
             <Box sx={{ padding: 0 }}>
                 <Grid container spacing={2}>
@@ -36,4 +36,4 @@ const DisapproveDialog = () => {
   )
 }
 
-export default DisapproveDialog
+export default InputSecurityDialog

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>DAR Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 10px;
+        }
+
+        .main_table tr {
+            page-break-before: always;
+        }
+
+        .main_table th,
+        .main_table td {
+            padding: 3px;
+            text-align: left;
+            border: 1px solid black;
+        }
+
+        h3,
+        h4 {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center; margin-bottom: 2px; border: 1px solid black;">
+        <h3>GENERAL SERVICES MULTIPURPOSE COOPERATIVE</h3>
+        <h4>DAILY ACCOMPLISHMENT REPORT</h4>
+    </div>
+    <div style=" margin-bottom: 25px;">
+
+    </div>
+    <table>
+        <tr>
+            <td width="30%"><h3>{{records.[0].department}}</h3></td>
+            <td width="10%"><input type="checkbox" {{#ifCond records.[0].daytype "==" "OD"}}checked{{/ifCond}}> <b>OD</b></td>
+            <td width="10%"><input type="checkbox" {{#ifCond records.[0].daytype "==" "RHOL"}}checked{{/ifCond}}> <b>RHOL</b></td>
+            <td width="35%"></td>
+            <td width="15%"></td>
+        </tr>
+        <tr>
+            <td>Date: <u>{{records.[0].xDate}}</u></td>
+            <td><input type="checkbox" {{#ifCond records.[0].daytype "==" "SHOL"}}checked{{/ifCond}}> <b>SHOL</b></td>
+            <td></td>
+            <td style="text-align: right;"><input type="checkbox" {{#ifCond records.[0].shift "==" 1}}checked{{/ifCond}}><b>1st Shift</b></td>
+            <td style="text-align: right;"><input type="checkbox" {{#ifCond records.[0].shift "==" 2}}checked{{/ifCond}}> <b>2nd Shift</b></td>
+        </tr>
+    </table>
+    <table class="main_table">
+        <thead>
+            <tr>
+                <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;">CHAPA NO.</span>
+                </th>
+                <th style="border-bottom: 0px !important;"><span
+                        style="float: left; margin-top: 20px;margin-left: 40%;">Name</span></th>
+                <th colspan="2">Time</th>
+                <th colspan="3">No. of Hours Worked</th>
+                <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;">ND-O.T</span>
+                </th>
+                <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;">Signature</span>
+                </th>
+                <th style="border-bottom: 0px !important;"><span style="float: left; margin-top: 20px;">REMARKS</span>
+                </th>
+                <th colspan="2">UNIT CHARGE</th>
+            </tr>
+            <tr>
+                <td style="border-top: 0px !important;"></td>
+                <td style="border-top: 0px !important;"></td>
+                <th>IN</th>
+                <th>OUT</th>
+                <th>ST</th>
+                <th>OT</th>
+                <th>ND</th>
+                <td style="border-top: 0px !important;"></td>
+                <td style="border-top: 0px !important;"></td>
+                <td style="border-top: 0px !important;"></td>
+                <th>GL</th>
+                <th>CC</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each records}}
+            <tr>
+                <td style="font-size: 11.5px;">{{this.ChapaID}}</td>
+                <td style="font-size: 11.5px;">{{this.emp_lname}}{{#ifCond this.emp_fname "!==" ""}},{{/ifCond}}
+                    {{this.emp_fname}} {{this.emp_mname}}
+                    {{this.emp_ext_name}}</td>
+                <td style="font-size: 11.5px;">{{this.time_in}}</td>
+                <td style="font-size: 11.5px;">{{this.time_out}}</td>
+                <td style="font-size: 11.5px;">{{#ifCond this.st "!==" 0}}{{this.st}}{{/ifCond}}</td>
+                <td style="font-size: 11.5px;">{{#ifCond this.ot "!==" 0}}{{this.ot}}{{/ifCond}}</td>
+                <td style="font-size: 11.5px;">{{#ifCond this.nd "!==" 0}}{{this.nd}}{{/ifCond}}</td>
+                <td style="font-size: 11.5px;">{{#ifCond this.ndot "!==" 0}}{{this.ndot}}{{/ifCond}}</td>
+                <td style="font-size: 11.5px;"></td>
+                <td style="font-size: 11.5px;"></td>
+                <td style="font-size: 11.5px;">{{this.gl}}</td>
+                <td style="font-size: 11.5px;">{{this.cost_center}}</td>
+            </tr>
+            {{/each}}
+            <tr>
+                <td style="font-size: 11.5px;border:none;text-align:right;" colspan="4">TOTAL {{totals.totalHC}}</td>
+                <td style="font-size: 11.5px;">{{totals.totalST}}</td>
+                <td style="font-size: 11.5px;">{{totals.totalOT}}</td>
+                <td style="font-size: 11.5px;">{{totals.totalND}}</td>
+                <td style="font-size: 11.5px;">{{totals.totalNDOT}}</td>
+                <td style="font-size: 11.5px;border:none;" colspan="4"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <div style="font-size:10px;">
+        <table>
+            <tr>
+                <td width="15%">I. Prepared By:</td>
+                <td width="20%"></td>
+                <td width="30%"></td>
+                <td width="15%">III. Reviewed By:</td>
+                <td width="20%"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="border-bottom: 1px solid black;text-align: center;"><h3>{{signatory.prepared_by}}</h3></td>
+                <td></td>
+                <td></td>
+                <td style="border-bottom: 1px solid black;text-align: center;"><h3>{{signatory.checked_by}}</h3></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align:center;">LEADMAN</td>
+                <td></td>
+                <td></td>
+                <td style="text-align:center;">COORDINATOR</td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

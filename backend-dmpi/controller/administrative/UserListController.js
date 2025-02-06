@@ -2,6 +2,8 @@ const { select, insert, update, remove } = require("../../models/mainModel");
 const path = require('path');
 const bcrypt = require('bcrypt');
 const { GetForConfirmation, GetForApproval } = require("../../models/rawQueryModel/rawQueryModel");
+const db = require('../../config/dbConnection');
+const AuthModel = require('../../models/auth/authModel');
 
 module.exports.uploadProfilePicture = async function (req, res) {
 	const multer = require('multer');
@@ -139,6 +141,21 @@ module.exports.UserRegistration = async function (req, res) {
 	}
 };
 
+module.exports.VerifyPersonalKey = async function (req, res) {
+	const { id, personalkey } = req.body;
+	try {
+		const verifyInfo = await AuthModel.VerifyPersonalKey(id, personalkey);
+		if (!verifyInfo) {
+			return res.status(400).json({ error: 'Invalid Personal key! please contact adminstrator ' });
+		} else {
+			res.status(200).json({ success: 'Personal Key is Valid.' });
+		}
+	} catch (error) {
+		console.error(error.message);
+		res.status(500).send('Server Error');
+	}
+}
+
 module.exports.getForConfirmation = async function (req, res) {
 	try {
 		await GetForConfirmation().then(function (response) {
@@ -166,7 +183,7 @@ module.exports.getForApproval = async function (req, res) {
 };
 
 module.exports.changeStatusSOA = async function (req, res) {
-	const data = req.body.dataVariable; // dependi sa pag send sa data, pwede e remove ang dataVariable kung di mugana
+	const data = req.body; // dependi sa pag send sa data, pwede e remove ang dataVariable kung di mugana
 	var params = {
 		tableName: "tblsoahdr",
 		fieldValue: {
@@ -186,3 +203,41 @@ module.exports.changeStatusSOA = async function (req, res) {
 		console.error(error)
 	}
 }
+
+module.exports.countForConfirmation = async function (req, res) {
+	var params = {
+		fields: ["COUNT(*) AS count"],
+		tableName: "tblsoahdr",
+		where: ["soa_status = ?"],
+		whereValue: ['SUBMITTED'],
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
+
+module.exports.countForApproval = async function (req, res) {
+	var params = {
+		fields: ["COUNT(*) AS count"],
+		tableName: "tblsoahdr",
+		where: ["soa_status = ?"],
+		whereValue: ['CONFIRMED'],
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+

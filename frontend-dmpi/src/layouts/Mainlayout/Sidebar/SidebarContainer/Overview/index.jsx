@@ -10,10 +10,13 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import SearchIcon from '@mui/icons-material/Search';
 import { Badge, styled } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
+import { hookContainer } from "../../../../../hooks/globalQuery";
 
 const OverView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { data: countForConfirmation } = hookContainer('/count-forconfirmation');
+  const { data: countForApproval } = hookContainer('/count-forapproval');
   const navigateDashboard = () => { navigate('/dashboard'), dispatchFalse() }
   const navigateUserList = () => { navigate('/dashboard/user-list'), dispatchFalse() }
   const navigateForConfirmation = () => { navigate('/dashboard/for-confirmation'), dispatchFalse() }
@@ -34,7 +37,7 @@ const OverView = () => {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
-      top: 13,
+      top: 19,
       border: `1px solid ${theme.palette.background.paper}`,
       padding: '0 4px',
     },
@@ -45,10 +48,10 @@ const OverView = () => {
     <CustomList >
       <ListSubHeaderStyle ListLabel="OVERVIEW" />
       <ListItemButtonStyle ListbtnLabel="Dashboard" activePath="/dashboard" MenuClick={navigateDashboard} IconChildrens={<DashboardIcon fontSize="small" />} />
-      <StyledBadge badgeContent={4} color="primary" size="small">
+      <StyledBadge badgeContent={countForConfirmation?.[0]?.count ?? 0} color="primary" size="small">
         <ListItemButtonStyle activePath="/dashboard/for-confirmation" ListbtnLabel="For Confirmation" MenuClick={navigateForConfirmation} IconChildrens={<CheckCircleIcon fontSize="small" />} />
       </StyledBadge>
-      <StyledBadge badgeContent={2} color="secondary" size="small">
+      <StyledBadge badgeContent={countForApproval?.[0]?.count ?? 0} color="secondary" size="small">
         <ListItemButtonStyle ListbtnLabel="For Approval" activePath="/dashboard/for-approval"  MenuClick={navigateForApproval} IconChildrens={<ThumbUpIcon fontSize="small" />} />
       </StyledBadge>
       <ListItemButtonStyle ListbtnLabel="Search Transaction" MenuClick={navigateForApproval} IconChildrens={<SearchIcon fontSize="small" />} />

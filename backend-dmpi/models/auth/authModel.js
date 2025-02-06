@@ -50,6 +50,23 @@ const AuthModel = {
 		});
 	},
 
+
+	VerifyPersonalKey: function (id, personalkey) {
+		const query = 'SELECT * FROM tbllogin WHERE LoginID = ? AND personal_key = ?';
+		return new Promise((resolve, reject) => {
+			db.query(query, [id, personalkey], function (err, results) {
+				if (err) {
+					return reject(err);
+				}
+				if (results.length === 0) {
+					return resolve(null);
+				}
+				const user = results[0];
+				resolve(user);
+			});
+		});
+	},
+
 	register: function (user, callback) {
 		const query = 'INSERT INTO tbllogin SET ?';
 		db.query(query, user, function (err, results) {
