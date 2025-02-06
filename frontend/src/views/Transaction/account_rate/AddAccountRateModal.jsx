@@ -10,7 +10,7 @@ import { hookContainer } from "../../../hooks/globalQuery";
 
 const AddAccountRateModal = ({ RefreshData }) => {
     const dispatch = useDispatch();
-    const { data: accounttochargeList } = hookContainer('/get-accounttocharge');
+    const { data: daytypeList } = hookContainer('/get-daytype');
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
     const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
@@ -21,7 +21,7 @@ const AddAccountRateModal = ({ RefreshData }) => {
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
         clearData();
     }
-    const [activitylink_id, setActivityLinkID] = useState('');
+    const [daytype_link, setDayTypeLinkID] = useState('');
     const [st_rate, setSTRate] = useState('');
     const [ot_rate, setOTRate] = useState('');
     const [nd_rate, setNDRate] = useState('');
@@ -30,7 +30,7 @@ const AddAccountRateModal = ({ RefreshData }) => {
     const SaveOrUpdateData = async () => {
         const AccountRateData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            activitylink_id: activitylink_id,
+            daytype_link: daytype_link,
             st_rate: st_rate,
             ot_rate: ot_rate,
             nd_rate: nd_rate,
@@ -53,7 +53,7 @@ const AddAccountRateModal = ({ RefreshData }) => {
     };
 
     const clearData = () => {
-        setActivityLinkID('');
+        setDayTypeLinkID('');
         setSTRate('');
         setOTRate('');
         setNDRate('');
@@ -62,7 +62,7 @@ const AddAccountRateModal = ({ RefreshData }) => {
 
     useEffect(() => {
         if (isToUpdate) {
-            setActivityLinkID(toUpdateData.activitylink_id);
+            setDayTypeLinkID(toUpdateData.daytype_link);
             setSTRate(toUpdateData.st_rate);
             setOTRate(toUpdateData.ot_rate);
             setNDRate(toUpdateData.nd_rate);
@@ -78,11 +78,11 @@ const AddAccountRateModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={activitylink_id} onChange={(e) => { setActivityLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Day Type" select value={daytype_link} onChange={(e) => { setDayTypeLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
-                        {accounttochargeList?.map((option) => (
+                        {daytypeList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
-                                {option.activityname + " | " + option.gl_code + " | " + option.costcenter}
+                                {option.dt_name}
                             </option>
                         ))}
                     </TextField>

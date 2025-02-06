@@ -47,14 +47,14 @@
     <table>
         <tr>
             <td width="30%"><h3>{{records.[0].department}}</h3></td>
-            <td width="10%"><input type="checkbox" {{#ifCond records.[0].daytype "==" "OD"}}checked{{/ifCond}}> <b>OD</b></td>
-            <td width="10%"><input type="checkbox" {{#ifCond records.[0].daytype "==" "RHOL"}}checked{{/ifCond}}> <b>RHOL</b></td>
-            <td width="35%"></td>
+            <td width="20%"><input type="checkbox" {{#ifCond records.[0].daytype "==" "REGULAR DAY"}}checked{{/ifCond}}> <b>REGULAR DAY</b></td>
+            <td width="20%"><input type="checkbox" {{#ifCond records.[0].daytype "==" "REGULAR HOLIDAY"}}checked{{/ifCond}}> <b>REGULAR HOLIDAY</b></td>
+            <td width="15%"></td>
             <td width="15%"></td>
         </tr>
         <tr>
             <td>Date: <u>{{records.[0].xDate}}</u></td>
-            <td><input type="checkbox" {{#ifCond records.[0].daytype "==" "SHOL"}}checked{{/ifCond}}> <b>SHOL</b></td>
+            <td><input type="checkbox" {{#ifCond records.[0].daytype "==" "SPECIAL HOLIDAY"}}checked{{/ifCond}}> <b>SPECIAL HOLIDAY</b></td>
             <td></td>
             <td style="text-align: right;"><input type="checkbox" {{#ifCond records.[0].shift "==" 1}}checked{{/ifCond}}><b>1st Shift</b></td>
             <td style="text-align: right;"><input type="checkbox" {{#ifCond records.[0].shift "==" 2}}checked{{/ifCond}}> <b>2nd Shift</b></td>
