@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Stack, TextField } from "@mui/material"
+import { Box, Button, Chip, Paper, Stack, TextField } from "@mui/material"
 import CustomDataGrid from "../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
@@ -53,7 +53,7 @@ const ConfirmationData = () => {
             field: 'soa_status', headerName: 'Status', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.soa_status}
+                    <Chip size="small" color="error" label={data.row.soa_status} />
                 </Box>
             ),
         },
@@ -74,8 +74,6 @@ const ConfirmationData = () => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
-                        name: data.row.name,
-                        designation: data.row.designation
                     };
                     dispatch({ type: FORM_DATA, formData: obj });
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });

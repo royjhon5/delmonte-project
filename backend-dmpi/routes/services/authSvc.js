@@ -8,11 +8,14 @@ module.exports.routes = {
         [ '/upload-profile', UserCtrl.uploadProfilePicture ],
         [ '/upload-esignature', UserCtrl.getForConfirmation ],
         [ '/post-changestatus', UserCtrl.changeStatusSOA ],
+        [ '/verify-personalkey', UserCtrl.VerifyPersonalKey ],
     ], 
     get: [
         [ '/get-users', UserCtrl.getUsers ],
         [ '/get-forconfirmation', UserCtrl.getForConfirmation ],
         [ '/get-forapproval', UserCtrl.getForApproval ],
+        [ '/count-forconfirmation', UserCtrl.countForConfirmation],
+        [ '/count-forapproval', UserCtrl.countForApproval]
     ], 
     remove: [
         [ '/logout', Ctrl.userLogout ],

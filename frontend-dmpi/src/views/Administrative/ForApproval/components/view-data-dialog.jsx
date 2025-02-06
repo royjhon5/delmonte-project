@@ -9,6 +9,7 @@ import DisapproveDialog from "./disapprove-dialog";
 import CustomLoading from "../../../../components/LoadSaving/RetrievingData";
 
 
+
 const ViewDataDialog = () => {
   const dispatch = useDispatch();
   const [loading, stillLoading] = useState(true)
@@ -43,7 +44,7 @@ const ViewDataDialog = () => {
         DialogAction={
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={12} sx={{ display: 'flex', justifyContent: 'center', gap: 3 }}>
-                <Button variant="contained" color="primary" size="large" onClick={openConfirm}>Confirm</Button>
+                <Button variant="contained" color="primary" size="large" onClick={openConfirm}>Approve</Button>
                     <Button variant="contained" color="error" size="large" onClick={openDisapprove} >Disapprove</Button>
                 </Grid>
             </Grid>
