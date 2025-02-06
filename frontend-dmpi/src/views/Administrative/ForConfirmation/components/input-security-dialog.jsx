@@ -14,6 +14,8 @@ const InputSecurityDialog = () => {
   const queryClient = useQueryClient();
   const userid = accessToken.userID;
   const open = useSelector((state) => state.customization.openConfirm);
+  const getData = useSelector((state) => state.customization.transferData);
+  console.log(getData)
   const [PKey, setPKey] = useState('');
   const [errors, setError] = useState('');
   const CloseDialog = () => { dispatch({ type: OPEN_CONFIRM, openConfirm: false }); }
@@ -21,7 +23,7 @@ const InputSecurityDialog = () => {
     try {
       const verified = await http.post('/verify-personalkey', { id: userid, personalkey: PKey });
       if (verified.data.success) {
-        const response = await http.post('/post-changestatus', { id: 1, soa_status: 'CONFIRMED' });
+        const response = await http.post('/post-changestatus', { id: getData, soa_status: 'CONFIRMED' });
         if(response.data.success) {
             queryClient.invalidateQueries('get-forconfirmation')
             CloseDialog();

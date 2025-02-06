@@ -47,6 +47,7 @@ export const initialState = {
     isUpdateHeaderForm: false,
     openConfirm: false,
     openDisapprove: false,
+    transferData: {},
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -238,6 +239,11 @@ const customizationReducer = (state = initialState, action) => {
                 ...state,
                 openDisapprove: action.openDisapprove
             }; 
+        case actionTypes.TRANSFER_DATA:
+        return {
+            ...state,
+            transferData: action.transferData
+        }; 
         default:
             return state;
     }

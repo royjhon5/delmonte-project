@@ -74,6 +74,7 @@ const ConfirmationData = () => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
+                        soa_id: data.row.soa_id
                     };
                     dispatch({ type: FORM_DATA, formData: obj });
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
@@ -81,9 +82,6 @@ const ConfirmationData = () => {
                 };
                 return (
                     <Box sx={{ paddingRight: 1 }}>
-                        {/* <IconButton color="primary" size="small" onClick={SelectData}>
-                            <EditIcon fontSize="inherit" />
-                        </IconButton> */}
                         <Button startIcon={<VisibilityIcon fontSize="inherit" />} variant="contained" color="primary" size="small" onClick={SelectData}>
                             View
                         </Button>

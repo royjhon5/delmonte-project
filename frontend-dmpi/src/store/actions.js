@@ -52,3 +52,4 @@ export const IS_UPDATE_FORM = '@customization/IS_UPDATE_FORM';
 export const IS_UPDATE_HEADER_FORM = '@customization/IS_UPDATE_HEADER_FORM';
 export const OPEN_DELETESWAL = '@customization/OPEN_DELETESWAL';
 export const OPEN_SWALCONFIRMATION = '@customization/OPEN_SWALCONFIRMATION';
+export const TRANSFER_DATA = '@customization/TRANSFER_DATA';

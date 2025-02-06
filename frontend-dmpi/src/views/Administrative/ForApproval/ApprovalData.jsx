@@ -74,6 +74,7 @@ const ApprovalData = () => {
                 const SelectData = () => {
                     const obj = {
                         id: data.row.id,
+                        soa_id: data.row.soa_id
                     };
                     dispatch({ type: FORM_DATA, formData: obj });
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });

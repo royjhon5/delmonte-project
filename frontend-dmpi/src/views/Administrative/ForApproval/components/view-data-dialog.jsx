@@ -12,7 +12,8 @@ import CustomLoading from "../../../../components/LoadSaving/RetrievingData";
 
 const ViewDataDialog = () => {
   const dispatch = useDispatch();
-  const [loading, stillLoading] = useState(true)
+  const [loading, stillLoading] = useState(true);
+  const [loadingtwo, stillLoadingtwo] = useState(true)
   const open = useSelector((state) => state.customization.openCustomModal);
   const transferedData = useSelector((state) => state.customization.formData);
   const CloseDialog = () => { dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false }); }
@@ -36,7 +37,8 @@ const ViewDataDialog = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         SOA Preview
-                        <Iframe width="100%" height="700px" alt='not found' ></Iframe>
+                        { loadingtwo ? <Box sx={{position: 'absolute', top:'40%', left:'76%'}}><CustomLoading title={'Retrieving'} /></Box> : <></> } 
+                        <Iframe src={`http://localhost:8000/api/get-printsoadetails?id=${transferedData.soa_id}`} width="100%" height="700px" alt='not found' onLoad={() => stillLoadingtwo(false)} ></Iframe>
                     </Grid>
                 </Grid>
             </Box>
