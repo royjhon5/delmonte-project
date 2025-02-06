@@ -12,6 +12,7 @@ import SearchSOAHeaderModal from "../components/SearchSOAHeader";
 import AddSOADetailModal from "../components/AddSOADetail";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import ConfirmationSwal from "../../../../components/Swal/CloseCancelSubmitSwal2";
+import { linkToBackend } from '../../../../store/constant';
 
 const SOAdata = () => {
     const [loadSaving, setLoadSaving] = useState(false);
@@ -102,15 +103,9 @@ const SOAdata = () => {
         setOpenConfirmationPost(false);
     }
 
-    const printDar = async () => {
-        // window.open(linkToBackend + "/print-summary-by-date-range?dataVariable[DocTypeLinkID]=" + dataVariable.DocTypeLinkID +
-        //     "&dataVariable[byCat]=" + dataVariable.byCat +
-        //     "&dataVariable[DateFrom]=" + dataVariable.DateFrom +
-        //     "&dataVariable[DateTo]=" + dataVariable.DateTo +
-        //     "&dataVariable[GeneratedBy]=" + accessToken.Fname +
-        //     "&dataVariable[userID]=" + accessToken.userID +
-        //     "&dataVariable[checkReport]=0"
-        //     , "_blank");
+    const printSOA = async () => {
+        if (!dataVariableHeader.id) return toast.error("Please select SOA Header to continue.");
+        window.open(linkToBackend + `/get-printsoadetails?id=${dataVariableHeader.id}`, "_blank");
     }
 
     // details
@@ -277,7 +272,7 @@ const SOAdata = () => {
                                         <Button variant="contained" size="small" color="warning" onClick={() => { postSOAHeader() }}>POST SOA</Button>
                                     </>
                                     : ""}
-                                <Button variant="contained" size="small" color="secondary" onClick={() => { printDar() }}>PRINT SOA</Button>
+                                <Button variant="contained" size="small" color="secondary" onClick={() => { printSOA() }}>PRINT SOA</Button>
                                 <Button variant="contained" size="small" color="info" onClick={clearData}>New/Clear</Button>
                             </Grid>
                         </Grid>
