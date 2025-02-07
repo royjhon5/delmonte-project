@@ -46,6 +46,7 @@ const DARdata = () => {
         group_name: "",
         location: "",
         daytype: "",
+        dar_no: "",
     };
     const [dataVariableHeader, setDataVariableHeader] = useState(initialDataVariableHeader);
 
@@ -337,10 +338,10 @@ const DARdata = () => {
                         {/* <form noValidate onSubmit={handleSubmit}> */}
                         <Grid container spacing={1}>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Employee Template" value={dataVariableHeader.template_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="DAR No." value={dataVariableHeader.dar_no} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Location" value={dataVariableHeader.location} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Group Name" value={dataVariableHeader.group_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Department" value={dataVariableHeader.department} variant="outlined" size="small" inputProps={{ readOnly: true }} />
@@ -355,7 +356,7 @@ const DARdata = () => {
                                 <TextField fullWidth label="Day Type" value={dataVariableHeader.daytype} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Group Name" value={dataVariableHeader.group_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Location" value={dataVariableHeader.location} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Prepared By" value={dataVariableHeader.prepared_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />

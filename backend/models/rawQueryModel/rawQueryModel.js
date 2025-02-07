@@ -41,7 +41,6 @@ const rawQueryModel = {
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
                                 let timeIn = "0000";
                                 if (resultDTR.length > 0) timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
-                                console.log(errDTR);
                                 // insert dardtl
                                 const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, gl, cost_center, activitylink_id, activity)
                                     VALUES (${params.id}, "${element.ChapaID}", "${element.last_name}", "${element.first_name}", "${element.middle_name}", "${element.ext_name}", "${timeIn}", "${element.gl_code}", "${element.costcenter}", 
@@ -120,7 +119,6 @@ const rawQueryModel = {
                         if (chapaCounter == element.count) { // to know that this record is the last and this is where to save the final time out of employee
                             const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_date = "${element.darDate}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
-                                console.log(resultDTR);
                                 let timeOut = "0000";
                                 if (resultDTR.length > 0) timeOut = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
                                 let timeInDateTime = "2025-01-01 " + element.time_in.substring(0, 2) + ":" + element.time_in.substring(2, 4);
@@ -235,10 +233,10 @@ const rawQueryModel = {
     PrintDARDetails: async function (params) {
         let resultData = [];
         let totalST = 0, totalOT = 0, totalND = 0, totalNDOT = 0, totalHC = 1, cntr = 1;
-    
+
         return new Promise((resolve, reject) => {
             const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
-            
+
             const countQuery = `SELECT COUNT(*) AS total FROM tbldarhdr hdr WHERE hdr.id = ${params.id}`;
             const dataQuery = `
                 SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  
@@ -246,7 +244,7 @@ const rawQueryModel = {
                 WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
                 ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
             `;
-    
+
             db.query(countQuery, (err, countResult) => {
                 if (err) return reject(err);
     
@@ -256,7 +254,7 @@ const rawQueryModel = {
                         let lastChapa = result[0].ChapaID;
                         let prepared_by = result[0].prepared_by;
                         let checked_by = result[0].checked_by;
-    
+
                         resultData.push({
                             ChapaID: "",
                             emp_lname: result[0].activity.toUpperCase(),
@@ -276,7 +274,7 @@ const rawQueryModel = {
                             xDate: result[0].xDate,
                             shift: result[0].shift
                         });
-    
+
                         result.forEach(element => {
                             if (lastChapa != element.ChapaID) {
                                 lastChapa = element.ChapaID;
@@ -316,7 +314,7 @@ const rawQueryModel = {
                             totalNDOT += parseFloat(element.ndot);
                             cntr += 1;
                         });
-    
+
                         resolve({
                             success: true,
                             data: resultData,
@@ -335,7 +333,7 @@ const rawQueryModel = {
             });
         });
     },
-    
+
 
     PrintSOADetails: async function (params) {
         let resultData = [];
@@ -384,6 +382,41 @@ const rawQueryModel = {
                         signatory: { preparedby_position: "", checkedby_position: "", confirmedby_position: "", approvedby_position: "" },
                     });
                 }
+            });
+        });
+    },
+
+    generateDARNo: async function (params) {
+        return new Promise((resolve, reject) => {
+            let dar_no = "";
+            const query = `SELECT dar_no FROM tbldarhdr WHERE id <> ${params.id} ORDER BY id DESC LIMIT 1`;
+            db.query(query, [], async (err, result) => {
+                if (result.length > 0) {
+                    if (result[0].dar_no) {
+                        const darNoRaw = result[0].dar_no.split('-');
+                        if (darNoRaw[0] != getYearMonthCurrent('year')) {
+                            dar_no = getYearMonthCurrent() + "-00001";
+                        } else {
+                            dar_no = getYearMonthCurrent() + "-" + (parseInt(darNoRaw[2]) + 1).toString().padStart(5, "0"); // increment series 
+                        }
+                    } else {
+                        dar_no = getYearMonthCurrent() + "-00001";
+                    }
+                } else {
+                    dar_no = getYearMonthCurrent() + "-00001";
+                }
+                function getYearMonthCurrent(type = 'year_month') {
+                    const dateObj = new Date();
+                    const month = dateObj.getMonth() + 1; // months from 1-12
+                    const day = dateObj.getDate();
+                    const year = dateObj.getFullYear();
+                    const pMonth = month.toString().padStart(2, "0");
+                    const pDay = day.toString().padStart(2, "0");
+                    if (type == 'year_month') return `${year}-${pMonth}`;
+                    else if (type == 'year') return `${year}`;
+                    else return `${year}-${pMonth}-${pDay}`;
+                }
+                resolve({ success: true, dar_no: dar_no });
             });
         });
     },

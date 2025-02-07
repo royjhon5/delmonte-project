@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime } = require("../../models/rawQueryModel/rawQueryModel");
+const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime, generateDARNo } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getDARHeader = async function (req, res) {
 	var params = {
@@ -73,8 +73,20 @@ module.exports.saveDARHeader = async function (req, res) {
 				// add details of template of newly inserted header
 				params.fieldValue.id = response.id
 				await AutoInsertDetailTemplate(params.fieldValue);
-			}
-			res.status(200).json(response);
+				// generate dar no
+				await generateDARNo({ id: response.id }).then(async function (result) {
+					var params = {
+						tableName: "tbldarhdr",
+						fieldValue: {
+							id: response.id,
+							dar_no: result.dar_no,
+						}
+					}
+					await update(params);
+					response.dar_no = result.dar_no
+					res.status(200).json(response);
+				});
+			} else res.status(200).json(response);
 		})
 	} catch (error) {
 		res.status(400).send({ error: 'Server Error' });

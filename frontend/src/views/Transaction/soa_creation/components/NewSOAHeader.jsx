@@ -93,7 +93,7 @@ const NewSOAHeaderModal = (props) => {
             var returnData = dataVariable;
             if (response.data.id) {
                 returnData.id = response.data.id;
-                returnData.soa_no = dayjs().format('YYYY-MM-') + response.data.id;
+                // returnData.soa_no = dayjs().format('YYYY-MM-') + response.data.id;
             }
             toast.success(response.data.message);
             onCloseModal(returnData); // close modal after saving
@@ -191,7 +191,7 @@ const NewSOAHeaderModal = (props) => {
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <TextField label="SOANo" value={dataVariable.soa_no} fullWidth size="medium" inputProps={{ readOnly: true }} />
+                                <TextField label="SOANo" value={dataVariable.soa_no} fullWidth size="medium" />
                                 <TextField type="date" value={dataVariable.xDate} onChange={updateDataVariable} name="xDate" fullWidth sx={{ mt: 1 }} size="medium" />
                                 <TextField label="Period Coverage" value={dataVariable.period_coverage} onChange={updateDataVariable} name="period_coverage" fullWidth sx={{ mt: 1 }} size="medium" />
                             </Grid>

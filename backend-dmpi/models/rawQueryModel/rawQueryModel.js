@@ -95,6 +95,167 @@ const rawQueryModel = {
             });
         });
     },
+
+    // print
+    PrintDARDetails: async function (params) {
+        let resultData = [];
+        let totalST = 0, totalOT = 0, totalND = 0, totalNDOT = 0, totalHC = 1, cntr = 1;
+
+        return new Promise((resolve, reject) => {
+            const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
+
+            const countQuery = `SELECT COUNT(*) AS total FROM tbldarhdr hdr WHERE hdr.id = ${params.id}`;
+            const dataQuery = `
+                SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  
+                FROM tbldarhdr hdr, tbldardtl dtl 
+                WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
+                ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
+                LIMIT ${limit} OFFSET ${offset}
+            `;
+
+            db.query(countQuery, (err, countResult) => {
+                if (err) return reject(err);
+
+                let totalPages = Math.ceil(countResult[0].total / limit);
+
+                db.query(dataQuery, params.paramValue, (err, result) => {
+                    if (err) return reject(err);
+                    if (result.length > 0) {
+                        let lastChapa = result[0].ChapaID;
+                        let prepared_by = result[0].prepared_by;
+                        let checked_by = result[0].checked_by;
+
+                        resultData.push({
+                            ChapaID: "",
+                            emp_lname: result[0].activity.toUpperCase(),
+                            emp_fname: "",
+                            emp_mname: "",
+                            emp_ext_name: "",
+                            time_in: "",
+                            time_out: "",
+                            st: "",
+                            ot: "",
+                            nd: "",
+                            ndot: "",
+                            gl: "",
+                            glcost_center: "",
+                            daytype: result[0].daytype,
+                            department: result[0].department,
+                            xDate: result[0].xDate,
+                            shift: result[0].shift
+                        });
+
+                        result.forEach(element => {
+                            if (lastChapa != element.ChapaID) {
+                                lastChapa = element.ChapaID;
+                                totalHC += 1;
+                                cntr = 1;
+                                resultData.push({
+                                    ChapaID: "",
+                                    emp_lname: element.activity.toUpperCase(),
+                                    emp_fname: "",
+                                    emp_mname: "",
+                                    emp_ext_name: "",
+                                    time_in: "",
+                                    time_out: "",
+                                    st: "",
+                                    ot: "",
+                                    nd: "",
+                                    ndot: "",
+                                    gl: "",
+                                    glcost_center: "",
+                                    daytype: element.daytype,
+                                    department: element.department,
+                                    xDate: element.xDate,
+                                    shift: element.shift
+                                });
+                            }
+                            if (cntr > 1) {
+                                element.ChapaID = "";
+                                element.emp_lname = "";
+                                element.emp_fname = "";
+                                element.emp_mname = "";
+                                element.emp_ext_name = "";
+                            }
+                            resultData.push(element);
+                            totalST += parseFloat(element.st);
+                            totalOT += parseFloat(element.ot);
+                            totalND += parseFloat(element.nd);
+                            totalNDOT += parseFloat(element.ndot);
+                            cntr += 1;
+                        });
+
+                        resolve({
+                            success: true,
+                            data: resultData,
+                            totals: { totalHC, totalST, totalOT, totalND, totalNDOT },
+                            signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() }
+                        });
+                    } else {
+                        resolve({
+                            success: false,
+                            data: [],
+                            totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
+                            signatory: { prepared_by: "", checked_by: "" }
+                        });
+                    }
+                });
+            });
+        });
+    },
+
+
+    PrintSOADetails: async function (params) {
+        let resultData = [];
+        let totalST = 0;
+        let totalOT = 0;
+        let totalND = 0;
+        let totalNDOT = 0;
+        let totalHC = 1;
+        let cntr = 1;
+        return new Promise((resolve, reject) => {
+            const sumFields = `SUM(h_st) as th_st, SUM(h_ot) as th_ot, SUM(h_nd) as th_nd, SUM(h_ndot) as th_ndot, SUM(amount_st) as tamount_st, SUM(amount_ot) as tamount_ot, SUM(amount_nd) as tamount_nd, SUM(amount_ndot) as tamount_ndot, SUM(total_amount) as ttotal_amount, SUM(head_count) as thead_count`;
+            const filepath_esignature = `(SELECT l.filepath_esignature FROM tbllogin l WHERE l.LoginID = hdr.id LIMIT 1) as filepath_esignature`;
+            const query = `SELECT hdr.*, dtl.*, ${sumFields}, ${filepath_esignature} FROM tblsoahdr hdr, tblsoa_dtl dtl WHERE hdr.id = dtl.soa_hdr_idlink and hdr.id = ${params.id} GROUP BY dtl.activity_idlink ORDER BY dtl.activity ASC, dtl.gl_account ASC`;
+            db.query(query, params.paramValue, (err, result) => {
+                if (err) return reject(err);
+                if (result.length > 0) {
+                    let prepared_by = result[0].prepared_by;
+                    let checked_by = result[0].checked_by;
+                    let confirmed_by = result[0].confirmed_by;
+                    let approved_by = result[0].approved_by;
+                    let preparedby_position = result[0].preparedby_position;
+                    let checkedby_position = result[0].checkedby_position;
+                    let confirmedby_position = result[0].confirmedby_position;
+                    let approvedby_position = result[0].approvedby_position;
+                    result.forEach(element => {
+                        element.count = cntr;
+                        resultData.push(element);
+                        totalST += parseFloat(element.st);
+                        totalOT += parseFloat(element.ot);
+                        totalND += parseFloat(element.nd);
+                        totalNDOT += parseFloat(element.ndot);
+                        cntr += 1;
+                    })
+                    resolve({
+                        success: true,
+                        data: resultData,
+                        totals: { totalHC: totalHC, totalST: totalST, totalOT: totalOT, totalND: totalND, totalNDOT: totalNDOT },
+                        signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase(), confirmed_by: confirmed_by.toUpperCase(), approved_by: approved_by.toUpperCase() },
+                        designation: { preparedby_position: preparedby_position.toUpperCase(), checkedby_position: checkedby_position.toUpperCase(), confirmedby_position: confirmedby_position.toUpperCase(), approvedby_position: approvedby_position.toUpperCase() }
+                    });
+                } else {
+                    resolve({
+                        success: true,
+                        data: [],
+                        totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
+                        signatory: { prepared_by: "", checked_by: "", confirmed_by: "", approved_by: "" },
+                        signatory: { preparedby_position: "", checkedby_position: "", confirmedby_position: "", approvedby_position: "" },
+                    });
+                }
+            });
+        });
+    },
 }
 
 module.exports = rawQueryModel;
