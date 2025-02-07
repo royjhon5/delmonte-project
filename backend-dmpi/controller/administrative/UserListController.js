@@ -159,7 +159,6 @@ module.exports.VerifyPersonalKey = async function (req, res) {
 module.exports.getForConfirmation = async function (req, res) {
 	try {
 		await GetForConfirmation().then(function (response) {
-			console.log(response);
 			if (response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
@@ -172,7 +171,6 @@ module.exports.getForConfirmation = async function (req, res) {
 module.exports.getForApproval = async function (req, res) {
 	try {
 		await GetForApproval().then(function (response) {
-			console.log(response);
 			if (response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});

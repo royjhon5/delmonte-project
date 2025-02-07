@@ -4,7 +4,8 @@ const router = express.Router();
 const arrayRoutesSvc = [
     require('./services/authSvc'),
     require('./services/masterfile'),
-    require('./services/transaction')
+    require('./services/transaction'),
+    require('./services/reports')
 ];
 
 arrayRoutesSvc.forEach(routeSvc => {

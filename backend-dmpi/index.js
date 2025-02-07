@@ -7,7 +7,7 @@ const db = require('./config/dbConnection')
 const socketServer = require('socket.io')(http, {
     cors: {
         origin: [
-            "http://localhost:3000",
+            "http://localhost:3100",
         ]
     }
 });
@@ -17,7 +17,7 @@ app.use(express.static('user_profile_picture'))
 app.use(cookieParser()); 
 app.use(cors({
     origin: (origin, callback) => {
-        const allowedOrigins = ["http://localhost:3000"];
+        const allowedOrigins = ["http://localhost:3100"];
         // const allowedOrigins = ["http://192.168.1.2:3000"];
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);

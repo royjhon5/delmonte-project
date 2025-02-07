@@ -1,28 +1,15 @@
-import { Grid } from "@mui/material"
 import { Helmet } from "react-helmet-async"
-import BarchartStats from "./Statistics/BarchartStats"
-import PieChartStats from "./Statistics/PieChartStats"
-import StorageCapacity from "./Statistics/StorageCapacity"
+import { Typography } from '@mui/material'
 
 const Dashboard = () => {
-
-
   return (
     <>
       <Helmet>
         <title>Dashboard: Overview</title>
       </Helmet>
-      {/* <Grid container direction="row" spacing={3}>
-        <Grid item xs={12} md={6}>
-          <PieChartStats />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <BarchartStats />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <StorageCapacity />
-        </Grid>
-      </Grid> */}
+      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
+        Hi, Welcome back 👋
+      </Typography>
     </>
   )
 }

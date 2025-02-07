@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { OPEN_CONFIRM, OPEN_CUSTOM_MODAL, OPEN_DISAPPROVE, TRANSFER_DATA } from "../../../../store/actions";
 import CustomDialog from "../../../../components/CustomDialog";
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
 import Iframe from "react-iframe";
 import { Fragment } from "react";
 import InputSecurityDialog from "./input-security-dialog";
@@ -26,13 +26,16 @@ const ViewDataDialog = () => {
         DialogContents={
             <Box sx={{ padding: 0 }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        DAR Previe
-                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${transferedData.id}` } width="100%" height="700px" alt='not found' ></Iframe>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        SOA Preview
+                    <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', gap:1}}>                   
+                        <Typography>SOA Preview</Typography>
                         <Iframe src={`http://localhost:8000/api/get-printsoadetails?id=${transferedData.soa_id}`} width="100%" height="700px" alt='not found' ></Iframe>
+                    </Grid>
+                    <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', gap:1}}>
+                        <Typography>List of DAR Preview </Typography>               
+                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${transferedData.id}` } width="100%" height="700px" alt='not found' ></Iframe>
+                        <Box>
+                            <Pagination variant="outlined" shape="rounded" count={10}/>
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>
