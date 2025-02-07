@@ -29,11 +29,11 @@ const ViewDataDialog = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         DAR Preview
-                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${transferedData.id}` } width="100%" height="700px" alt='not found'></Iframe>
+                        <Iframe src={`http://localhost:8100/api/get-printdardetails?id=${transferedData.id}` } width="100%" height="700px" alt='not found'></Iframe>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         SOA Preview
-                        <Iframe src={`http://localhost:8000/api/get-printsoadetails?id=${transferedData.soa_id}`} width="100%" height="700px" alt='not found' ></Iframe>
+                        <Iframe src={`http://localhost:8100/api/get-printsoadetails?id=${transferedData.soa_id}`} width="100%" height="700px" alt='not found' ></Iframe>
                     </Grid>
                 </Grid>
             </Box>

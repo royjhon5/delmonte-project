@@ -20,7 +20,7 @@ const ViewDataDialog = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const CloseDialog = () => { dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false })}
   const openConfirm = () => { dispatch({ type: OPEN_CONFIRM, openConfirm: true }), dispatch({ type: TRANSFER_DATA, transferData: transferedData.soa_id}) }
-  const openDisapprove = () => { dispatch({ type: OPEN_DISAPPROVE, openDisapprove: true }); }
+  const openDisapprove = () => { dispatch({ type: OPEN_DISAPPROVE, openDisapprove: true }); dispatch({ type: TRANSFER_DATA, transferData: transferedData.soa_id}) }
   const handlePageChange = (_, newPage) => {
     setCurrentPage(newPage);
   };
@@ -39,11 +39,11 @@ const ViewDataDialog = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', gap:1}}>                   
                         <Typography>SOA Preview</Typography>
-                        <Iframe src={`http://localhost:8000/api/get-printsoadetails?id=${transferedData.soa_id}`} width="100%" height="700px" alt='not found' ></Iframe>
+                        <Iframe src={`http://localhost:8100/api/get-printsoadetails?id=${transferedData.soa_id}`} width="100%" height="700px" alt='not found' ></Iframe>
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', gap:1}}>
                         <Typography>List of DAR Preview </Typography>               
-                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${currentDarId}`} width="100%" height="700px" title="DAR Preview" />
+                        <Iframe src={`http://localhost:8100/api/get-printdardetails?id=${currentDarId}`} width="100%" height="700px" title="DAR Preview" />
                         <Pagination 
                             count={mappedData.length} 
                             page={currentPage} 

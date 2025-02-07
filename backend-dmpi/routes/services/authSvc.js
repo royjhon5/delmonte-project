@@ -19,6 +19,7 @@ module.exports.routes = {
         ['/get-printdardetails', UserCtrl.PrintDARDetails],
         ['/get-printsoadetails', UserCtrl.PrintSOADetails],
         ['/get-displayimage', UserCtrl.displayImage],
+        ['/get-soajoindar', UserCtrl.getSOAJoinDAR]
     ],
     remove: [
         ['/logout', Ctrl.userLogout],

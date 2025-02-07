@@ -236,18 +236,12 @@ const rawQueryModel = {
 
         return new Promise((resolve, reject) => {
             const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
-
-            const countQuery = `SELECT COUNT(*) AS total FROM tbldarhdr hdr WHERE hdr.id = ${params.id}`;
             const dataQuery = `
                 SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  
                 FROM tbldarhdr hdr, tbldardtl dtl 
                 WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
                 ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
             `;
-
-            db.query(countQuery, (err, countResult) => {
-                if (err) return reject(err);
-    
                 db.query(dataQuery, params.paramValue, (err, result) => {
                     if (err) return reject(err);
                     if (result.length > 0) {
@@ -330,7 +324,6 @@ const rawQueryModel = {
                         });
                     }
                 });
-            });
         });
     },
 

@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const { GetForConfirmation, GetForApproval, GetSOAJoinDAR, PrintDARDetails, PrintSOADetails } = require("../../models/rawQueryModel/rawQueryModel");
 const db = require('../../config/dbConnection');
 const AuthModel = require('../../models/auth/authModel');
+const dayjs = require('dayjs');
+const pdf = require('pdf-creator-node');
+const fs = require('fs');
 
 module.exports.uploadProfilePicture = async function (req, res) {
 	const multer = require('multer');
@@ -387,7 +390,7 @@ module.exports.PrintSOADetails = async function (req, res) {
 module.exports.displayImage = async function(req, res) {
     const data = req.query;
     fs.readFile(
-        `../backend/images/${data.src}`,
+        `../backend-dmpi/${data.src}`,
         function (err, image) {
             if (err) {
                 res.status(400).send({ error: 'Image not found.' });
