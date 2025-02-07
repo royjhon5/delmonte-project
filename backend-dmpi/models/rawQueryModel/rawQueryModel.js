@@ -34,11 +34,11 @@ const rawQueryModel = {
             db.query(query, [], async (err, result) => {
                 await result.forEach(element => {
                     // get dar time in from device here...
-                    
+
                     const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, gl, cost_center, activitylink_id, activity)
                         VALUES (${params.id}, "${element.ChapaID}", "${element.last_name}", "${element.first_name}", "${element.middle_name}", "${element.ext_name}", "0800", "${element.gl_code}", "${element.costcenter}", 
                         "${element.account_master_idlink}", "${element.activityname}")`;
-                        db.query(query2, [], (err2, result2) => {console.log(err2);});
+                    db.query(query2, [], (err2, result2) => { console.log(err2); });
                 });
                 resolve({ success: true });
             });
@@ -53,16 +53,16 @@ const rawQueryModel = {
                 console.log(result);
                 await result.forEach(element => {
                     // get account rates here...
-                    
+
                     // insert soa detail
                     const query2 = `INSERT INTO tblsoa_dtl (soa_hdr_idlink, dar_hdr_link_id, activity_idlink, h_st, h_ot, h_nd, h_ndot, head_count, gl_account, cost_center, activity)
                         VALUES (${params.soa_id}, "${params.id}", "${element.activitylink_id}", "${element.total_st}", "${element.total_ot}", "${element.total_nd}", "${element.total_ndot}", 
                         "${element.head_count}", "${element.gl}", "${element.cost_center}", "${element.activity}")`;
-                        db.query(query2, [], (err2, result2) => {console.log(err2);});
+                    db.query(query2, [], (err2, result2) => { console.log(err2); });
 
                     // update dar header to soa id link
                     const query3 = `UPDATE tbldarhdr SET soa_no_link = ${params.soa_id} WHERE id = ${params.id}`;
-                        db.query(query3, [], (err3, result3) => {console.log(err3);});
+                    db.query(query3, [], (err3, result3) => { console.log(err3); });
                 });
                 resolve({ success: true, message: "successfully saved" });
             });
@@ -71,9 +71,8 @@ const rawQueryModel = {
 
     GetForConfirmation: async function () {
         return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+            const query = `SELECT *, id as soa_id FROM tblsoahdr WHERE soa_status = "SUBMITTED" ORDER BY xDate ASC, id ASC`;
             db.query(query, [], async (err, result) => {
-                console.log(result);
                 resolve({ success: true, data: result });
             });
         });
@@ -81,9 +80,17 @@ const rawQueryModel = {
 
     GetForApproval: async function () {
         return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "CONFIRMED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+            const query = `SELECT *, id as soa_id FROM tblsoahdr WHERE soa_status = "CONFIRMED" ORDER BY xDate ASC, id ASC`;
             db.query(query, [], async (err, result) => {
-                console.log(result);
+                resolve({ success: true, data: result });
+            });
+        });
+    },
+
+    GetSOAJoinDAR: async function (params) {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT dhdr.*, dhdr.id as dar_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id=${params.id} AND shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dtl.id ASC`; // dar header data only
+            db.query(query, [], async (err, result) => {
                 resolve({ success: true, data: result });
             });
         });

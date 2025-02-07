@@ -233,10 +233,6 @@ const rawQueryModel = {
 
     // print
     PrintDARDetails: async function (params) {
-        let page = parseInt(params.page) || 1;
-        let limit = parseInt(params.limit) || 1;
-        let offset = (page - 1) * limit;
-    
         let resultData = [];
         let totalST = 0, totalOT = 0, totalND = 0, totalNDOT = 0, totalHC = 1, cntr = 1;
     
@@ -328,16 +324,14 @@ const rawQueryModel = {
                             success: true,
                             data: resultData,
                             totals: { totalHC, totalST, totalOT, totalND, totalNDOT },
-                            signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() },
-                            totalPages
+                            signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() }
                         });
                     } else {
                         resolve({
                             success: false,
                             data: [],
                             totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
-                            signatory: { prepared_by: "", checked_by: "" },
-                            totalPages: 0
+                            signatory: { prepared_by: "", checked_by: "" }
                         });
                     }
                 });
@@ -389,32 +383,33 @@ const rawQueryModel = {
                         success: true,
                         data: [],
                         totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
-                        signatory: { prepared_by: "", checked_by: "", confirmed_by: "", approved_by: "" }
+                        signatory: { prepared_by: "", checked_by: "", confirmed_by: "", approved_by: "" },
+                        signatory: { preparedby_position: "", checkedby_position: "", confirmedby_position: "", approvedby_position: "" },
                     });
                 }
             });
         });
     },
 
-    GetForConfirmation: async function () {
-        return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
-            db.query(query, [], async (err, result) => {
-                console.log(result);
-                resolve({ success: true, data: result });
-            });
-        });
-    },
+    // GetForConfirmation: async function () {
+    //     return new Promise((resolve, reject) => {
+    //         const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+    //         db.query(query, [], async (err, result) => {
+    //             console.log(result);
+    //             resolve({ success: true, data: result });
+    //         });
+    //     });
+    // },
 
-    GetForApproval: async function () {
-        return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "CONFIRMED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
-            db.query(query, [], async (err, result) => {
-                console.log(result);
-                resolve({ success: true, data: result });
-            });
-        });
-    },
+    // GetForApproval: async function () {
+    //     return new Promise((resolve, reject) => {
+    //         const query = `SELECT dhdr.*, shdr.*, shdr.id as soa_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id = dhdr.soa_no_link AND shdr.soa_status = "CONFIRMED" ORDER BY dhdr.xDate ASC, dhdr.id ASC`;
+    //         db.query(query, [], async (err, result) => {
+    //             console.log(result);
+    //             resolve({ success: true, data: result });
+    //         });
+    //     });
+    // },
 }
 
 module.exports = rawQueryModel;

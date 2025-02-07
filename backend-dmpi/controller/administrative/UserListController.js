@@ -1,7 +1,7 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
 const path = require('path');
 const bcrypt = require('bcrypt');
-const { GetForConfirmation, GetForApproval } = require("../../models/rawQueryModel/rawQueryModel");
+const { GetForConfirmation, GetForApproval, GetSOAJoinDAR } = require("../../models/rawQueryModel/rawQueryModel");
 const db = require('../../config/dbConnection');
 const AuthModel = require('../../models/auth/authModel');
 
@@ -74,8 +74,8 @@ module.exports.getUsers = async function (req, res) {
 		tableName: "tbllogin",
 	}
 	try {
-		await select(params).then(function(response){
-			if(response.success) res.status(200).json(response.data);
+		await select(params).then(function (response) {
+			if (response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
 	} catch (error) {
@@ -180,6 +180,19 @@ module.exports.getForApproval = async function (req, res) {
 	}
 };
 
+module.exports.getSOAJoinDAR = async function (req, res) {
+	const data = req.body;
+	try {
+		await GetSOAJoinDAR({ id: data.id }).then(function (response) { // need pass SOA ID
+			if (response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+};
+
 module.exports.changeStatusSOA = async function (req, res) {
 	const data = req.body; // dependi sa pag send sa data, pwede e remove ang dataVariable kung di mugana
 	var params = {
@@ -210,8 +223,8 @@ module.exports.countForConfirmation = async function (req, res) {
 		whereValue: ['SUBMITTED'],
 	}
 	try {
-		await select(params).then(function(response){
-			if(response.success) res.status(200).json(response.data);
+		await select(params).then(function (response) {
+			if (response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
 	} catch (error) {
@@ -229,8 +242,8 @@ module.exports.countForApproval = async function (req, res) {
 		whereValue: ['CONFIRMED'],
 	}
 	try {
-		await select(params).then(function(response){
-			if(response.success) res.status(200).json(response.data);
+		await select(params).then(function (response) {
+			if (response.success) res.status(200).json(response.data);
 			else res.status(200).json(response);
 		});
 	} catch (error) {
