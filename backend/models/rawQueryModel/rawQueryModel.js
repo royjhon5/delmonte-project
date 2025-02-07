@@ -61,6 +61,7 @@ const rawQueryModel = {
             const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, hdr.day_type_idlink, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
                 SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} GROUP BY dtl.activitylink_id`;
             db.query(query, [], async (err, result) => {
+                console.log(err)
                 await result.forEach(element => {
                     // get account rates here...
                     const accountRateSql = `SELECT * FROM tblaccount_rates WHERE daytype_link = ${element.day_type_idlink} LIMIT 1`;
@@ -232,96 +233,118 @@ const rawQueryModel = {
 
     // print
     PrintDARDetails: async function (params) {
+        let page = parseInt(params.page) || 1;
+        let limit = parseInt(params.limit) || 1;
+        let offset = (page - 1) * limit;
+    
         let resultData = [];
-        let totalST = 0;
-        let totalOT = 0;
-        let totalND = 0;
-        let totalNDOT = 0;
-        let totalHC = 1;
-        let cntr = 1;
+        let totalST = 0, totalOT = 0, totalND = 0, totalNDOT = 0, totalHC = 1, cntr = 1;
+    
         return new Promise((resolve, reject) => {
-            const query = `SELECT hdr.department, hdr.xDate, dtl.*, hdr.prepared_by, hdr.checked_by, hdr.shift  FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink and hdr.id = ${params.id} ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC`;
-            db.query(query, params.paramValue, (err, result) => {
+            const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
+            
+            const countQuery = `SELECT COUNT(*) AS total FROM tbldarhdr hdr WHERE hdr.id = ${params.id}`;
+            const dataQuery = `
+                SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  
+                FROM tbldarhdr hdr, tbldardtl dtl 
+                WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
+                ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
+                LIMIT ${limit} OFFSET ${offset}
+            `;
+    
+            db.query(countQuery, (err, countResult) => {
                 if (err) return reject(err);
-                if (result.length > 0) {
-                    let lastChapa = result[0].ChapaID;
-                    let prepared_by = result[0].prepared_by;
-                    let checked_by = result[0].checked_by;
-                    resultData.push({
-                        ChapaID: "",
-                        emp_lname: result[0].activity.toUpperCase(),
-                        emp_fname: "",
-                        emp_mname: "",
-                        emp_ext_name: "",
-                        time_in: "",
-                        time_out: "",
-                        st: "",
-                        ot: "",
-                        nd: "",
-                        ndot: "",
-                        gl: "",
-                        glcost_center: "",
-                        daytype: result[0].daytype,
-                        department: result[0].department,
-                        xDate: result[0].xDate,
-                        shift: result[0].shift
-                    });
-                    result.forEach(element => {
-                        if (lastChapa != element.ChapaID) {
-                            lastChapa = element.ChapaID; // update variable
-                            totalHC += 1;
-                            cntr = 1;
-                            resultData.push({
-                                ChapaID: "",
-                                emp_lname: element.activity.toUpperCase(),
-                                emp_fname: "",
-                                emp_mname: "",
-                                emp_ext_name: "",
-                                time_in: "",
-                                time_out: "",
-                                st: "",
-                                ot: "",
-                                nd: "",
-                                ndot: "",
-                                gl: "",
-                                glcost_center: "",
-                                daytype: element.daytype,
-                                department: element.department,
-                                xDate: element.xDate,
-                                shift: element.shift
-                            });
-                        }
-                        if (cntr > 1) {
-                            element.ChapaID = "";
-                            element.emp_lname = "";
-                            element.emp_fname = "";
-                            element.emp_mname = "";
-                            element.emp_ext_name = "";
-                        }
-                        resultData.push(element);
-                        totalST += parseFloat(element.st);
-                        totalOT += parseFloat(element.ot);
-                        totalND += parseFloat(element.nd);
-                        totalNDOT += parseFloat(element.ndot);
-                        cntr += 1;
-                    })
-                    resolve({
-                        success: true,
-                        data: resultData,
-                        totals: { totalHC: totalHC, totalST: totalST, totalOT: totalOT, totalND: totalND, totalNDOT: totalNDOT },
-                        signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() }
-                    });
-                } else {
-                    resolve({
-                        success: false,
-                        data: [],
-                        totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
-                        signatory: { prepared_by: "", checked_by: "" }
-                    });
-                }
+    
+                let totalPages = Math.ceil(countResult[0].total / limit);
+    
+                db.query(dataQuery, params.paramValue, (err, result) => {
+                    if (err) return reject(err);
+                    if (result.length > 0) {
+                        let lastChapa = result[0].ChapaID;
+                        let prepared_by = result[0].prepared_by;
+                        let checked_by = result[0].checked_by;
+    
+                        resultData.push({
+                            ChapaID: "",
+                            emp_lname: result[0].activity.toUpperCase(),
+                            emp_fname: "",
+                            emp_mname: "",
+                            emp_ext_name: "",
+                            time_in: "",
+                            time_out: "",
+                            st: "",
+                            ot: "",
+                            nd: "",
+                            ndot: "",
+                            gl: "",
+                            glcost_center: "",
+                            daytype: result[0].daytype,
+                            department: result[0].department,
+                            xDate: result[0].xDate,
+                            shift: result[0].shift
+                        });
+    
+                        result.forEach(element => {
+                            if (lastChapa != element.ChapaID) {
+                                lastChapa = element.ChapaID;
+                                totalHC += 1;
+                                cntr = 1;
+                                resultData.push({
+                                    ChapaID: "",
+                                    emp_lname: element.activity.toUpperCase(),
+                                    emp_fname: "",
+                                    emp_mname: "",
+                                    emp_ext_name: "",
+                                    time_in: "",
+                                    time_out: "",
+                                    st: "",
+                                    ot: "",
+                                    nd: "",
+                                    ndot: "",
+                                    gl: "",
+                                    glcost_center: "",
+                                    daytype: element.daytype,
+                                    department: element.department,
+                                    xDate: element.xDate,
+                                    shift: element.shift
+                                });
+                            }
+                            if (cntr > 1) {
+                                element.ChapaID = "";
+                                element.emp_lname = "";
+                                element.emp_fname = "";
+                                element.emp_mname = "";
+                                element.emp_ext_name = "";
+                            }
+                            resultData.push(element);
+                            totalST += parseFloat(element.st);
+                            totalOT += parseFloat(element.ot);
+                            totalND += parseFloat(element.nd);
+                            totalNDOT += parseFloat(element.ndot);
+                            cntr += 1;
+                        });
+    
+                        resolve({
+                            success: true,
+                            data: resultData,
+                            totals: { totalHC, totalST, totalOT, totalND, totalNDOT },
+                            signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() },
+                            totalPages
+                        });
+                    } else {
+                        resolve({
+                            success: false,
+                            data: [],
+                            totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
+                            signatory: { prepared_by: "", checked_by: "" },
+                            totalPages: 0
+                        });
+                    }
+                });
             });
         });
     },
+    
 
     PrintSOADetails: async function (params) {
         let resultData = [];

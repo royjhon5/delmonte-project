@@ -24,7 +24,6 @@ const AccountRateData = () => {
     }) : [];
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.activity.toLowerCase().includes(search.toLowerCase()) ||
             row.costcenter.toLowerCase().includes(search.toLowerCase()) ||
             row.gl.toLowerCase().includes(search.toLowerCase())
         );

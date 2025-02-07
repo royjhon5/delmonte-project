@@ -3,7 +3,7 @@ import { OPEN_CONFIRM, OPEN_CUSTOM_MODAL, OPEN_DISAPPROVE, TRANSFER_DATA } from 
 import CustomDialog from "../../../../components/CustomDialog";
 import { Box, Button, Grid, Pagination, Typography } from "@mui/material";
 import Iframe from "react-iframe";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import InputSecurityDialog from "./input-security-dialog";
 import DisapproveDialog from "./disapprove-dialog";
 
@@ -15,6 +15,11 @@ const ViewDataDialog = () => {
   const CloseDialog = () => { dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false })}
   const openConfirm = () => { dispatch({ type: OPEN_CONFIRM, openConfirm: true }), dispatch({ type: TRANSFER_DATA, transferData: transferedData.soa_id}) }
   const openDisapprove = () => { dispatch({ type: OPEN_DISAPPROVE, openDisapprove: true }); }
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 1;
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
   return (
     <Fragment>
     <InputSecurityDialog />
@@ -32,9 +37,9 @@ const ViewDataDialog = () => {
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', gap:1}}>
                         <Typography>List of DAR Preview </Typography>               
-                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${transferedData.id}` } width="100%" height="700px" alt='not found' ></Iframe>
+                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${transferedData.id}&page=${currentPage}&limit=${itemsPerPage}`} width="100%" height="700px" alt='not found' ></Iframe>
                         <Box>
-                            <Pagination variant="outlined" shape="rounded" count={10}/>
+                            <Pagination variant="outlined" shape="rounded" page={currentPage} onChange={handlePageChange}/>
                         </Box>
                     </Grid>
                 </Grid>
