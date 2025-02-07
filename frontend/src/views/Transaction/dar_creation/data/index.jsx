@@ -44,8 +44,8 @@ const DARdata = () => {
         activity: "",
         department: "",
         group_name: "",
-        location_name: "",
-        daytype_name: "",
+        location: "",
+        daytype: "",
     };
     const [dataVariableHeader, setDataVariableHeader] = useState(initialDataVariableHeader);
 
@@ -340,7 +340,7 @@ const DARdata = () => {
                                 <TextField fullWidth label="Employee Template" value={dataVariableHeader.template_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Location" value={dataVariableHeader.location_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Location" value={dataVariableHeader.location} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Department" value={dataVariableHeader.department} variant="outlined" size="small" inputProps={{ readOnly: true }} />
@@ -352,7 +352,7 @@ const DARdata = () => {
                                 <TextField fullWidth label="Shifting" value={dataVariableHeader.shift} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Day Type" value={dataVariableHeader.daytype_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Day Type" value={dataVariableHeader.daytype} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Group Name" value={dataVariableHeader.group_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />

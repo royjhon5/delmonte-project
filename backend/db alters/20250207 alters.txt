@@ -1,0 +1,6 @@
+ALTER TABLE `tblsoahdr` ADD `department` VARCHAR(155) NOT NULL AFTER `period_coverage`, ADD `location` VARCHAR(155) NOT NULL AFTER `department`, ADD `daytype` VARCHAR(155) NOT NULL AFTER `location`;
+ALTER TABLE `tbldarhdr` ADD `daytype` VARCHAR(155) NOT NULL AFTER `group_name`, ADD `location` VARCHAR(155) NOT NULL AFTER `daytype`;
+
+// dmpi database ni -----------------------------------------------------------------------------------
+ALTER TABLE `tblsoahdr` ADD `department` VARCHAR(155) NOT NULL AFTER `period_coverage`, ADD `location` VARCHAR(155) NOT NULL AFTER `department`, ADD `daytype` VARCHAR(155) NOT NULL AFTER `location`;
+ALTER TABLE `tbldarhdr` ADD `daytype` VARCHAR(155) NOT NULL AFTER `group_name`, ADD `location` VARCHAR(155) NOT NULL AFTER `daytype`;

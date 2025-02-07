@@ -41,8 +41,8 @@ const NewDarHeader = (props) => {
         template_name: "",
         department: "",
         group_name: "",
-        location_name: "",
-        daytype_name: "",
+        location: "",
+        daytype: "",
     };
     const [dataVariable, setDataVariable] = useState(initialDataVariable);
     const updateDataVariable = e => {
@@ -55,14 +55,14 @@ const NewDarHeader = (props) => {
             const selectedRow = filterIt(locationList, value, "id");
             setDataVariable(prevState => ({
                 ...prevState,
-                location_name: selectedRow[0].location_name
+                location: selectedRow[0].location_name
             }));
         }
         if (name == 'day_type_idlink') {
             const selectedRow = filterIt(dayTypeList, value, "id");
             setDataVariable(prevState => ({
                 ...prevState,
-                daytype_name: selectedRow[0].dt_name
+                daytype: selectedRow[0].dt_name
             }));
         }
     };

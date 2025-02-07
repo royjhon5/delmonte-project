@@ -19,7 +19,8 @@ const SearchDARHeaderModal = (props) => {
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.location_name.toLowerCase().includes(search.toLowerCase()) ||
+            row.location.toLowerCase().includes(search.toLowerCase()) ||
+            row.daytype.toLowerCase().includes(search.toLowerCase()) ||
             row.group_name.toLowerCase().includes(search.toLowerCase()) ||
             row.department.toLowerCase().includes(search.toLowerCase())
         );
@@ -40,7 +41,8 @@ const SearchDARHeaderModal = (props) => {
         },
         { field: 'group_name', headerName: 'Group', flex: 1, },
         { field: 'department', headerName: 'Department', flex: 1, },
-        { field: 'location_name', headerName: 'Location', flex: 1, },
+        { field: 'location', headerName: 'Location', flex: 1, },
+        { field: 'daytype', headerName: 'Day Type', flex: 1, },
         { field: 'xDate', headerName: 'Date', flex: 1, },
         { field: 'dar_status', headerName: 'Status', flex: 1, },
         {

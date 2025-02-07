@@ -18,6 +18,7 @@ module.exports.routes = {
         ['/post-postsoaheader', SOACtrl.postSOAHeader],
         ['/post-soadetail', SOACtrl.saveSOADetail],
         ['/post-adddardetails', SOACtrl.addDARDetails],
+        ['/post-submitsoaheader', SOACtrl.submitSOADetails],
         // 
         ['/post-accountrate', AccRateCtrl.saveAccountRateData],
     ],

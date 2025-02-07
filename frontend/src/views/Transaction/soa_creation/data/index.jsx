@@ -112,7 +112,7 @@ const SOAdata = () => {
             } else toast.error(response.data.message);
             setLoadSaving(false);
         } else {
-            setLoadSaving("Posting...");
+            setLoadSaving("Submitting...");
             const response = await http.post('/post-submitsoaheader', { id: dataVariableHeader.id });
             if (response.data.success) {
                 toast.success(response.data.message);

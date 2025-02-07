@@ -2,10 +2,8 @@ const { select, insert, update, remove } = require("../../models/mainModel");
 const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getDARHeader = async function (req, res) {
-	const daytype_name = "(SELECT a.dt_name FROM tbldaytype a WHERE a.id = tbldarhdr.day_type_idlink LIMIT 1) as daytype_name";
-	const location_name = "(SELECT a.location_name FROM tbllocationlist a WHERE a.id = tbldarhdr.locationlink_id LIMIT 1) as location_name";
 	var params = {
-		fields: ["*," + daytype_name + "," + location_name],
+		fields: ["*"],
 		tableName: "tbldarhdr",
 	}
 	try {
@@ -21,8 +19,8 @@ module.exports.getDARHeader = async function (req, res) {
 
 module.exports.getDARHeaderAvailable = async function (req, res) {
 	const data = req.query
-	const daytype_name = "(SELECT a.dt_name FROM tbldaytype a WHERE a.id = tbldarhdr.day_type_idlink LIMIT 1) as daytype_name";
-	const location_name = "(SELECT a.location_name FROM tbllocationlist a WHERE a.id = tbldarhdr.locationlink_id LIMIT 1) as location_name";
+	const daytype_name = "daytype as daytype_name";
+	const location_name = "location as location_name";
 	var params = {
 		fields: ["*," + daytype_name + "," + location_name],
 		tableName: "tbldarhdr",
@@ -64,6 +62,8 @@ module.exports.saveDARHeader = async function (req, res) {
 			template_name: data.template_name ? data.template_name : "",
 			department: data.department ? data.department : "",
 			group_name: data.group_name ? data.group_name : "",
+			daytype: data.daytype ? data.daytype : "",
+			location: data.location ? data.location : "",
 		}
 	}
 	try {

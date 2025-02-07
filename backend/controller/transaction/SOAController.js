@@ -1,12 +1,9 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AddDARDetailsToSOA } = require("../../models/rawQueryModel/rawQueryModel");
+const { AddDARDetailsToSOA, submitSOAToDMPI } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getSOAHeader = async function (req, res) {
-	const daytype = "(SELECT a.dt_name FROM tbldaytype a WHERE a.id = tblsoahdr.daytype_idlink LIMIT 1) as daytype";
-	const location = "(SELECT a.location_name FROM tbllocationlist a WHERE a.id = tblsoahdr.location_idlink LIMIT 1) as location";
-	const department = "(SELECT a.department_name FROM tbldepartment a WHERE a.id = tblsoahdr.dept_idlink LIMIT 1) as department";
 	var params = {
-		fields: ["*," + daytype + "," + location + "," + department],
+		fields: ["*"],
 		tableName: "tblsoahdr",
 	}
 	try {
@@ -47,6 +44,9 @@ module.exports.saveSOAHeader = async function (req, res) {
 			approved_by: data.approved_by ? data.approved_by : "",
 			approvedby_position: data.approvedby_position ? data.approvedby_position : "",
 			period_coverage: data.period_coverage ? data.period_coverage : "",
+			department: data.department ? data.department : "",
+			location: data.location ? data.location : "",
+			daytype: data.daytype ? data.daytype : "",
 		}
 	}
 	try {
@@ -81,6 +81,25 @@ module.exports.postSOAHeader = async function (req, res) {
 	}
 	try {
 		await update(params).then(async function (response) {
+			res.status(200).json(response);
+		})
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
+module.exports.submitSOADetails = async function (req, res) {
+	const data = req.body
+	// var params = {
+	// 	tableName: "tblsoahdr",
+	// 	fieldValue: {
+	// 		id: data.id,
+	// 		soa_status: "SUBMITTED",
+	// 	}
+	// }
+	try {
+		await submitSOAToDMPI({ id: data.id }).then(async function (response) {
 			res.status(200).json(response);
 		})
 	} catch (error) {

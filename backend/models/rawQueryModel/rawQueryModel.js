@@ -58,12 +58,12 @@ const rawQueryModel = {
 
     AddDARDetailsToSOA: async function (params) {
         return new Promise((resolve, reject) => {
-            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, hdr.daytype_idlink, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
+            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, hdr.day_type_idlink, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
                 SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} GROUP BY dtl.activitylink_id`;
             db.query(query, [], async (err, result) => {
                 await result.forEach(element => {
                     // get account rates here...
-                    const accountRateSql = `SELECT * FROM tblaccount_rates WHERE daytype_link = ${element.daytype_idlink} LIMIT 1`;
+                    const accountRateSql = `SELECT * FROM tblaccount_rates WHERE daytype_link = ${element.day_type_idlink} LIMIT 1`;
                     db.query(accountRateSql, [], async (errRate, resultRate) => {
                         let c_rates_st = 0;
                         let c_rates_ot = 0;
@@ -200,6 +200,36 @@ const rawQueryModel = {
         });
     },
 
+
+    submitSOAToDMPI: async function (params) {
+        return new Promise((resolve, reject) => {
+            // soa header
+            const querySOAHdr = `INSERT INTO ${process.env.DB_NAME3}.tblsoahdr (id, dept_idlink, location_idlink, daytype_idlink, soa_no, xDate, soa_status, prepared_by, preparedby_position, checked_by, 
+                checkedby_position, confirmed_by, confirmedby_position, approved_by, approvedby_position, period_coverage, department, location, daytype) SELECT id, dept_idlink, location_idlink, daytype_idlink, 
+                soa_no, xDate, soa_status, prepared_by, preparedby_position, checked_by, checkedby_position, confirmed_by, confirmedby_position, approved_by, approvedby_position, period_coverage, 
+                department, location, daytype FROM tblsoahdr WHERE id=${params.id}`;
+            db.query(querySOAHdr, [], async (errSOAHdr, resultSOAHdr) => { });
+
+            // soa detail
+            const querySOADtl = `INSERT INTO ${process.env.DB_NAME3}.tblsoa_dtl SELECT * FROM tblsoa_dtl WHERE soa_hdr_idlink=${params.id}`;
+            db.query(querySOADtl, [], async (errSOADtl, resultSOADtl) => { });
+
+            // dar header
+            const queryDARHdr = `INSERT INTO ${process.env.DB_NAME3}.tbldarhdr SELECT * FROM tbldarhdr WHERE soa_no_link=${params.id}`;
+            db.query(queryDARHdr, [], async (errDARHdr, resultDARHdr) => { });
+
+            // dar detail
+            const queryDARDtl = `INSERT INTO ${process.env.DB_NAME3}.tbldardtl SELECT dtl.* FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.soa_no_link=${params.id}`;
+            db.query(queryDARDtl, [], async (errDARDtl, resultDARDtl) => { });
+
+            // Update SOA Header
+            const queryUpdateSOA = `UPDATE tblsoahdr SET soa_status = 'SUBMITTED' WHERE id=${params.id}`;
+            db.query(queryUpdateSOA, [], async (errUpdateSOA, resultUpdateSOA) => { });
+
+            resolve({ success: true, message: "successfully saved" });
+        });
+    },
+
     // print
     PrintDARDetails: async function (params) {
         let resultData = [];
@@ -210,8 +240,7 @@ const rawQueryModel = {
         let totalHC = 1;
         let cntr = 1;
         return new Promise((resolve, reject) => {
-            const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.day_type_idlink LIMIT 1) as daytype`;
-            const query = `SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink and hdr.id = ${params.id} ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC`;
+            const query = `SELECT hdr.department, hdr.xDate, dtl.*, hdr.prepared_by, hdr.checked_by, hdr.shift  FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink and hdr.id = ${params.id} ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC`;
             db.query(query, params.paramValue, (err, result) => {
                 if (err) return reject(err);
                 if (result.length > 0) {
@@ -303,11 +332,8 @@ const rawQueryModel = {
         let totalHC = 1;
         let cntr = 1;
         return new Promise((resolve, reject) => {
-            const daytype = `(SELECT a.dt_name FROM tbldaytype a WHERE a.id = hdr.daytype_idlink LIMIT 1) as daytype`;
-            const location = "(SELECT a.location_name FROM tbllocationlist a WHERE a.id = hdr.location_idlink LIMIT 1) as location";
-	        const department = "(SELECT a.department_name FROM tbldepartment a WHERE a.id = hdr.dept_idlink LIMIT 1) as department";
             const sumFields = `SUM(h_st) as th_st, SUM(h_ot) as th_ot, SUM(h_nd) as th_nd, SUM(h_ndot) as th_ndot, SUM(amount_st) as tamount_st, SUM(amount_ot) as tamount_ot, SUM(amount_nd) as tamount_nd, SUM(amount_ndot) as tamount_ndot, SUM(total_amount) as ttotal_amount, SUM(head_count) as thead_count`;
-            const query = `SELECT hdr.*, dtl.*, ${daytype}, ${sumFields}, ${location}, ${department} FROM tblsoahdr hdr, tblsoa_dtl dtl WHERE hdr.id = dtl.soa_hdr_idlink and hdr.id = ${params.id} GROUP BY dtl.activity_idlink ORDER BY dtl.activity ASC, dtl.gl_account ASC`;
+            const query = `SELECT hdr.*, dtl.*, ${sumFields} FROM tblsoahdr hdr, tblsoa_dtl dtl WHERE hdr.id = dtl.soa_hdr_idlink and hdr.id = ${params.id} GROUP BY dtl.activity_idlink ORDER BY dtl.activity ASC, dtl.gl_account ASC`;
             db.query(query, params.paramValue, (err, result) => {
                 if (err) return reject(err);
                 if (result.length > 0) {
