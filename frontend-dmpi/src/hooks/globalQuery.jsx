@@ -3,12 +3,15 @@ import { toast } from 'sonner';
 import http from '../api/http';
 
 const hookContainer = (urlEndPoint = false, paramsVar = [], enabled = true) => {
+	// Ensure paramsVar is always an array
+	const queryParams = Array.isArray(paramsVar) ? paramsVar : [paramsVar];
+
 	if (urlEndPoint) {
 		const queryResult = useQuery({
-			queryKey: [urlEndPoint, ...paramsVar],
+			queryKey: [urlEndPoint, ...queryParams],
 			enabled,
 			queryFn: async () => {
-				const response = await http.get(urlEndPoint, { params: paramsVar });
+				const response = await http.get(urlEndPoint, { params: queryParams[0] || {} });
 				return response.data;
 			},
 			onError: () => {
@@ -24,6 +27,7 @@ const hookContainer = (urlEndPoint = false, paramsVar = [], enabled = true) => {
 	}
 	return { data: null, isLoading: false, isError: false, refetch: () => {} };
 };
+
 
 export { hookContainer };
 

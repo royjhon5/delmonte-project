@@ -89,7 +89,7 @@ const rawQueryModel = {
 
     GetSOAJoinDAR: async function (params) {
         return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, dhdr.id as dar_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id=${params.id} AND shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dtl.id ASC`; // dar header data only
+            const query = `SELECT dhdr.*, dhdr.id as dar_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id=${params.id} AND shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dhdr.id ASC`; // dar header data only
             db.query(query, [], async (err, result) => {
                 resolve({ success: true, data: result });
             });

@@ -6,20 +6,26 @@ import Iframe from "react-iframe";
 import { Fragment, useState } from "react";
 import InputSecurityDialog from "./input-security-dialog";
 import DisapproveDialog from "./disapprove-dialog";
+import { hookContainer } from "../../../../hooks/globalQuery";
 
 
 const ViewDataDialog = () => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.customization.openCustomModal);
   const transferedData = useSelector((state) => state.customization.formData);
+  const { data: mainData } = hookContainer('/get-soajoindar', {id: transferedData.soa_id});
+    const mappedData  = Array.isArray(mainData) ? mainData.map((row) => {
+        return { ...row, id: row.id };
+    }) : [];
+  const [currentPage, setCurrentPage] = useState(1);
   const CloseDialog = () => { dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: false })}
   const openConfirm = () => { dispatch({ type: OPEN_CONFIRM, openConfirm: true }), dispatch({ type: TRANSFER_DATA, transferData: transferedData.soa_id}) }
   const openDisapprove = () => { dispatch({ type: OPEN_DISAPPROVE, openDisapprove: true }); }
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1;
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
+  const handlePageChange = (_, newPage) => {
+    setCurrentPage(newPage);
   };
+  const currentDarId = mappedData[currentPage - 1]?.id || "";
+
   return (
     <Fragment>
     <InputSecurityDialog />
@@ -37,10 +43,15 @@ const ViewDataDialog = () => {
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ display: 'flex', flexDirection: 'column', gap:1}}>
                         <Typography>List of DAR Preview </Typography>               
-                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${transferedData.id}&page=${currentPage}&limit=${itemsPerPage}`} width="100%" height="700px" alt='not found' ></Iframe>
-                        <Box>
-                            <Pagination variant="outlined" shape="rounded" page={currentPage} onChange={handlePageChange}/>
-                        </Box>
+                        <Iframe src={`http://localhost:8000/api/get-printdardetails?id=${currentDarId}`} width="100%" height="700px" title="DAR Preview" />
+                        <Pagination 
+                            count={mappedData.length} 
+                            page={currentPage} 
+                            onChange={handlePageChange} 
+                            color="primary" 
+                            variant="outlined"
+                            shape="rounded"
+                        />
                     </Grid>
                 </Grid>
             </Box>

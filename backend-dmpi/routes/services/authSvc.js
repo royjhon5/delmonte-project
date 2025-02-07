@@ -15,7 +15,8 @@ module.exports.routes = {
         [ '/get-forconfirmation', UserCtrl.getForConfirmation ],
         [ '/get-forapproval', UserCtrl.getForApproval ],
         [ '/count-forconfirmation', UserCtrl.countForConfirmation],
-        [ '/count-forapproval', UserCtrl.countForApproval]
+        [ '/count-forapproval', UserCtrl.countForApproval],
+        [ '/get-soajoindar', UserCtrl.getSOAJoinDAR]
     ], 
     remove: [
         [ '/logout', Ctrl.userLogout ],

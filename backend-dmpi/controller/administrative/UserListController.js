@@ -181,7 +181,7 @@ module.exports.getForApproval = async function (req, res) {
 };
 
 module.exports.getSOAJoinDAR = async function (req, res) {
-	const data = req.body;
+	const data = req.query;
 	try {
 		await GetSOAJoinDAR({ id: data.id }).then(function (response) { // need pass SOA ID
 			if (response.success) res.status(200).json(response.data);

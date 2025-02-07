@@ -245,13 +245,10 @@ const rawQueryModel = {
                 FROM tbldarhdr hdr, tbldardtl dtl 
                 WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
                 ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
-                LIMIT ${limit} OFFSET ${offset}
             `;
     
             db.query(countQuery, (err, countResult) => {
                 if (err) return reject(err);
-    
-                let totalPages = Math.ceil(countResult[0].total / limit);
     
                 db.query(dataQuery, params.paramValue, (err, result) => {
                     if (err) return reject(err);

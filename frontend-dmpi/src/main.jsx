@@ -15,7 +15,7 @@ TimeAgo.addDefaultLocale(en)
 TimeAgo.addLocale(ru)
 import socketIO from 'socket.io-client';
 const baseUrl = window.location.origin;
-const socketConnect = socketIO.connect(baseUrl.split(':')[0]+':'+baseUrl.split(':')[1]+':8000');
+const socketConnect = socketIO.connect(baseUrl.split(':')[0]+':'+baseUrl.split(':')[1]+':8100');
 const queryClient = new QueryClient();
 
 export const WebSocket = () => {
