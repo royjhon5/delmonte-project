@@ -4,3 +4,11 @@ ALTER TABLE `tbldarhdr` ADD `daytype` VARCHAR(155) NOT NULL AFTER `group_name`, 
 // dmpi database ni -----------------------------------------------------------------------------------
 ALTER TABLE `tblsoahdr` ADD `department` VARCHAR(155) NOT NULL AFTER `period_coverage`, ADD `location` VARCHAR(155) NOT NULL AFTER `department`, ADD `daytype` VARCHAR(155) NOT NULL AFTER `location`;
 ALTER TABLE `tbldarhdr` ADD `daytype` VARCHAR(155) NOT NULL AFTER `group_name`, ADD `location` VARCHAR(155) NOT NULL AFTER `daytype`;
+
+
+// new ----------------
+ALTER TABLE `tbldarhdr` ADD `dar_no` VARCHAR(155) NOT NULL AFTER `location`;
+
+
+// dbdmpi
+ALTER TABLE `tbldarhdr` ADD `dar_no` VARCHAR(155) NOT NULL AFTER `location`;

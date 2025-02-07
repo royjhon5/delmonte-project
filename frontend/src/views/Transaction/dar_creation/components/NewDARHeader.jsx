@@ -43,6 +43,7 @@ const NewDarHeader = (props) => {
         group_name: "",
         location: "",
         daytype: "",
+        dar_no: "",
     };
     const [dataVariable, setDataVariable] = useState(initialDataVariable);
     const updateDataVariable = e => {
@@ -86,6 +87,7 @@ const NewDarHeader = (props) => {
             var returnData = dataVariable;
             if (response.data.id) {
                 returnData.id = response.data.id;
+                returnData.dar_no = response.data.dar_no;
             }
             toast.success(response.data.message);
             onCloseModal(returnData); // close modal after saving

@@ -32,10 +32,10 @@ const SearchDARHeaderModal = (props) => {
 
     const ColumnHeader = [
         {
-            field: 'template_name', headerName: 'Template', width: 250,
+            field: 'dar_no', headerName: 'DAR No.', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.template_name}
+                    {params.row.dar_no}
                 </Box>
             ),
         },
