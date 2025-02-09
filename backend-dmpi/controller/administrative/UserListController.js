@@ -389,16 +389,14 @@ module.exports.PrintSOADetails = async function (req, res) {
 
 module.exports.displayImage = async function(req, res) {
     const data = req.query;
-    fs.readFile(
-        `../backend-dmpi/${data.src}`,
-        function (err, image) {
-            if (err) {
-                res.status(400).send({ error: 'Image not found.' });
-            } 
-            res.setHeader('Content-Type', 'image/jpg');
-            res.setHeader('Content-Length', ''); // Image size here
-            res.setHeader('Access-Control-Allow-Origin', '*'); // If needs to be public
-            res.send(image);
-        }
-    );
+    
+    fs.readFile(`../backend-dmpi/${data.src}`, function (err, image) {
+        if (err) {
+            return res.status(400).send({ error: 'Image not found.' }); // Return to stop further execution
+        } 
+
+        res.setHeader('Content-Type', 'image/jpg');
+        res.setHeader('Access-Control-Allow-Origin', '*'); // If needs to be public
+        res.send(image);
+    });
 };

@@ -15,6 +15,7 @@ import ModalCrop from "../../../components/ModalCrop";
 import UploadPictureIcon from "../../../components/svg-icons/UploadPictureIcon";
 import { useTheme } from "@emotion/react";
 import { CheckmarkIcon } from "react-hot-toast";
+import UserProfPic from "../../../assets/images/user.png"
 
 const UserListData = () => {
   const theme = useTheme();
@@ -33,7 +34,6 @@ const UserListData = () => {
   const { data: userData, loading } = hookContainer('/get-users');
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedID, setSelectedID] = useState(0);
-  console.log(filepath_esignature[0]);
 
   const [username, setUsername] = useState('');
   const [position, setPosition] = useState('');
@@ -66,7 +66,7 @@ const UserListData = () => {
      },
     { field: 'UserLevel', headerName: 'User Level', flex:1, },
     { field: 'FullName', headerName: 'Full Name', flex:1, },
-    { field: 'Description', headerName: 'Description', flex:1, },
+    { field: 'Position', headerName: 'Position', flex:1, },
     { field: "action", headerAlign: 'right',
       headerName: '',    
       width: 150,
@@ -74,6 +74,11 @@ const UserListData = () => {
       renderCell: (params) => {   
         const SelectedRow = () => {
           setSelectedRowData(params.row);
+          setUsername(params.row.Username);
+          setPosition(params.row.Position);
+          setClientName(params.row.Client_name);
+          setRoles(params.row.roles);
+          setPersonalKey(params.row.personal_key);
           setFullName(params.row.FullName);
         }
       return (
@@ -132,7 +137,7 @@ const UserListData = () => {
       if (!uploadProf.data.success) return alert(uploadProf.data.message);
       if (!uploadSign.data.success) return alert(uploadProf.data.message);
       const saveResponse = await http.post('/register', {
-        LoginID: 0,
+        LoginID: selectedRowData ? selectedRowData.LoginID : 0,
         Username: username,
         Position: position,
         roles: roles,
@@ -237,7 +242,9 @@ const UserListData = () => {
                                   <img
                                       src={
                                         preview ||
-                                        `http://localhost:8000/uploads/profile_picture/croppedImage.png`
+                                        (selectedRowData
+                                          ? `http://localhost:8100/api/get-displayimage?src=${selectedRowData.filepath_profilepicture}`
+                                          : `${UserProfPic}`)                     
                                         }
                                       style={{ maxWidth: '100%' }}
                                   />
@@ -338,9 +345,10 @@ const UserListData = () => {
                     <Grid item xs={12} md={12}>
                       <Button fullWidth variant="contained" 
                       startIcon={<Box component="div" sx={{ display: filepath_esignature !== '' ? "block" : "none" }}><CheckmarkIcon color="primary" /></Box>}
-                      value={filepath_esignature}  
+                      value={selectedRowData ? selectedRowData.filepath_esignature : filepath_esignature}  
                       component="label" color="warning">
-                      {filepath_esignature !== '' ? `Signature Uploaded - Filename: ${filepath_esignature[0].name}` : "Upload Signature"} <input type="file" onChange={(e) => {setFilePathESignature(e.target.files)}} hidden /></Button>
+                      {selectedRowData ? `Update - ${selectedRowData.filepath_esignature}` : filepath_esignature !== '' ? `Signature Uploaded - Filename: ${filepath_esignature[0].name}` : "Upload Signature"} 
+                      <input type="file" onChange={(e) => {setFilePathESignature(e.target.files)}} hidden /></Button>
                     </Grid>
 
                     <Grid item xs={12} md={12} sx={{ mt:2, mb:0.5 }}>
