@@ -95,7 +95,7 @@ const SOAdata = () => {
     }
     const submitSOAHeader = () => {
         if (!dataVariableHeader.id) return toast.error("Please select SOA Header to continue.");
-        setConfirmationTitle("Are you sure you want to submit this SOA to dmpi?");
+        setConfirmationTitle("Are you sure you want to submit this SOA to DMPI?");
         setConfirmationType("submit");
         setOpenConfirmation(true);
     }

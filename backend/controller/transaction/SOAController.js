@@ -52,16 +52,16 @@ module.exports.saveSOAHeader = async function (req, res) {
 	try {
 		var result = await data.id > 0 ? update(params) : insert(params);
 		result.then(async function (response) {
-			if (response.id) {
-				var params = {
-					tableName: "tblsoahdr",
-					fieldValue: {
-						id: response.id,
-						soa_no: year + "-" + month + "-" + response.id,
-					}
-				}
-				await update(params);
-			}
+			// if (response.id) {
+			// 	var params = {
+			// 		tableName: "tblsoahdr",
+			// 		fieldValue: {
+			// 			id: response.id,
+			// 			soa_no: year + "-" + month + "-" + response.id,
+			// 		}
+			// 	}
+			// 	await update(params);
+			// }
 			res.status(200).json(response);
 		})
 	} catch (error) {

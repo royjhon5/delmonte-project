@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import SearchEmployeeModal from "./SearchEmployee.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
+import SearchAccountMasterModal from "./SearchAccountMaster";
 
 const AddDARDetail = (props) => {
     const { openModal, onCloseModal, passedData } = props;
@@ -43,18 +44,18 @@ const AddDARDetail = (props) => {
             ...prevState,
             [name]: value
         }));
-        if (name == 'activitylink_id') {
-            const selectedRow = filterIt(accounttochargeList, value, "id");
-            setDataVariable(prevState => ({
-                ...prevState,
-                activity: selectedRow[0].activityname,
-                cost_center: selectedRow[0].costcenter,
-                gl: selectedRow[0].gl_code
-            }));
-        }
-        if (name == 'time_in_hr') {
+        // if (name == 'activitylink_id') {
+        //     const selectedRow = filterIt(accounttochargeList, value, "id");
+        //     setDataVariable(prevState => ({
+        //         ...prevState,
+        //         activity: selectedRow[0].activityname,
+        //         cost_center: selectedRow[0].costcenter,
+        //         gl: selectedRow[0].gl_code
+        //     }));
+        // }
+        // if (name == 'time_in_hr') {
 
-        }
+        // }
     };
 
     function filterIt(arr, searchKey, keyValue = false) {
@@ -108,6 +109,21 @@ const AddDARDetail = (props) => {
         }
     }
 
+    const [openModalSearchActivity, setOpenModalSearchActivity] = useState(false);
+    async function modalCloseSearchActivity(params) {
+        setOpenModalSearchActivity(false);
+        if (params) {
+            console.log(params);
+            setDataVariable(prevState => ({
+                ...prevState,
+                activitylink_id: params.activity_id_link,
+                activity: params.activityname,
+                cost_center: params.costcenter,
+                gl: params.gl_code
+            }));
+        }
+    }
+
     // useEffects
     useEffect(() => {
         if (passedData.id) {
@@ -132,22 +148,32 @@ const AddDARDetail = (props) => {
         }
     }, [passedData]);
     useEffect(() => {
-        if(time_in_hr && time_in_min) {
+        if (time_in_hr && time_in_min) {
             setDataVariable(prevState => ({
                 ...prevState,
                 time_in: time_in_hr + "" + time_in_min,
             }));
+        } else {
+            setDataVariable(prevState => ({
+                ...prevState,
+                time_in: "",
+            }));
         }
-        if(time_out_hr && time_out_min) {
+        if (time_out_hr && time_out_min) {
             setDataVariable(prevState => ({
                 ...prevState,
                 time_out: time_out_hr + "" + time_out_min,
             }));
+        } else {
+            setDataVariable(prevState => ({
+                ...prevState,
+                time_out: "",
+            }));
         }
-        if(time_in_hr && time_in_min && time_out_hr && time_out_min) {
+        if (time_in_hr && time_in_min && time_out_hr && time_out_min) {
             let timeInDateTime = "2025-01-01 " + time_in_hr + ":" + time_in_min;
             let timeOutDateTime = "2025-01-01 " + time_out_hr + ":" + time_out_min;
-            if (parseInt(time_in_hr+""+time_in_min) > parseInt(time_out_hr+""+time_out_min)) { // meaning time returns to midnight or the next day
+            if (parseInt(time_in_hr + "" + time_in_min) > parseInt(time_out_hr + "" + time_out_min)) { // meaning time returns to midnight or the next day
                 timeOutDateTime = "2025-01-02 " + time_out_hr + ":" + time_out_min; // next time in of that employee
             }
             let ST = parseFloat(diff_hours(timeInDateTime, timeOutDateTime));
@@ -174,6 +200,10 @@ const AddDARDetail = (props) => {
                 openModal={openModalEmployee}
                 onCloseModal={modalClose}
             />
+             <SearchAccountMasterModal
+                openModal={openModalSearchActivity}
+                onCloseModal={modalCloseSearchActivity}
+            />
             <CustomDialog
                 open={openModal}
                 maxWidth={'lg'}
@@ -187,7 +217,7 @@ const AddDARDetail = (props) => {
                                     <InputLabel>Select Employee (Chapa ID)</InputLabel>
                                     <OutlinedInput size="medium"
                                         inputProps={{ readOnly: true }}
-                                        label="Voucher Number"
+                                        label="Select Employee (Chapa ID)"
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalEmployee(true) }}><SearchIcon fontSize="small" /></Button>
@@ -197,14 +227,27 @@ const AddDARDetail = (props) => {
                                     />
                                 </FormControl>
                                 <TextField label="Lastname" value={dataVariable.emp_lname} onChange={updateDataVariable} name="emp_lname" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={dataVariable.activitylink_id} onChange={updateDataVariable} name="activitylink_id" SelectProps={{ native: true, }} fullWidth>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Select Activity</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select Activity"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalSearchActivity(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.activity} name="activity"
+                                    />
+                                </FormControl>
+                                {/* <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={dataVariable.activitylink_id} onChange={updateDataVariable} name="activitylink_id" SelectProps={{ native: true, }} fullWidth>
                                     <option></option>
                                     {accounttochargeList?.map((option) => (
                                         <option key={option.id} value={`${option.id}`}>
                                             {option.activityname + " | " + option.gl_code + " | " + option.costcenter}
                                         </option>
                                     ))}
-                                </TextField>
+                                </TextField> */}
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField label="Firstname" value={dataVariable.emp_fname} onChange={updateDataVariable} name="emp_fname" fullWidth size="medium" inputProps={{ readOnly: true }} />

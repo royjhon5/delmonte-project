@@ -191,7 +191,7 @@ const NewSOAHeaderModal = (props) => {
                                 </TextField>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <TextField label="SOANo" value={dataVariable.soa_no} fullWidth size="medium" />
+                                <TextField label="SOANo" value={dataVariable.soa_no} onChange={updateDataVariable} name="soa_no" fullWidth size="medium" />
                                 <TextField type="date" value={dataVariable.xDate} onChange={updateDataVariable} name="xDate" fullWidth sx={{ mt: 1 }} size="medium" />
                                 <TextField label="Period Coverage" value={dataVariable.period_coverage} onChange={updateDataVariable} name="period_coverage" fullWidth sx={{ mt: 1 }} size="medium" />
                             </Grid>

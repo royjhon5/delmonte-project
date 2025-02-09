@@ -107,7 +107,8 @@ const rawQueryModel = {
             const shift = `(SELECT hdr.shift FROM tbldarhdr hdr WHERE hdr.id = tbldardtl.dar_idlink LIMIT 1) as shift`;
             const count = `(SELECT COUNT(dtl.ChapaID) FROM tbldardtl dtl WHERE dtl.ChapaID = tbldardtl.ChapaID AND dtl.dar_idlink = ${params.id} LIMIT 1) as count`;
             const darDate = `(SELECT hdr.xDate FROM tbldarhdr hdr WHERE hdr.id = tbldardtl.dar_idlink LIMIT 1) as darDate`;
-            const query = `SELECT *, ${shift}, ${count}, ${darDate} FROM tbldardtl WHERE dar_idlink = ${params.id} ORDER BY ChapaID ASC, id ASC`;
+            const department = `(SELECT hdr.department FROM tbldarhdr hdr WHERE hdr.id = tbldardtl.dar_idlink LIMIT 1) as department`;
+            const query = `SELECT *, ${shift}, ${count}, ${darDate}, ${department} FROM tbldardtl WHERE dar_idlink = ${params.id} ORDER BY ChapaID ASC, id ASC`;
             db.query(query, [], async (err, result) => {
                 // console.log(err);
                 if (result) {
@@ -130,6 +131,9 @@ const rawQueryModel = {
                                 time_out = timeOut;
                                 // save if ST if ot and nt are empty
                                 let ST = parseFloat(diff);
+
+                                if(element.department != "PACK HOUSE" && ST > 1) ST = ST - 1;
+
                                 // update dar detail set time out
                                 const query3 = `UPDATE tbldardtl SET time_out = "${time_out}" WHERE id = ${element.id} AND time_out = ""`;
                                 db.query(query3, [], (err3, result3) => { console.log(err3); });
