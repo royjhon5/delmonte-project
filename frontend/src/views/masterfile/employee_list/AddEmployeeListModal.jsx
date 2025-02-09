@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, Grid, TextField, FormControl, InputLabel, OutlinedInput, InputAdornment } from "@mui/material";
 import CustomDialog from "../../../components/CustomDialog";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
@@ -8,6 +8,8 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
 import { hookContainer } from "../../../hooks/globalQuery";
+import SearchAccountMasterModal from "./SearchAccountMaster";
+import SearchIcon from '@mui/icons-material/Search';
 
 const AddGroupLine = ({ RefreshData }) => {
     const dispatch = useDispatch();
@@ -87,15 +89,6 @@ const AddGroupLine = ({ RefreshData }) => {
         setActivityLinkID('');
     }
 
-    const assignChange = (type, id) => {
-        if (type == 'activity') {
-            const obj = accounttochargeList.filter(item => item.id.toString() == id)[0];
-            setActivity(obj.activityname);
-            setGLCode(obj.gl_code);
-            setCostCenter(obj.costcenter);
-        }
-    }
-
     useEffect(() => {
         if (isToUpdate) {
             setChapaID(toUpdateData.chapa_id);
@@ -110,64 +103,62 @@ const AddGroupLine = ({ RefreshData }) => {
         }
     }, [isToUpdate, toUpdateData])
 
+    const [openModalSearchActivity, setOpenModalSearchActivity] = useState(false);
+    async function modalCloseSearchActivity(params) {
+        setOpenModalSearchActivity(false);
+        if (params) {
+            setActivity(params.activityname);
+            setGLCode(params.gl_code);
+            setCostCenter(params.costcenter);
+            setActivityLinkID(params.activity_id_link);
+        }
+    }
+
     return (
-        <CustomDialog
-            open={open}
-            maxWidth={'xs'}
-            DialogTitles={isToUpdate ? "Update Employee List" : "Add New Employee List"}
-            onClose={CloseDialog}
-            DialogContents={
-                <Box sx={{ mt: 1 }}>
-                    <TextField label="ChapaID" value={chapa_id} onChange={(e) => { setChapaID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Firstname" value={firstname} onChange={(e) => { setFirstname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Middlename" value={middlename} onChange={(e) => { setMiddlename(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Lastname" value={lastname} onChange={(e) => { setLastname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Extname" value={extname} onChange={(e) => { setExtname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    {/* <TextField sx={{ mt: 1 }} size="medium" label="Select Location" select value={assigned_location_idlink} onChange={(e) => { setLocationLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {locationList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.location_name}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Department" select value={assigned_department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {departmentList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.department_name}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={assigned_group_idlink} onChange={(e) => { setGroupLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {groupList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.groupline_name}
-                            </option>
-                        ))}
-                    </TextField> */}
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Default Activity" select value={default_activity_idlink} onChange={(e) => { setActivityLinkID(e.target.value); assignChange('activity', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {accounttochargeList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.activityname + " | " + option.gl_code + " | " + option.costcenter}
-                            </option>
-                        ))}
-                    </TextField>
-                </Box>
-            }
-            DialogAction={
-                <Grid container spacing={1}>
-                    <Grid item xs={12}>
-                        {isToUpdate ?
-                            <Button variant="contained" fullWidth onClick={SaveOrUpdateData}>Update Data</Button>
-                            :
-                            <Button variant="contained" fullWidth onClick={SaveOrUpdateData}>Save Data</Button>}
+        <>
+            <SearchAccountMasterModal
+                openModal={openModalSearchActivity}
+                onCloseModal={modalCloseSearchActivity}
+            />
+            <CustomDialog
+                open={open}
+                maxWidth={'xs'}
+                DialogTitles={isToUpdate ? "Update Employee List" : "Add New Employee List"}
+                onClose={CloseDialog}
+                DialogContents={
+                    <Box sx={{ mt: 1 }}>
+                        <TextField label="ChapaID" value={chapa_id} onChange={(e) => { setChapaID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                        <TextField label="Firstname" value={firstname} onChange={(e) => { setFirstname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                        <TextField label="Middlename" value={middlename} onChange={(e) => { setMiddlename(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                        <TextField label="Lastname" value={lastname} onChange={(e) => { setLastname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                        <TextField label="Extname" value={extname} onChange={(e) => { setExtname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                        <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                            <InputLabel>Select Default Activity</InputLabel>
+                            <OutlinedInput size="medium"
+                                inputProps={{ readOnly: true }}
+                                label="Select Default Activity"
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <Button size="large" variant="contained" onClick={() => { setOpenModalSearchActivity(true) }}><SearchIcon fontSize="small" /></Button>
+                                    </InputAdornment>
+                                }
+                                value={activityname} name="activityname"
+                            />
+                        </FormControl>
+                    </Box>
+                }
+                DialogAction={
+                    <Grid container spacing={1}>
+                        <Grid item xs={12}>
+                            {isToUpdate ?
+                                <Button variant="contained" fullWidth onClick={SaveOrUpdateData}>Update Data</Button>
+                                :
+                                <Button variant="contained" fullWidth onClick={SaveOrUpdateData}>Save Data</Button>}
+                        </Grid>
                     </Grid>
-                </Grid>
-            }
-        />
+                }
+            />
+        </>
     );
 }
 
