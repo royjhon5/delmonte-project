@@ -150,7 +150,7 @@
                 <td></td>
                 <td style="border-bottom: 1px solid black;"><br><br><br><b>{{signatory.checked_by}}</b></td>
                 <td></td>
-                <td style="border-bottom: 1px solid black;"><br><br><br><b><br>{{signatory.confirmed_by}}</b></td>
+                <td style="border-bottom: 1px solid black;"><br><br><br>{{#ifCond records.[0].display_signature "==" "display" }}<img src="http://localhost:8100/api/get-displayimage?src=uploads/e-signature/logogsc.png" width="150" height="100"> {{/ifCond}}<b><br>{{signatory.confirmed_by}}</b></td>
                 <td></td>
                 <td style="border-bottom: 1px solid black;"><br><br><br><b>{{signatory.approved_by}}</b></td>
                 <td></td>

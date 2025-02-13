@@ -91,13 +91,13 @@ module.exports.postSOAHeader = async function (req, res) {
 
 module.exports.submitSOADetails = async function (req, res) {
 	const data = req.body
-	// var params = {
-	// 	tableName: "tblsoahdr",
-	// 	fieldValue: {
-	// 		id: data.id,
-	// 		soa_status: "SUBMITTED",
-	// 	}
-	// }
+	var params = {
+		tableName: "tblsoahdr",
+		fieldValue: {
+			id: data.id,
+			soa_status: "SUBMITTED",
+		}
+	}
 	try {
 		await submitSOAToDMPI({ id: data.id }).then(async function (response) {
 			res.status(200).json(response);

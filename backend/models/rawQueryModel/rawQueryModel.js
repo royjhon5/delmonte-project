@@ -226,7 +226,7 @@ const rawQueryModel = {
             db.query(queryDARDtl, [], async (errDARDtl, resultDARDtl) => { });
 
             // Update SOA Header
-            const queryUpdateSOA = `UPDATE tblsoahdr SET soa_status = 'SUBMITTED' WHERE id=${params.id}`;
+            const queryUpdateSOA = `UPDATE ${process.env.DB_NAME3}.tblsoahdr SET soa_status = 'SUBMITTED' WHERE id=${params.id}`;
             db.query(queryUpdateSOA, [], async (errUpdateSOA, resultUpdateSOA) => { });
 
             resolve({ success: true, message: "successfully saved" });

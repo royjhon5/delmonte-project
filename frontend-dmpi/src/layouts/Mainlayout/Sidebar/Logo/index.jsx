@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, useTheme } from "@mui/material"
-import PGBLogo from '../../../../assets/company-logo/pgbLogo.png'
+import gscLogo from '../../../../assets/images/logogsc.png'
 import { tokens } from "../../../../themes/palette";
 
 const SidebarLogo = () => {
@@ -28,7 +28,7 @@ const SidebarLogo = () => {
                 display: 'inline-flex',
             }}
         >
-            <img src={PGBLogo} />
+            <img src={gscLogo} />
         </Box>
         <Box 
         sx={{ 
@@ -42,8 +42,8 @@ const SidebarLogo = () => {
             }}> 
             <Box sx={{ margin: '0px 0px 0px 16px' }}>
                 <Box sx={{ WebkitBoxFlex: 1, flexGrow: 1 }}>
-                    <Typography fontSize={12}>Prov. Government of Bukidnon</Typography>
-                    <Typography fontSize={12}>e-Archiving</Typography>
+                    <Typography fontSize={12}>GSMPC</Typography>
+                    <Typography fontSize={12}>SOA MODULE</Typography>
                 </Box>
             </Box>        
         </Box>

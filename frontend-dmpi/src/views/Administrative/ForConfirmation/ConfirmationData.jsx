@@ -26,14 +26,6 @@ const ConfirmationData = () => {
 
     const ColumnHeader = [
         {
-            field: 'id', headerName: 'DAR No', flex:1,
-            renderCell: (data) => (
-                <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.id}
-                </Box>
-            ),
-        },
-        {
             field: 'soa_no', headerName: 'SOA No', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>

@@ -392,11 +392,11 @@ module.exports.displayImage = async function(req, res) {
     
     fs.readFile(`../backend-dmpi/${data.src}`, function (err, image) {
         if (err) {
-            return res.status(400).send({ error: 'Image not found.' }); // Return to stop further execution
-        } 
-
-        res.setHeader('Content-Type', 'image/jpg');
-        res.setHeader('Access-Control-Allow-Origin', '*'); // If needs to be public
-        res.send(image);
+            return res.status(400).send({ error: 'Image not found.' }); 
+        } else {
+			res.setHeader('Content-Type', 'image/jpg');
+			res.setHeader('Access-Control-Allow-Origin', '*');
+			res.send(image);
+		}     
     });
 };

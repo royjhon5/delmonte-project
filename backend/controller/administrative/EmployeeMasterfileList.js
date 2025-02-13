@@ -138,7 +138,7 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 				var row = 9;
 				mappedResults.map(item => {
 					row += 1; // add space
-					ws.cell(row, 1).string("'"+item.EmpID);
+					ws.cell(row, 1).string("'"+item.ChapaID_Old);
 					ws.cell(row, 2).string("Employee");
 					ws.cell(row, 3).string(item.FName + " " + item.MName + " " + item.LName + " " + item.ExtName + " - " + item.ChapaID_Old);
 					ws.cell(row, 4).string("'1");

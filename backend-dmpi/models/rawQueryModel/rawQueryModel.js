@@ -89,7 +89,7 @@ const rawQueryModel = {
 
     GetSOAJoinDAR: async function (params) {
         return new Promise((resolve, reject) => {
-            const query = `SELECT dhdr.*, dhdr.id as dar_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id=${params.id} AND shdr.id = dhdr.soa_no_link AND shdr.soa_status = "SUBMITTED" ORDER BY dhdr.id ASC`; // dar header data only
+            const query = `SELECT dhdr.*, dhdr.id as dar_id FROM tbldarhdr dhdr, tblsoahdr shdr WHERE shdr.id=${params.id} AND shdr.id = dhdr.soa_no_link ORDER BY dhdr.id ASC`; // dar header data only
             db.query(query, [], async (err, result) => {
                 resolve({ success: true, data: result });
             });
@@ -205,7 +205,7 @@ const rawQueryModel = {
         return new Promise((resolve, reject) => {
             const sumFields = `SUM(h_st) as th_st, SUM(h_ot) as th_ot, SUM(h_nd) as th_nd, SUM(h_ndot) as th_ndot, SUM(amount_st) as tamount_st, SUM(amount_ot) as tamount_ot, SUM(amount_nd) as tamount_nd, SUM(amount_ndot) as tamount_ndot, SUM(total_amount) as ttotal_amount, SUM(head_count) as thead_count`;
             const filepath_esignature = `(SELECT l.filepath_esignature FROM tbllogin l WHERE l.LoginID = hdr.id LIMIT 1) as filepath_esignature`;
-            const query = `SELECT hdr.*, dtl.*, ${sumFields}, ${filepath_esignature} FROM tblsoahdr hdr, tblsoa_dtl dtl WHERE hdr.id = dtl.soa_hdr_idlink and hdr.id = ${params.id} GROUP BY dtl.activity_idlink ORDER BY dtl.activity ASC, dtl.gl_account ASC`;
+            const query = `SELECT hdr.*, dtl.*, IF(hdr.soa_status = "CONFIRMED" OR hdr.soa_status = "APPROVED", "display", "not display") as display_signature, ${sumFields}, ${filepath_esignature} FROM tblsoahdr hdr, tblsoa_dtl dtl WHERE hdr.id = dtl.soa_hdr_idlink and hdr.id = ${params.id} GROUP BY dtl.activity_idlink ORDER BY dtl.activity ASC, dtl.gl_account ASC`;
             db.query(query, params.paramValue, (err, result) => {
                 if (err) return reject(err);
                 if (result.length > 0) {
