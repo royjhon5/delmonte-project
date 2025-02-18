@@ -67,6 +67,16 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 		whereValue: ['ACTIVE', 1],
 	}
 	try {
+		// update employee flag : already exported
+		// var params = {
+		// 	tableName: "tblemployeemasterfile",
+		// 	fieldValue: {
+		// 		IsPH: 1, // where IsPH is 1 change flag to already exported employee/s
+		// 		[new_db_table_field]: 1
+		// 	}
+		// }
+		// await update(params);
+		// 
 		const response = await select(params);
 		if (response.success) {
 			if (data.checkReport == 1) return res.status(200).json({ success: true, message: "Successfully generated report." });
@@ -114,41 +124,29 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 					}
 				});
 
-				ws.cell(1, 1).string("Rule:");
-				ws.cell(2, 1).string("1.The items with asterisk are required.");
-				ws.cell(3, 1).string("2.Gender 1:Male 2:Female");
-				ws.cell(4, 1).string("3.Date Format:YYYY/MM/DD");
-				ws.cell(5, 1).string("4.Separate the card numbers with semicolon.");
-				ws.cell(6, 1).string("5.If the card number is started with 0, add ' before 0. For example, '012345.");
-				ws.cell(7, 1).string("6.Separate the organization heirarchies with /.");
-				ws.cell(8, 1).string("7.Format of Room No.:Take room 1 as an example, the room No. should be 1 or 1-1-1-1(Project-Building-Unit-Room No.).");
+				ws.cell(1, 1).string("Rule");
+				ws.cell(2, 1).string("At least one of family name and given name is required.");
+				ws.cell(3, 1).string("Once configured, the ID cannot be edited. Confirm the ID rule before setting an ID.");
+				ws.cell(4, 1).string("Do NOT change the layout and column title in this template file. The importing may fail if changed.");
+				ws.cell(5, 1).string("You can add persons to an existing departments. The department names should be separated by/. For example, import persons to Department A in All Departments. Format: All Departments/Department A.");
+				ws.cell(6, 1).string("Start Time of Effective Period is used for Access Control Module and Time & Attendance Module. Format: yyyy/mm/dd hh:mm:ss.");
+				ws.cell(7, 1).string("End Time of Effective Period is used for Access Control Module and Time & Attendance Module. Format: yyyy/mm/dd hh:mm:ss.");
 				
-				ws.cell(9, 1).string("*Person ID");
-				ws.cell(9, 2).string("*Organization");
-				ws.cell(9, 3).string("*Person Name");
-				ws.cell(9, 4).string("*Gender");
-				ws.cell(9, 5).string("Contact");
-				ws.cell(9, 6).string("Email");
-				ws.cell(9, 7).string("Effective Time");
-				ws.cell(9, 8).string("Expiry Time");
-				ws.cell(9, 9).string("Card No.");
-				ws.cell(9, 10).string("Room No.");
-				ws.cell(9, 11).string("Floor No.");
+				ws.cell(8, 1).string("ID");
+				ws.cell(8, 2).string("First Name");
+				ws.cell(8, 3).string("Last Name");
+				ws.cell(8, 4).string("Start Time of Effective Period");
+				ws.cell(8, 5).string("End Time of Effective Period");
 
-				var row = 9;
+				var row = 8;
 				mappedResults.map(item => {
 					row += 1; // add space
-					ws.cell(row, 1).string("'"+item.ChapaID_Old);
-					ws.cell(row, 2).string("Employee");
-					ws.cell(row, 3).string(item.FName + " " + item.MName + " " + item.LName + " " + item.ExtName + " - " + item.ChapaID_Old);
-					ws.cell(row, 4).string("'1");
+					ws.cell(row, 1).string(item.ChapaID_Old);
+					ws.cell(row, 2).string(item.FName + " " + item.MName + " " + item.LName + " " + item.ExtName);
+					ws.cell(row, 3).string("");
+					ws.cell(row, 4).string("");
 					ws.cell(row, 5).string("");
-					ws.cell(row, 6).string("");
-					ws.cell(row, 7).string("");
-					ws.cell(row, 8).string("");
-					ws.cell(row, 9).string("");
-					ws.cell(row, 10).string("");
-					ws.cell(row, 11).string("");
+
 				})
 
 				wb.write(filename + ".xlsx", res); // download the generated excel file

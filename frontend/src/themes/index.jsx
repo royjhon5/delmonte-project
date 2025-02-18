@@ -50,7 +50,7 @@ export const ThemeSettings = (appSettings, radius) => {
                 ...(appSettings.contrast === "default" ? {
                     background: { default: "#FFFFFF" },
                 } : {
-                    background: { default: "#F4F6F8" },
+                    background: { default: "#F2F8FC" },
                 }),
             })
         },

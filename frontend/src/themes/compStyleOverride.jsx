@@ -99,7 +99,8 @@ export default function compStyleOverride(appSettings, radius) {
             // boxShadow: theme.customShadows.card,
             // borderRadius: Number(theme.shape.borderRadius) * 2,
             position: 'relative',
-            zIndex: 0, // Fix Safari overflow: hidden with border radius
+            zIndex: 0, // Fix Safari overflow: hidden with border radius,
+            background:'red !important'
           },
         },
       },

@@ -2,6 +2,7 @@ import { lazy } from "react"
 import Loadable from '../components/Loadable/Loadable'
 import ProtectedRoute from './ProtectedRoute'
 import UpdateExportEmployeeLocation from "../views/PH/NF/JP_Device_Process";
+import BatchingDar from "../views/Batching/BatchingDar";
 const MainLayout = Loadable(lazy(() => import('../layouts/Mainlayout/MainLayout')));
 const Dashboard = Loadable(lazy(() => import('../views/dashboard/index')));
 
@@ -189,6 +190,17 @@ const DashboardRoutes = {
 			element: (
 				<ProtectedRoute pageName='User List'>
 					<UpdateExportEmployeeLocation/>
+				</ProtectedRoute>
+			)
+		},
+
+
+		// BATCHING
+		{
+			path: '/dashboard/batching-dar',
+			element: (
+				<ProtectedRoute pageName='User List'>
+					<BatchingDar/>
 				</ProtectedRoute>
 			)
 		},
