@@ -1,20 +1,17 @@
 import { Box, Button, Grid, TextField, Paper, Stack } from "@mui/material";
-import CustomDataGrid from "../../../../components/CustomDataGrid";
-import NoData from "../../../../components/CustomDataTable/NoData";
-import CustomDialog from "../../../../components/CustomDialog";
-import { useDispatch, useSelector } from "react-redux";
-import PropTypes from 'prop-types';
-import { OPEN_CUSTOM_SEARCH_MODAL, SEARCH_SELECTED_DATA } from "../../../../store/actions";
-import { useState } from "react";
-import { hookContainer } from "../../../../hooks/globalQuery";
+import CustomDataGrid from "../CustomDataGrid";
+import NoData from "../CustomDataTable/NoData";
+import CustomDialog from "../CustomDialog";
+import { useState, useEffect } from "react";
+import { hookContainer } from "../../hooks/globalQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
-const SearchHeaderModal = () => {
-    const dispatch = useDispatch();
-    const open = useSelector((state) => state.customization.openCustomSearchModal);
-    const CloseDialog = () => {
-        dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
-        
+const SearchTemplateModal = (props) => {
+    const { openModal, onCloseModal, isUpdate } = props;
+    const closeCurrentModal = () => {
+        onCloseModal(false);
     }
+
     const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
@@ -22,12 +19,23 @@ const SearchHeaderModal = () => {
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.emp_group.toLowerCase().includes(search.toLowerCase())
+            row.TName.toLowerCase().includes(search.toLowerCase())
         );
     };
+    const queryClient = useQueryClient();
+    useEffect(() => {
+        queryClient.invalidateQueries(['/get-employeetemplateheader']);
+    }, [openModal]);
 
     const ColumnHeader = [
-        { field: 'emp_group', headerName: 'Template Name/ Group', flex: 1, },
+        {
+            field: 'emp_group', headerName: 'Group Name', flex: 1,
+            renderCell: (params) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {params.row.emp_group}
+                </Box>
+            ),
+        },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -35,9 +43,7 @@ const SearchHeaderModal = () => {
             align: 'right',
             renderCell: (params) => {
                 const SelectedRow = () => {
-                    dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
-                    dispatch({ type: SEARCH_SELECTED_DATA, searchSelectedData: params.row });
-                    // RefreshData();
+                    onCloseModal(params.row);
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
@@ -48,13 +54,12 @@ const SearchHeaderModal = () => {
         }
     ];
 
-
     return (
         <CustomDialog
-            open={open}
-            maxWidth={'xs'}
+            open={openModal}
+            maxWidth={'lg'}
             DialogTitles={"Search Employee Template Header"}
-            onClose={CloseDialog}
+            onClose={() => { closeCurrentModal() }}
             DialogContents={
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={12}>
@@ -77,8 +82,4 @@ const SearchHeaderModal = () => {
     );
 }
 
-SearchHeaderModal.propTypes = {
-    RefreshData: PropTypes.func,
-}
-
-export default SearchHeaderModal;
+export default SearchTemplateModal;

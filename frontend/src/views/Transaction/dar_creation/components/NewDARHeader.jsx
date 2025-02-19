@@ -1,11 +1,14 @@
-import { Button, Grid, TextField, FormControl, InputLabel, InputAdornment, OutlinedInput, Divider } from "@mui/material";
+import { Button, Grid, TextField, FormControl, InputLabel, InputAdornment, OutlinedInput, Divider, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import CustomDialog from "../../../../components/CustomDialog/index.jsx";
 import { toast } from "sonner";
 import http from "../../../../api/http.jsx";
 import { useEffect, useState } from "react";
-import SearchTemplateModal from "./SearchTemplate.jsx";
-import SearchSignatoryModal from "./SearchSignatory.jsx";
+import SearchTemplateModal from "../../../../components/SearchMasterfile/SearchTemplate.jsx";
+import SearchLocationModal from "../../../../components/SearchMasterfile/SearchLocation.jsx";
+import SearchDepartmentModal from "../../../../components/SearchMasterfile/SearchDepartment.jsx";
+import SearchClientModal from "../../../../components/SearchMasterfile/SearchClient.jsx";
+import SearchSignatoryModal from "../../../../components/SearchMasterfile/SearchSignatory.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
 import dayjs from 'dayjs';
@@ -18,7 +21,6 @@ const NewDarHeader = (props) => {
     }
     const [loadSaving, setLoadSaving] = useState(false);
 
-    const { data: locationList } = hookContainer('/get-location');
     const { data: dayTypeList } = hookContainer('/get-daytype');
 
     const initialDataVariable = {
@@ -38,12 +40,19 @@ const NewDarHeader = (props) => {
         confirmed_by: "",
         confirmed_by_pos: "",
         templatelink_id: "",
-        template_name: "",
         department: "",
         group_name: "",
         location: "",
         daytype: "",
         dar_no: "",
+        departmend_id: "",
+        client_id: "",
+        client_name: "",
+        shift_time_in_hour: "",
+        shift_time_in_min: "",
+        shift_time_out_hour: "",
+        shift_time_out_min: "",
+        totalHours: 0
     };
     const [dataVariable, setDataVariable] = useState(initialDataVariable);
     const updateDataVariable = e => {
@@ -52,19 +61,32 @@ const NewDarHeader = (props) => {
             ...prevState,
             [name]: value
         }));
-        if (name == 'locationlink_id') {
-            const selectedRow = filterIt(locationList, value, "id");
-            setDataVariable(prevState => ({
-                ...prevState,
-                location: selectedRow[0].location_name
-            }));
-        }
         if (name == 'day_type_idlink') {
             const selectedRow = filterIt(dayTypeList, value, "id");
             setDataVariable(prevState => ({
                 ...prevState,
                 daytype: selectedRow[0].dt_name
             }));
+        }
+        if (name == 'shift') {
+            if (value == 1) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    shift_time_in_hour: "08",
+                    shift_time_in_min: "00",
+                    shift_time_out_hour: "16",
+                    shift_time_out_min: "00",
+                }));
+            }
+            if (value == 2) {
+                setDataVariable(prevState => ({
+                    ...prevState,
+                    shift_time_in_hour: "18",
+                    shift_time_in_min: "00",
+                    shift_time_out_hour: "02",
+                    shift_time_out_min: "00",
+                }));
+            }
         }
     };
 
@@ -103,6 +125,7 @@ const NewDarHeader = (props) => {
     }
 
     // modal
+    // group template
     const [openModalTemplate, setOpenModalTemplate] = useState(false);
     async function modalClose(params) {
         setOpenModalTemplate(false);
@@ -110,11 +133,46 @@ const NewDarHeader = (props) => {
             setDataVariable(prevState => ({
                 ...prevState,
                 templatelink_id: params.id,
-                template_name: params.TName,
-                activity: params.activityname,
-                department: params.department,
                 group_name: params.emp_group,
-                shift: params.shifting,
+            }));
+        }
+    }
+
+    // location
+    const [openModalTemplateLocation, setOpenModalTemplateLocation] = useState(false);
+    async function modalCloseLocation(params) {
+        setOpenModalTemplateLocation(false);
+        if (params) {
+            setDataVariable(prevState => ({
+                ...prevState,
+                locationlink_id: params.id,
+                location: params.location_name,
+            }));
+        }
+    }
+
+    // department
+    const [openModalTemplateDepartment, setOpenModalTemplateDepartment] = useState(false);
+    async function modalCloseDepartment(params) {
+        setOpenModalTemplateDepartment(false);
+        if (params) {
+            setDataVariable(prevState => ({
+                ...prevState,
+                departmend_id: params.id,
+                department: params.department_name,
+            }));
+        }
+    }
+
+    // client
+    const [openModalTemplateClient, setOpenModalTemplateClient] = useState(false);
+    async function modalCloseClient(params) {
+        setOpenModalTemplateClient(false);
+        if (params) {
+            setDataVariable(prevState => ({
+                ...prevState,
+                client_id: params.id,
+                client_name: params.client_name,
             }));
         }
     }
@@ -159,6 +217,34 @@ const NewDarHeader = (props) => {
         if (passedData.id) setDataVariable(passedData);
     }, [passedData]);
 
+    useEffect(() => {
+        if (dataVariable.shift_time_in_hour && dataVariable.shift_time_in_min && dataVariable.shift_time_out_hour && dataVariable.shift_time_out_min) {
+            let timeInDateTime = "2025-01-01 " + dataVariable.shift_time_in_hour + ":" + dataVariable.shift_time_in_min;
+            let timeOutDateTime = "2025-01-01 " + dataVariable.shift_time_out_hour + ":" + dataVariable.shift_time_out_min;
+            if (parseInt(dataVariable.shift_time_in_hour) > parseInt(dataVariable.shift_time_out_hour)) {
+                timeOutDateTime = "2025-01-02 " + dataVariable.shift_time_out_hour + ":" + dataVariable.shift_time_out_min; // next time in of that employee
+            }
+            let diff = diff_hours(timeInDateTime, timeOutDateTime);
+            function diff_hours(dt2, dt1) {
+                dt2 = new Date(dt2);
+                dt1 = new Date(dt1);
+                var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+                diff /= (60 * 60);
+                // Return the absolute value of the rounded difference in hours
+                return Math.abs(diff.toFixed(2));
+            }
+            setDataVariable(prevState => ({
+                ...prevState,
+                totalHours: diff
+            }));
+        } else {
+            setDataVariable(prevState => ({
+                ...prevState,
+                totalHours: 0
+            }));
+        }
+    }, [dataVariable.shift_time_in_hour]);
+
     return (
         <>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
@@ -166,52 +252,102 @@ const NewDarHeader = (props) => {
                 openModal={openModalTemplate}
                 onCloseModal={modalClose}
             />
+            <SearchLocationModal
+                openModal={openModalTemplateLocation}
+                onCloseModal={modalCloseLocation}
+            />
+            <SearchDepartmentModal
+                openModal={openModalTemplateDepartment}
+                onCloseModal={modalCloseDepartment}
+            />
+            <SearchClientModal
+                openModal={openModalTemplateClient}
+                onCloseModal={modalCloseClient}
+            />
             <SearchSignatoryModal
                 openModal={openSignatoryModal}
                 onCloseModal={modalCloseSignatoryModal}
             />
             <CustomDialog
                 open={openModal}
-                maxWidth={'lg'}
+                maxWidth={'xl'}
                 DialogTitles={passedData.id ? "Update DAR Header" : "Add New DAR Header"}
                 onClose={() => { closeCurrentModal() }}
                 DialogContents={
                     <>
                         <Grid container spacing={1} sx={{ mt: 1 }}>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={4}>
+                                <TextField label="DAR #" value={dataVariable.dar_no} onChange={updateDataVariable} name="dar_no" fullWidth size="medium" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
                                 <FormControl variant="outlined" fullWidth>
-                                    <InputLabel>Select Employee Template</InputLabel>
+                                    <InputLabel>Select Group</InputLabel>
                                     <OutlinedInput size="medium"
                                         inputProps={{ readOnly: true }}
-                                        label="Select Employee Template"
+                                        label="Select Group"
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalTemplate(true) }}><SearchIcon fontSize="small" /></Button>
                                             </InputAdornment>
                                         }
-                                        value={dataVariable.template_name} onChange={updateDataVariable} name="template_name"
+                                        value={dataVariable.group_name} onChange={updateDataVariable} name="group_name"
                                     />
                                 </FormControl>
-                                <TextField label="Department" value={dataVariable.department} onChange={updateDataVariable} name="department" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField label="Group" value={dataVariable.group_name} onChange={updateDataVariable} name="group_name" fullWidth size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="Shifting" value={dataVariable.shift} onChange={updateDataVariable} name="shift" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
+                            <Grid item xs={12} md={4}>
+                                <FormControl variant="outlined" fullWidth>
+                                    <InputLabel>Select Client</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select Client"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalTemplateClient(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.client_name} onChange={updateDataVariable} name="client_name"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <FormControl variant="outlined" fullWidth>
+                                    <InputLabel>Select Location</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select Location"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalTemplateLocation(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.location} onChange={updateDataVariable} name="location"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <FormControl variant="outlined" fullWidth>
+                                    <InputLabel>Select Department</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select Department"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalTemplateDepartment(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.department} onChange={updateDataVariable} name="department"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <TextField type="date" label="DAR Date" value={dataVariable.xDate} onChange={updateDataVariable} name="xDate" fullWidth size="medium" />
                             </Grid>
                             <Grid item xs={12} md={12}>
                                 <Divider />
                             </Grid>
                         </Grid>
                         <Grid container spacing={1}>
-                            <Grid item xs={12} md={6}>
-                                <TextField sx={{ mt: 1 }} size="medium" label="Select Location" select value={dataVariable.locationlink_id} onChange={updateDataVariable} name="locationlink_id" SelectProps={{ native: true, }} fullWidth>
-                                    <option></option>
-                                    {locationList?.map((option) => (
-                                        <option key={option.id} value={`${option.id}`}>
-                                            {option.location_name}
-                                        </option>
-                                    ))}
-                                </TextField>
+                            <Grid item xs={12} md={4}>
                                 <TextField sx={{ mt: 1 }} size="medium" label="Select Day Type" select value={dataVariable.day_type_idlink} onChange={updateDataVariable} name="day_type_idlink" SelectProps={{ native: true, }} fullWidth>
                                     <option></option>
                                     {dayTypeList?.map((option) => (
@@ -221,11 +357,95 @@ const NewDarHeader = (props) => {
                                     ))}
                                 </TextField>
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField type="date" value={dataVariable.xDate} onChange={updateDataVariable} name="xDate" fullWidth sx={{ mt: 1 }} size="medium" />
+                            <Grid item xs={12} md={4}>
+                                <TextField sx={{ mt: 1 }} size="medium" label="Select Shift" select value={dataVariable.shift} onChange={updateDataVariable} name="shift" SelectProps={{ native: true, }} fullWidth>
+                                    <option></option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </TextField>
                             </Grid>
+                        </Grid>
+                        <Grid container spacing={2} sx={{ marginTop: 1 }}>
                             <Grid item xs={12} md={12}>
-                                <Divider />
+                                <Divider>SHIFT SCHEDULE</Divider>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Typography variant="h5" component="h2">Time In</Typography>
+                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Hour" select value={dataVariable.shift_time_in_hour} onChange={updateDataVariable} name="shift_time_in_hour" SelectProps={{ native: true, }}>
+                                    <option></option>
+                                    <option value="00">00</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                </TextField>
+                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Minute" select value={dataVariable.shift_time_in_min} onChange={updateDataVariable} name="shift_time_in_min" SelectProps={{ native: true, }}>
+                                    <option></option>
+                                    <option value="00">00</option>
+                                    <option value="30">30</option>
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Typography variant="h5" component="h2">Time Out</Typography>
+                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Hour" select value={dataVariable.shift_time_out_hour} onChange={updateDataVariable} name="shift_time_out_hour" SelectProps={{ native: true, }}>
+                                    <option></option>
+                                    <option value="00">00</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                </TextField>
+                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Minute" select value={dataVariable.shift_time_out_min} onChange={updateDataVariable} name="shift_time_out_min" SelectProps={{ native: true, }}>
+                                    <option></option>
+                                    <option value="00">00</option>
+                                    <option value="30">30</option>
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} md={4} sx={{ marginTop: 4 }}>
+                                <TextField type="number" step="0.01" label="Total Hours" value={dataVariable.totalHours} onChange={updateDataVariable} name="totalHours" fullWidth size="medium" inputProps={{ readOnly: true }} />
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={2} sx={{ marginTop: 1 }}>
+                            <Grid item xs={12} md={12}>
+                                <Divider>SIGNATORIES</Divider>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
@@ -241,45 +461,19 @@ const NewDarHeader = (props) => {
                                         value={dataVariable.prepared_by} onChange={updateDataVariable} name="prepared_by"
                                     />
                                 </FormControl>
-                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
-                                    <InputLabel>Confirmed By</InputLabel>
-                                    <OutlinedInput size="medium"
-                                        inputProps={{ readOnly: true }}
-                                        label="Confirmed By"
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(4) }}><SearchIcon fontSize="small" /></Button>
-                                            </InputAdornment>
-                                        }
-                                        value={dataVariable.confirmed_by} onChange={updateDataVariable} name="confirmed_by"
-                                    />
-                                </FormControl>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
-                                    <InputLabel>Checked By</InputLabel>
+                                    <InputLabel>Reviewed By</InputLabel>
                                     <OutlinedInput size="medium"
                                         inputProps={{ readOnly: true }}
-                                        label="Checked By"
+                                        label="Reviewed By"
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <Button size="large" variant="contained" onClick={() => { selectSignatory(3) }}><SearchIcon fontSize="small" /></Button>
                                             </InputAdornment>
                                         }
                                         value={dataVariable.checked_by} onChange={updateDataVariable} name="checked_by"
-                                    />
-                                </FormControl>
-                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
-                                    <InputLabel>Approved By</InputLabel>
-                                    <OutlinedInput size="medium"
-                                        inputProps={{ readOnly: true }}
-                                        label="Approved By"
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <Button size="large" variant="contained" onClick={() => { selectSignatory(2) }}><SearchIcon fontSize="small" /></Button>
-                                            </InputAdornment>
-                                        }
-                                        value={dataVariable.approved_by} onChange={updateDataVariable} name="approved_by"
                                     />
                                 </FormControl>
                             </Grid>

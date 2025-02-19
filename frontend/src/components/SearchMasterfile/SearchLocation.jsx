@@ -1,44 +1,41 @@
 import { Box, Button, Grid, TextField, Paper, Stack } from "@mui/material";
-import CustomDataGrid from "../../../../components/CustomDataGrid";
-import NoData from "../../../../components/CustomDataTable/NoData";
-import CustomDialog from "../../../../components/CustomDialog";
+import CustomDataGrid from "../CustomDataGrid";
+import NoData from "../CustomDataTable/NoData";
+import CustomDialog from "../CustomDialog";
 import { useState, useEffect } from "react";
-import { hookContainer } from "../../../../hooks/globalQuery";
+import { hookContainer } from "../../hooks/globalQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
-const SearchTemplateModal = (props) => {
+const SearchLocationModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
     const closeCurrentModal = () => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
+    const { data: mainDataHeader } = hookContainer('/get-location');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.TName.toLowerCase().includes(search.toLowerCase())
+            row.location_name.toLowerCase().includes(search.toLowerCase())
         );
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-employeetemplateheader']);
+        queryClient.invalidateQueries(['/get-location']);
     }, [openModal]);
 
     const ColumnHeader = [
         {
-            field: 'TName', headerName: 'Template Name', width: 250,
+            field: 'location_name', headerName: 'Location Name', flex: 1,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.TName}
+                    {params.row.location_name}
                 </Box>
             ),
         },
-        { field: 'emp_group', headerName: 'Group', flex: 1, },
-        { field: 'department', headerName: 'Department', flex: 1, },
-        { field: 'shifting', headerName: 'Shifting', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -61,7 +58,7 @@ const SearchTemplateModal = (props) => {
         <CustomDialog
             open={openModal}
             maxWidth={'lg'}
-            DialogTitles={"Search Employee Template Header"}
+            DialogTitles={"Search Location"}
             onClose={() => { closeCurrentModal() }}
             DialogContents={
                 <Grid container spacing={2}>
@@ -85,4 +82,4 @@ const SearchTemplateModal = (props) => {
     );
 }
 
-export default SearchTemplateModal;
+export default SearchLocationModal;

@@ -1,9 +1,9 @@
 import { Box, Button, Grid, TextField, Paper, Stack } from "@mui/material";
-import CustomDataGrid from "../../../../components/CustomDataGrid";
-import NoData from "../../../../components/CustomDataTable/NoData";
-import CustomDialog from "../../../../components/CustomDialog";
+import CustomDataGrid from "../CustomDataGrid";
+import NoData from "../CustomDataTable/NoData";
+import CustomDialog from "../CustomDialog";
 import { useState, useEffect } from "react";
-import { hookContainer } from "../../../../hooks/globalQuery";
+import { hookContainer } from "../../hooks/globalQuery";
 import { useQueryClient } from "@tanstack/react-query";
 
 const SearchSignatoryModal = (props) => {
