@@ -14,6 +14,7 @@ import NewDarHeader from "../components/NewDARHeader";
 import SearchDARHeaderModal from "../components/SearchDARHeader";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import AddDARDetail from "../components/AddDARDetail.jsx";
+import ActivityBreakdown from "../components/ActivityBreakdown.jsx";
 import TransferEmployeeModal from "../components/TransferEmployee.jsx";
 import DARBreakdownModal from "../components/DARBreakdown.jsx";
 import { linkToBackend } from '../../../../store/constant';
@@ -40,13 +41,20 @@ const DARdata = () => {
         confirmed_by: "",
         confirmed_by_pos: "",
         templatelink_id: "",
-        template_name: "",
         activity: "",
         department: "",
         group_name: "",
         location: "",
         daytype: "",
         dar_no: "",
+        departmend_id: "",
+        client_id: "",
+        client_name: "",
+        shift_time_in_hour: "",
+        shift_time_in_min: "",
+        shift_time_out_hour: "",
+        shift_time_out_min: "",
+        totalHours: 0
     };
     const [dataVariableHeader, setDataVariableHeader] = useState(initialDataVariableHeader);
 
@@ -152,17 +160,27 @@ const DARdata = () => {
         {
             field: 'ChapaID', headerName: 'Chapa ID', width: 150,
             renderCell: (params) => (
-                <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.ChapaID}
-                </Box>
+                <>
+                    {params.row.is_main == 1 ?
+                        <Box sx={{ paddingLeft: 1 }}>
+                            {params.row.ChapaID}
+                        </Box>
+                        : ""
+                    }
+                </>
             ),
         },
         {
             field: 'fullname', headerName: 'Name', width: 250,
             renderCell: (params) => (
-                <Box>
-                    {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
-                </Box>
+                <>
+                    {params.row.is_main == 1 ?
+                        <Box>
+                            {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
+                        </Box>
+                        : ""
+                    }
+                </>
             ),
         },
         { field: 'activity', headerName: 'Activity', flex: 1, },
@@ -194,10 +212,10 @@ const DARdata = () => {
                     if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
                     const personName = params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name;
                     setOpenDARBreakdown(true);
-                    setPassDataDARBreakDown({ 
-                        id: dataVariableHeader.id, 
-                        date: dataVariableHeader.xDate, 
-                        ChapaID: params.row.ChapaID, 
+                    setPassDataDARBreakDown({
+                        id: dataVariableHeader.id,
+                        date: dataVariableHeader.xDate,
+                        ChapaID: params.row.ChapaID,
                         personName: personName,
                         emp_fname: params.row.emp_fname,
                         emp_mname: params.row.emp_mname,
@@ -207,9 +225,11 @@ const DARdata = () => {
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
-                        <IconButton color="primary" size="small" onClick={selectDARBreakdown}>
-                            <EditIcon fontSize="inherit" />
-                        </IconButton>
+                        {params.row.is_main == 0 ?
+                            <IconButton color="primary" size="small" onClick={selectDARBreakdown}>
+                                <EditIcon fontSize="inherit" />
+                            </IconButton>
+                            : ""}
                         {/* <IconButton color="primary" size="small" onClick={SelectedRow}>
                             <EditIcon fontSize="inherit" />
                         </IconButton> */}
@@ -226,6 +246,15 @@ const DARdata = () => {
         if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
         setOpenModalDARDetail(true);
         setPassDataDetail(prevState => ({
+            ...prevState,
+            dar_idlink: dataVariableHeader.id,
+        }));
+    }
+
+    const activityBreakdown = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        setOpenModalActivityBreakdown(true);
+        setPassDataActivityBreakdown(prevState => ({
             ...prevState,
             dar_idlink: dataVariableHeader.id,
         }));
@@ -293,6 +322,16 @@ const DARdata = () => {
         }
     }
 
+    const [openModalActivityBreakdown, setOpenModalActivityBreakdown] = useState(false);
+    const [passDataActivityBreakdown, setPassDataActivityBreakdown] = useState({});
+    async function modalCloseActivityBreakdown(params) {
+        setOpenModalActivityBreakdown(false);
+        setPassDataActivityBreakdown({});
+        if (params) {
+            loadDARDetail(dataVariableHeader.id);
+        }
+    }
+
     const clearData = async (type = 'all') => {
         setConstMappedData([]);
         setDataVariableHeader(initialDataVariableHeader);
@@ -322,6 +361,11 @@ const DARdata = () => {
                 onCloseModal={modalCloseDARDetail}
                 passedData={passDataDetail}
             />
+            <ActivityBreakdown
+                openModal={openModalActivityBreakdown}
+                onCloseModal={modalCloseActivityBreakdown}
+                passedData={passDataActivityBreakdown}
+            />
             <TransferEmployeeModal
                 openModal={openModalTransferEmployee}
                 onCloseModal={modalCloseDARTransferEmployee}
@@ -344,31 +388,31 @@ const DARdata = () => {
                                 <TextField fullWidth label="Group Name" value={dataVariableHeader.group_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Client" value={dataVariableHeader.client_name} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Location" value={dataVariableHeader.location} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Department" value={dataVariableHeader.department} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth type="date" value={dataVariableHeader.xDate} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Shifting" value={dataVariableHeader.shift} variant="outlined" size="small" inputProps={{ readOnly: true }} />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Day Type" value={dataVariableHeader.daytype} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Location" value={dataVariableHeader.location} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Shifting" value={dataVariableHeader.shift} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <TextField fullWidth label="Work Schedule" value={dataVariableHeader.shift_time_in_hour + dataVariableHeader.shift_time_in_min + " - " + dataVariableHeader.shift_time_out_hour + dataVariableHeader.shift_time_out_min} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="Prepared By" value={dataVariableHeader.prepared_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Checked By" value={dataVariableHeader.checked_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Confirmed By" value={dataVariableHeader.confirmed_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
-                                <TextField fullWidth label="Aprroved By" value={dataVariableHeader.approved_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
+                                <TextField fullWidth label="Reviewed By" value={dataVariableHeader.checked_by} variant="outlined" size="small" inputProps={{ readOnly: true }} />
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <TextField fullWidth label="STATUS" value={dataVariableHeader.dar_status} variant="outlined" size="small" inputProps={{ readOnly: true }} />
@@ -397,6 +441,7 @@ const DARdata = () => {
                             <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
                             {dataVariableHeader.dar_status == "ACTIVE" ?
                                 <Box sx={{ display: 'flex', gap: '5px' }}>
+                                    <Button variant="contained" size="small" color="error" onClick={() => { activityBreakdown() }}>Add Activity Breakdown</Button>
                                     <Button variant="contained" size="small" color="secondary" onClick={() => { autoComputeTime() }}>Auto Compute Time</Button>
                                     <Button variant="contained" size="small" onClick={() => { addDARDetail() }}>Add DAR Details</Button>
                                     <Button variant="contained" size="small" color="warning" onClick={() => { transferEmployee() }}>Transfer Employee</Button>

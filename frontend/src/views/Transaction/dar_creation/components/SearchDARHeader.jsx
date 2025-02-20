@@ -42,7 +42,14 @@ const SearchDARHeaderModal = (props) => {
         { field: 'group_name', headerName: 'Group', flex: 1, },
         { field: 'department', headerName: 'Department', flex: 1, },
         { field: 'location', headerName: 'Location', flex: 1, },
-        { field: 'daytype', headerName: 'Day Type', flex: 1, },
+        {
+            field: 'shift_time_in_hour', headerName: 'Work Schedule', flex: 1,
+            renderCell: (params) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {params.row.shift_time_in_hour + params.row.shift_time_in_min + " - " + params.row.shift_time_out_hour + params.row.shift_time_out_min}
+                </Box>
+            ),
+        },
         { field: 'xDate', headerName: 'Date', flex: 1, },
         { field: 'dar_status', headerName: 'Status', flex: 1, },
         {

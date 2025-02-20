@@ -172,10 +172,10 @@ const EmployeeTemplatesData = () => {
                     <Paper sx={{ padding: 2 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={12}>
-                                <TextField label="Template Name" value={headerData.TName} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="Department" value={headerData.department} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="Group" value={headerData.emp_group} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="Shifting" value={headerData.shifting} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
+                                {/* <TextField label="Template Name" value={headerData.TName} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
+                                <TextField label="Department" value={headerData.department} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /> */}
+                                <TextField label="Template Name/ Group" value={headerData.emp_group} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
+                                {/* <TextField label="Shifting" value={headerData.shifting} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /> */}
                             </Grid>
                         </Grid>
                         <Button variant="contained" onClick={updateHeader} sx={{ marginTop: "2%", marginRight: "1%" }}>Update Header</Button>

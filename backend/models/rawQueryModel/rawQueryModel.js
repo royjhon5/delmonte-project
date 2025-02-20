@@ -1,3 +1,4 @@
+const { parse } = require('path');
 const db = require('../../config/dbConnection')
 const rawQueryModel = {
 
@@ -56,18 +57,52 @@ const rawQueryModel = {
                     db.query(darQuery, [], async (errDar, resultDar) => {
                         if (resultDar.length > 0) {
                             // get dar time in from device here...
-                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_date = "${resultDar[0].xDate}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
+                            let timeInHour = (parseInt(resultDar[0].shift_time_in_hour) - 2).toString().padStart(2, "0"); // minus 2hrs
+                            let timeOutHour = (parseInt(resultDar[0].shift_time_out_hour) + 2).toString().padStart(2, "0"); // add 2hrs
+                            let darScheduleIn = resultDar[0].xDate + " " + timeInHour + ":" + resultDar[0].shift_time_in_min + ":00";
+                            let darScheduleOut = resultDar[0].xDate + " " + timeOutHour + ":" + resultDar[0].shift_time_out_min + ":00";
+                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
-                                let timeIn = "0000";
+                                let timeIn = "";
                                 if (resultDTR.length > 0) timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
-                                // insert dardtl
-                                const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, gl, cost_center, activitylink_id, activity)
-                                    VALUES (${params.id}, "${element.ChapaID}", "${element.last_name}", "${element.first_name}", "${element.middle_name}", "${element.ext_name}", "${timeIn}", "${element.gl_code}", "${element.costcenter}", 
-                                    "${element.default_acitivity_idlink}", "${element.activityname}")`;
-                                db.query(query2, [], (err2, result2) => { console.log(err2); });
+                                const queryDTROut = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
+                                db.query(queryDTROut, [], (errDTROut, resultDTROut) => {
+                                    let timeOut = "";
+                                    if (resultDTROut.length > 0) {
+                                        if (timeIn != resultDTROut[0].auth_time.split(':')[0] + "" + resultDTROut[0].auth_time.split(':')[1]) {
+                                            timeOut = resultDTROut[0].auth_time.split(':')[0] + "" + resultDTROut[0].auth_time.split(':')[1];
+                                        }
+                                    }
+                                    // compute st
+                                    let ST = 0;
+                                    if (timeIn && timeOut) {
+                                        let timeInDateTime = "2025-01-01 " + resultDar[0].shift_time_in_hour + ":" + resultDar[0].shift_time_in_min;
+                                        let timeOutDateTime = "2025-01-01 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                        if (parseInt(resultDar[0].shift_time_in_hour) > parseInt(resultDar[0].shift_time_out_hour)) { // next day
+                                            timeOutDateTime = "2025-01-02 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                        }
+                                        let diff = diff_hours(timeInDateTime, timeOutDateTime);
+                                        ST = parseFloat(diff);
+                                        ST = ST > 8 ? 8 : ST; // make sure only 8 hrs ST
+                                    }
+                                    // insert dardtl
+                                    const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, gl, cost_center, activitylink_id, activity, st, is_main)
+                                        VALUES (${params.id}, "${element.ChapaID}", "${element.last_name}", "${element.first_name}", "${element.middle_name}", "${element.ext_name}", "${timeIn}", "${timeOut}", "${element.gl_code}", "${element.costcenter}", 
+                                        "${element.default_acitivity_idlink}", "${element.activityname}", "${ST}", "1")`;
+                                    db.query(query2, [], (err2, result2) => { console.log(err2); });
+                                })
                             });
                         }
                     })
+                    // compute hour diff of two dates
+                    function diff_hours(dt2, dt1) {
+                        dt2 = new Date(dt2);
+                        dt1 = new Date(dt1);
+                        var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+                        diff /= (60 * 60);
+                        // Return the absolute value of the rounded difference in hours
+                        return Math.abs(diff.toFixed(2));
+                    }
                 });
                 resolve({ success: true });
             });
@@ -135,11 +170,11 @@ const rawQueryModel = {
                     let arrayCounter = 1;
                     await result.forEach(element => {
                         let diff = 0;
-                        let time_out = "0000";
+                        let time_out = "";
                         if (chapaCounter == element.count) { // to know that this record is the last and this is where to save the final time out of employee
                             const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_date = "${element.darDate}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
-                                let timeOut = "0000";
+                                let timeOut = "";
                                 if (resultDTR.length > 0) timeOut = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
                                 let timeInDateTime = "2025-01-01 " + element.time_in.substring(0, 2) + ":" + element.time_in.substring(2, 4);
                                 let timeOutDateTime = "2025-01-01 " + timeOut.substring(0, 2) + ":" + timeOut.substring(2, 4);
@@ -151,7 +186,7 @@ const rawQueryModel = {
                                 // save if ST if ot and nt are empty
                                 let ST = parseFloat(diff);
 
-                                if(element.department != "PACK HOUSE" && ST > 1) ST = ST - 1;
+                                if (element.department != "PACK HOUSE" && ST > 1) ST = ST - 1;
 
                                 // update dar detail set time out
                                 const query3 = `UPDATE tbldardtl SET time_out = "${time_out}" WHERE id = ${element.id} AND time_out = ""`;
@@ -222,6 +257,36 @@ const rawQueryModel = {
         });
     },
 
+    saveDARActivityBreakdown: async function (params) {
+        return new Promise(async (resolve, reject) => {
+            if (params.empids.length > 0) {
+                await params.empids.forEach(element => {
+                    let toSave = params.fieldValue;
+                    const queryEmp = `SELECT * FROM tblemployeelist WHERE chapa_id = "${element}" LIMIT 1`;
+                    db.query(queryEmp, [], async (errEmp, resultEmp) => {
+                        console.log(errEmp);
+                        if (resultEmp.length > 0) {
+                            toSave.ChapaID = resultEmp[0].chapa_id;
+                            toSave.emp_lname = resultEmp[0].lastname;
+                            toSave.emp_fname = resultEmp[0].firstname;
+                            toSave.emp_mname = resultEmp[0].middlename;
+                            toSave.emp_ext_name = resultEmp[0].extname;
+
+                            // insert
+                            const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, st, ot, nd, ndot, gl, cost_center, activitylink_id, activity, is_main, costcenterlink_id, glcodelink_id)
+                                VALUES (${toSave.dar_idlink}, "${toSave.ChapaID}", "${toSave.emp_lname}", "${toSave.emp_fname}", "${toSave.emp_mname}", "${toSave.emp_ext_name}", "${toSave.time_in}", "${toSave.time_out}", "${toSave.st}", "${toSave.ot}", 
+                                "${toSave.nd}", "${toSave.ndot}", "${toSave.gl}", "${toSave.cost_center}", "${toSave.activitylink_id}", "${toSave.activity}", "${toSave.is_main}", "${toSave.costcenterlink_id}", "${toSave.glcodelink_id}")`;
+                            db.query(query2, [], (err2, result2) => { console.log(err2); });
+                        }
+                    });
+                });
+                resolve({ success: true, message: "successfully saved" });
+            } else {
+                resolve({ success: false, message: "no employees to save" });
+            }
+        });
+    },
+
 
     submitSOAToDMPI: async function (params) {
         return new Promise((resolve, reject) => {
@@ -265,88 +330,88 @@ const rawQueryModel = {
                 WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
                 ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
             `;
-                db.query(dataQuery, params.paramValue, (err, result) => {
-                    if (err) return reject(err);
-                    if (result.length > 0) {
-                        let lastChapa = result[0].ChapaID;
-                        let prepared_by = result[0].prepared_by;
-                        let checked_by = result[0].checked_by;
+            db.query(dataQuery, params.paramValue, (err, result) => {
+                if (err) return reject(err);
+                if (result.length > 0) {
+                    let lastChapa = result[0].ChapaID;
+                    let prepared_by = result[0].prepared_by;
+                    let checked_by = result[0].checked_by;
 
-                        resultData.push({
-                            ChapaID: "",
-                            emp_lname: result[0].activity.toUpperCase(),
-                            emp_fname: "",
-                            emp_mname: "",
-                            emp_ext_name: "",
-                            time_in: "",
-                            time_out: "",
-                            st: "",
-                            ot: "",
-                            nd: "",
-                            ndot: "",
-                            gl: "",
-                            glcost_center: "",
-                            daytype: result[0].daytype,
-                            department: result[0].department,
-                            xDate: result[0].xDate,
-                            shift: result[0].shift
-                        });
+                    resultData.push({
+                        ChapaID: "",
+                        emp_lname: result[0].activity.toUpperCase(),
+                        emp_fname: "",
+                        emp_mname: "",
+                        emp_ext_name: "",
+                        time_in: "",
+                        time_out: "",
+                        st: "",
+                        ot: "",
+                        nd: "",
+                        ndot: "",
+                        gl: "",
+                        glcost_center: "",
+                        daytype: result[0].daytype,
+                        department: result[0].department,
+                        xDate: result[0].xDate,
+                        shift: result[0].shift
+                    });
 
-                        result.forEach(element => {
-                            if (lastChapa != element.ChapaID) {
-                                lastChapa = element.ChapaID;
-                                totalHC += 1;
-                                cntr = 1;
-                                resultData.push({
-                                    ChapaID: "",
-                                    emp_lname: element.activity.toUpperCase(),
-                                    emp_fname: "",
-                                    emp_mname: "",
-                                    emp_ext_name: "",
-                                    time_in: "",
-                                    time_out: "",
-                                    st: "",
-                                    ot: "",
-                                    nd: "",
-                                    ndot: "",
-                                    gl: "",
-                                    glcost_center: "",
-                                    daytype: element.daytype,
-                                    department: element.department,
-                                    xDate: element.xDate,
-                                    shift: element.shift
-                                });
-                            }
-                            if (cntr > 1) {
-                                element.ChapaID = "";
-                                element.emp_lname = "";
-                                element.emp_fname = "";
-                                element.emp_mname = "";
-                                element.emp_ext_name = "";
-                            }
-                            resultData.push(element);
-                            totalST += parseFloat(element.st);
-                            totalOT += parseFloat(element.ot);
-                            totalND += parseFloat(element.nd);
-                            totalNDOT += parseFloat(element.ndot);
-                            cntr += 1;
-                        });
+                    result.forEach(element => {
+                        if (lastChapa != element.ChapaID) {
+                            lastChapa = element.ChapaID;
+                            totalHC += 1;
+                            cntr = 1;
+                            resultData.push({
+                                ChapaID: "",
+                                emp_lname: element.activity.toUpperCase(),
+                                emp_fname: "",
+                                emp_mname: "",
+                                emp_ext_name: "",
+                                time_in: "",
+                                time_out: "",
+                                st: "",
+                                ot: "",
+                                nd: "",
+                                ndot: "",
+                                gl: "",
+                                glcost_center: "",
+                                daytype: element.daytype,
+                                department: element.department,
+                                xDate: element.xDate,
+                                shift: element.shift
+                            });
+                        }
+                        if (cntr > 1) {
+                            element.ChapaID = "";
+                            element.emp_lname = "";
+                            element.emp_fname = "";
+                            element.emp_mname = "";
+                            element.emp_ext_name = "";
+                        }
+                        resultData.push(element);
+                        totalST += parseFloat(element.st);
+                        totalOT += parseFloat(element.ot);
+                        totalND += parseFloat(element.nd);
+                        totalNDOT += parseFloat(element.ndot);
+                        cntr += 1;
+                    });
 
-                        resolve({
-                            success: true,
-                            data: resultData,
-                            totals: { totalHC, totalST, totalOT, totalND, totalNDOT },
-                            signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() }
-                        });
-                    } else {
-                        resolve({
-                            success: false,
-                            data: [],
-                            totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
-                            signatory: { prepared_by: "", checked_by: "" }
-                        });
-                    }
-                });
+                    resolve({
+                        success: true,
+                        data: resultData,
+                        totals: { totalHC, totalST, totalOT, totalND, totalNDOT },
+                        signatory: { prepared_by: prepared_by.toUpperCase(), checked_by: checked_by.toUpperCase() }
+                    });
+                } else {
+                    resolve({
+                        success: false,
+                        data: [],
+                        totals: { totalHC: 0, totalST: 0, totalOT: 0, totalND: 0, totalNDOT: 0 },
+                        signatory: { prepared_by: "", checked_by: "" }
+                    });
+                }
+            });
         });
     },
 

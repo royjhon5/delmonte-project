@@ -1,0 +1,6 @@
+ALTER TABLE `tbldarhdr`
+  DROP `template_name`;
+ALTER TABLE `tbldarhdr` ADD `departmend_id` INT NOT NULL AFTER `dar_no`, ADD `client_id` INT NOT NULL AFTER `departmend_id`, ADD `client_name` VARCHAR(155) NOT NULL AFTER `client_id`, ADD `shift_time_in_hour` VARCHAR(2) NOT NULL AFTER `client_name`, ADD `shift_time_in_min` VARCHAR(2) NOT NULL AFTER `shift_time_in_hour`;
+ALTER TABLE `tbldarhdr` ADD `shift_time_out_hour` VARCHAR(2) NOT NULL AFTER `shift_time_in_min`, ADD `shift_time_out_min` VARCHAR(2) NOT NULL AFTER `shift_time_out_hour`;
+ALTER TABLE `tbldardtl` ADD `is_main` INT(1) NOT NULL COMMENT '1-Yes;0-No' AFTER `activity`;
+ALTER TABLE `tbldardtl` ADD `costcenterlink_id` INT NOT NULL AFTER `is_main`, ADD `glcodelink_id` INT NOT NULL AFTER `costcenterlink_id`;

@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime, generateDARNo } = require("../../models/rawQueryModel/rawQueryModel");
+const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime, generateDARNo, saveDARActivityBreakdown } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getDARHeader = async function (req, res) {
 	var params = {
@@ -59,11 +59,17 @@ module.exports.saveDARHeader = async function (req, res) {
 			confirmed_by: data.confirmed_by ? data.confirmed_by : "",
 			confirmed_by_pos: data.confirmed_by_pos ? data.confirmed_by_pos : "",
 			templatelink_id: data.templatelink_id ? data.templatelink_id : "",
-			template_name: data.template_name ? data.template_name : "",
 			department: data.department ? data.department : "",
 			group_name: data.group_name ? data.group_name : "",
 			daytype: data.daytype ? data.daytype : "",
 			location: data.location ? data.location : "",
+			departmend_id: data.departmend_id ? data.departmend_id : "",
+			client_id: data.client_id ? data.client_id : "",
+			client_name: data.client_name ? data.client_name : "",
+			shift_time_in_hour: data.shift_time_in_hour ? data.shift_time_in_hour : "",
+			shift_time_in_min: data.shift_time_in_min ? data.shift_time_in_min : "",
+			shift_time_out_hour: data.shift_time_out_hour ? data.shift_time_out_hour : "",
+			shift_time_out_min: data.shift_time_out_min ? data.shift_time_out_min : "",
 		}
 	}
 	try {
@@ -161,6 +167,38 @@ module.exports.saveDARDetail = async function (req, res) {
 	try {
 		var result = await data.id > 0 ? update(params) : insert(params);
 		result.then(function (response) {
+			res.status(200).json(response);
+		})
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
+module.exports.saveDARDetailBreakdown = async function (req, res) {
+	const data = req.body.dataVariable
+	var params = {
+		tableName: "tbldardtl",
+		fieldValue: {
+			dar_idlink: data.dar_idlink,
+			time_in: data.time_in ? data.time_in : "",
+			time_out: data.time_out ? data.time_out : "",
+			st: data.st ? data.st : 0,
+			ot: data.ot ? data.ot : 0,
+			nd: data.nd ? data.nd : 0,
+			ndot: data.ndot ? data.ndot : 0,
+			gl: data.gl ? data.gl : "",
+			cost_center: data.cost_center ? data.cost_center : "",
+			activitylink_id: data.activitylink_id ? data.activitylink_id : 0,
+			activity: data.activity ? data.activity : "",
+			is_main: data.is_main ? data.is_main : 0,
+			costcenterlink_id: data.costcenterlink_id ? data.costcenterlink_id : 0,
+			glcodelink_id: data.glcodelink_id ? data.glcodelink_id : 0,
+		},
+		empids: data.empids ? data.empids : [],
+	}
+	try {
+		await saveDARActivityBreakdown(params).then(async function (response) {
 			res.status(200).json(response);
 		})
 	} catch (error) {

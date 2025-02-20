@@ -118,8 +118,8 @@ const HeaderModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Template Name" value={TName} onChange={(e) => { setTName(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Group" select value={group_idlink} onChange={(e) => { setGroupLinkID(e.target.value); assignChange('group', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    {/* <TextField label="Template Name" value={TName} onChange={(e) => { setTName(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" /> */}
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Template Name/ Group" select value={group_idlink} onChange={(e) => { setGroupLinkID(e.target.value); assignChange('group', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {groupList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
@@ -127,7 +127,7 @@ const HeaderModal = ({ RefreshData }) => {
                             </option>
                         ))}
                     </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Department" select value={department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value); assignChange('department', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    {/* <TextField sx={{ mt: 1 }} size="medium" label="Select Department" select value={department_idlink} onChange={(e) => { setDepartmentLinkID(e.target.value); assignChange('department', e.target.value) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {departmentList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>
@@ -139,7 +139,7 @@ const HeaderModal = ({ RefreshData }) => {
                         <option></option>
                         <option value="1">Shift 1</option>
                         <option value="2">Shift 2</option>
-                    </TextField>
+                    </TextField> */}
                 </Box>
             }
             DialogAction={
