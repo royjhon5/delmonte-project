@@ -2,7 +2,14 @@ import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { useTheme } from '@mui/material';
 
-const CustomDataGrid = ({ columns, rows, slots, loading, hideFooter, hideFooterPagination, maxHeight, height, gridOverLay, onRowClick, columnGroupingModel }) => {
+const CustomDataGrid = ({ columns, 
+  rows, slots, 
+  loading, hideFooter, 
+  hideFooterPagination, 
+  maxHeight, height, 
+  gridOverLay, onRowClick, 
+  columnGroupingModel, checkboxSelection,
+  rowSelection, disableRowSelectionOnClick }) => {
   const theme = useTheme();
   return (
     <DataGrid
@@ -11,9 +18,10 @@ const CustomDataGrid = ({ columns, rows, slots, loading, hideFooter, hideFooterP
       columns={columns}
       rows={rows}
       slots={slots}
+      checkboxSelection={checkboxSelection}
       rowHeight={36}
-      rowSelection={false}
-      disableRowSelectionOnClick={false}
+      rowSelection={rowSelection}
+      disableRowSelectionOnClick={disableRowSelectionOnClick}
       hoverStateEnabled={true}
       onRowClick={onRowClick}
       hideFooter={hideFooter}
@@ -22,6 +30,7 @@ const CustomDataGrid = ({ columns, rows, slots, loading, hideFooter, hideFooterP
       initialState={{
         pagination: { paginationModel: { pageSize: 25 } },
       }}
+      
       pageSizeOptions={[25, 50, 100]}
       sx={{
         '--DataGrid-overlayHeight': gridOverLay,
@@ -74,7 +83,10 @@ CustomDataGrid.propTypes = {
   height: PropTypes.number,
   gridOverLay: PropTypes.string,
   onRowClick: PropTypes.any,
-  columnGroupingModel: PropTypes.array
+  columnGroupingModel: PropTypes.array,
+  checkboxSelection: PropTypes.bool,
+  disableRowSelectionOnClick: PropTypes.bool,
+  rowSelection: PropTypes.bool 
 }
 
 

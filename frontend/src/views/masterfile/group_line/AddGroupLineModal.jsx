@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
 
+
 const AddGroupLineModal = ({ RefreshData }) => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomModal);
@@ -27,13 +28,9 @@ const AddGroupLineModal = ({ RefreshData }) => {
             id: isToUpdate ? toUpdateData.id : 0,
             groupline_name: GroupLine,
         };
-        try {
-            await saveNewGroupLineData.mutateAsync(GroupLineData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewGroupLineData.mutateAsync(GroupLineData);
     };
+    
     const saveNewGroupLineData = useMutation({
         mutationFn: (GroupLineData) => http.post('/post-group', GroupLineData),
         onSuccess: () => {
@@ -43,9 +40,11 @@ const AddGroupLineModal = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
+    
 
     useEffect(() => {
         if (isToUpdate) {

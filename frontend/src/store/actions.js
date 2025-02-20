@@ -36,6 +36,7 @@ export const IS_UPDATECASHVOUCHER = '@customization/IS_UPDATECASHVOUCHER';
 
 //MASTERFILE
 export const OPEN_CUSTOM_MODAL = '@customization/OPEN_CUSTOM_MODAL';
+export const OPEN_DAR_REPORT = '@customization/OPEN_DAR_REPORT';
 export const FORM_DATA = '@customization/FORM_DATA';
 export const OPEN_CUSTOM_HEADER_MODAL = '@customization/OPEN_CUSTOM_HEADER_MODAL';
 export const FORM_HEADER_DATA = '@customization/FORM_HEADER_DATA';

@@ -97,7 +97,7 @@ const DataContainer = () => {
     ];
 
     const exportData = async () => {
-        window.open("http://localhost:8000/api/export-packhouse-employee")        
+        window.open("http://192.168.1.2:8000/api/export-packhouse-employee")        
     };
 
     return (

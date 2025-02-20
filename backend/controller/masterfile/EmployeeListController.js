@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { EmployeeListJoin } = require("../../models/rawQueryModel/rawQueryModel");
+const { EmployeeListJoin, VerifyOnSave } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getEmployeeList = async function (req, res) {
 	const data = req.query;
@@ -39,11 +39,25 @@ module.exports.saveEmployeeData = async function (req, res) {
 			costcenter: data.costcenter,
 		}
 	}
+	const checkParams = {
+		table: "tblemployeelist",
+		conditions: { chapa_id: data.chapa_id }
+	};
 	try {
+		if (data.chapa_id === '') return res.status(400).json({ error: "Chapa ID required!" });
+		if (data.firstname === '') return res.status(400).json({ error: "First name required!" });
+		if (data.lastname === '') return res.status(400).json({ error: "Last name Required!" });
+		if (data.activityname === '') return res.status(400).json({ error: "Activity Required!" });
+        const verifyResult = await VerifyOnSave(checkParams);
+        if (verifyResult.data.length > 0) {
+            const existingRecord = verifyResult.data[0];
+            if (existingRecord.id === data.id) {
+                return res.status(200).json({ message: "No changes made." });
+            }
+            return res.status(400).json({ error: "Chapa ID already exists!" });
+        } 
 		var result = await data.id > 0 ? update(params) : insert(params);
-		result.then(function(response){
-			res.status(200).json(response);
-		})
+		res.status(200).json(result);
 	} catch (error) {
 		res.status(400).send({ error: 'Server Error' });
 		console.error(error)

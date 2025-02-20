@@ -1,4 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
+const { VerifyOnSave } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.saveClientList = async function (req, res) {
 	const data = req.body
@@ -14,11 +15,22 @@ module.exports.saveClientList = async function (req, res) {
 			client_tinno: data.client_tinno,
 		}
 	}
+	const checkParams = {
+        table: "tblgroupline_list",
+        conditions: { client_code: data.client_code }
+    };
 	try {
-		var result = await data.id > 0 ? update(params) : insert(params);
-		result.then(function(response){
-			res.status(200).json(response);
-		})
+		if (data.client_name === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+        const verifyResult = await VerifyOnSave(checkParams);
+        if (verifyResult.data.length > 0) {
+            const existingRecord = verifyResult.data[0];
+            if (existingRecord.id === data.id) {
+                return res.status(200).json({ message: "No changes made." });
+            }
+            return res.status(400).json({ error: "Client Code already exists!" });
+        } 
+        const result = await (data.id > 0 ? update(params) : insert(params));
+        res.status(200).json(result);
 	} catch (error) {
 		res.status(400).send({ error: 'Server Error' });
 		console.error(error)

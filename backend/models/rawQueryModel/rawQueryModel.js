@@ -14,6 +14,25 @@ const rawQueryModel = {
         });
     },
 
+    VerifyOnSave: async function (params) {
+        return new Promise((resolve, reject) => {
+            const { table, conditions } = params; 
+            if (!table || !conditions || Object.keys(conditions).length === 0) {
+                return reject(new Error("Invalid parameters"));
+            }
+            const whereClauses = Object.keys(conditions)
+                .map((key) => `${key} = ?`)
+                .join(" AND ");   
+            const values = Object.values(conditions);
+            const query = `SELECT * FROM ${table} WHERE ${whereClauses}`;
+            db.query(query, values, (err, result) => {
+                if (err) return reject(err);
+                resolve({ success: true, data: result });
+            });
+        });
+    },
+    
+
     AccountToChargeJoin: async function (params) {
         return new Promise((resolve, reject) => {
             const activityJoin = " LEFT JOIN tblactivitylist a ON a.id = el.activity_id_link ";

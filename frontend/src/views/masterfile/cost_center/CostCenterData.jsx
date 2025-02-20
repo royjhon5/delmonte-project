@@ -12,6 +12,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddCostCenterModal from "./AddCostCenterModal";
+import AddIcon from '@mui/icons-material/Add';
 
 const CostCenterData = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const CostCenterData = () => {
 
     const ColumnHeader = [
         {
-            field: 'costcenter', headerName: 'Cost Center Name', width: 900,
+            field: 'costcenter', headerName: 'Cost Center Name', flex: 1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.costcenter}
@@ -97,7 +98,7 @@ const CostCenterData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddCostCenterModal}>Add Cost Center</Button>
+                    <Button startIcon={<AddIcon />} variant="contained" onClick={openAddCostCenterModal}>ADD NEW</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -105,6 +106,7 @@ const CostCenterData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

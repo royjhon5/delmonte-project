@@ -40,42 +40,58 @@ const EmployeeListData = () => {
             ),
         },
         {
-            field: 'fullname', headerName: 'Fullname', flex: 1,
+            field: 'lastname', headerName: 'LAST NAME', width: 150,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.firstname + " " + data.row.middlename + " " + data.row.lastname + " " + data.row.extname}
+                    {data.row.lastname}
                 </Box>
             ),
         },
-        // {
-        //     field: 'location_name', headerName: 'Location', width: 250,
-        //     renderCell: (data) => (
-        //         <Box sx={{ paddingLeft: 1 }}>
-        //             {data.row.location_name}
-        //         </Box>
-        //     ),
-        // },
-        // {
-        //     field: 'department_name', headerName: 'Department', width: 250,
-        //     renderCell: (data) => (
-        //         <Box sx={{ paddingLeft: 1 }}>
-        //             {data.row.department_name}
-        //         </Box>
-        //     ),
-        // },
-        // {
-        //     field: 'groupline_name', headerName: 'Group', width: 250,
-        //     renderCell: (data) => (
-        //         <Box sx={{ paddingLeft: 1 }}>
-        //             {data.row.groupline_name}
-        //         </Box>
-        //     ),
-        // },
         {
-            field: 'activityname', headerName: 'Activity', width: 250,
+            field: 'firstname', headerName: 'FIRST NAME', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.firstname}
+                </Box>
+            ),
+        },
+        {
+            field: 'middlename', headerName: 'MIDDLE NAME', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.middlename}
+                </Box>
+            ),
+        },
+        {
+            field: 'extname', headerName: 'EXT. NAME', width: 100,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.extname}
+                </Box>
+            ),
+        },
+        {
+            field: 'activityname', headerName: 'Assigned Activity', width: 150,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.activityname}
+                </Box>
+            ),
+        },
+        {
+            field: 'gl_code', headerName: 'GL Code', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.gl_code}
+                </Box>
+            ),
+        },
+        {
+            field: 'costcenter', headerName: 'Assigned Activity', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.costcenter}
                 </Box>
             ),
         },
@@ -128,7 +144,7 @@ const EmployeeListData = () => {
     }
 
     const deleteData = useMutation({
-        mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
+        mutationFn: () => http.delete(`/remove-employee?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
             queryClient.invalidateQueries(['/get-employee']);
@@ -147,7 +163,10 @@ const EmployeeListData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddEmployeeListModal}>Add Employee</Button>
+                    <Box>
+                        <Button variant="contained" color="warning" onClick={openAddEmployeeListModal} sx={{mr:1}}>IMPORT NEW DATA</Button>
+                        <Button variant="contained" onClick={openAddEmployeeListModal}>ADD EMPLOYEE</Button>
+                    </Box>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -155,6 +174,7 @@ const EmployeeListData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    checkboxSelection={true}
                 />
             </Paper>
         </>

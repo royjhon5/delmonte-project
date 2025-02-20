@@ -27,12 +27,7 @@ const AddDayTypeModal = ({ RefreshData }) => {
             id: isToUpdate ? toUpdateData.id : 0,
             dt_name: DayType,
         };
-        try {
-            await saveNewDayTypeData.mutateAsync(DayTypeData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewDayTypeData.mutateAsync(DayTypeData);
     };
     const saveNewDayTypeData = useMutation({
         mutationFn: (DayTypeData) => http.post('/post-daytype', DayTypeData),
@@ -43,7 +38,8 @@ const AddDayTypeModal = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 

@@ -12,6 +12,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddDayTypeModal from "./AddDayTypeModal";
+import AddIcon from '@mui/icons-material/Add';
 
 const DayTypeData = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const DayTypeData = () => {
 
     const ColumnHeader = [
         {
-            field: 'dt_name', headerName: 'Day Type', width: 900,
+            field: 'dt_name', headerName: 'Day Type', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.dt_name}
@@ -97,7 +98,7 @@ const DayTypeData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddDayTypeModal}>Add Day Type</Button>
+                    <Button startIcon={<AddIcon />} variant="contained" onClick={openAddDayTypeModal}>ADD NEW</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -105,6 +106,7 @@ const DayTypeData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

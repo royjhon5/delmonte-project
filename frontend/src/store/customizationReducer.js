@@ -46,6 +46,7 @@ export const initialState = {
     swalConfirmation: false,
     isUpdateForm: false,
     isUpdateHeaderForm: false,
+    openDarReport: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -231,6 +232,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 openSearchTemplate: action.openSearchTemplate
+            };
+        case actionTypes.OPEN_DAR_REPORT:
+            return {
+                ...state,
+                openDarReport: action.openDarReport
             };
         default:
             return state;

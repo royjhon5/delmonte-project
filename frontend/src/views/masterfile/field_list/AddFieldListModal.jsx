@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
 
+
 const AddFieldList = ({ RefreshData }) => {
     const dispatch = useDispatch();
     const open = useSelector((state) => state.customization.openCustomModal);
@@ -27,12 +28,7 @@ const AddFieldList = ({ RefreshData }) => {
             id: isToUpdate ? toUpdateData.id : 0,
             field_name: FieldList,
         };
-        try {
-            await saveNewFieldListData.mutateAsync(FieldListData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewFieldListData.mutateAsync(FieldListData);
     };
     const saveNewFieldListData = useMutation({
         mutationFn: (FieldListData) => http.post('/post-field', FieldListData),
@@ -43,7 +39,8 @@ const AddFieldList = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 

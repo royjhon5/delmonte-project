@@ -7,17 +7,11 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import http from "../../../api/http";
 import { useEffect, useState } from "react";
-import { hookContainer } from "../../../hooks/globalQuery";
 import SearchAccountMasterModal from "./SearchAccountMaster";
 import SearchIcon from '@mui/icons-material/Search';
 
 const AddGroupLine = ({ RefreshData }) => {
     const dispatch = useDispatch();
-    const { data: locationList } = hookContainer('/get-location');
-    const { data: departmentList } = hookContainer('/get-department');
-    const { data: groupList } = hookContainer('/get-group');
-    // const { data: activityList } = hookContainer('/get-activity');
-    const { data: accounttochargeList } = hookContainer('/get-accounttocharge');
     const open = useSelector((state) => state.customization.openCustomModal);
     //boolean
     const isToUpdate = useSelector((state) => state.customization.isUpdateForm);
@@ -45,10 +39,10 @@ const AddGroupLine = ({ RefreshData }) => {
         const saveUpdateData = {
             id: isToUpdate ? toUpdateData.id : 0,
             chapa_id: chapa_id,
-            firstname: firstname,
-            lastname: lastname,
-            middlename: middlename,
-            extname: extname,
+            firstname: (firstname).toLocaleUpperCase(),
+            lastname: (lastname).toLocaleUpperCase(),
+            middlename: (middlename).toLocaleUpperCase(),
+            extname: (extname).toLocaleUpperCase(),
             assigned_location_idlink: assigned_location_idlink,
             assigned_department_idlink: assigned_department_idlink,
             assigned_group_idlink: assigned_group_idlink,
@@ -57,12 +51,7 @@ const AddGroupLine = ({ RefreshData }) => {
             gl_code: gl_code,
             costcenter: costcenter,
         };
-        try {
-            await saveUpdateDataExecute.mutateAsync(saveUpdateData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveUpdateDataExecute.mutateAsync(saveUpdateData);
     };
     const saveUpdateDataExecute = useMutation({
         mutationFn: (saveUpdateData) => http.post('/post-employee', saveUpdateData),
@@ -73,7 +62,8 @@ const AddGroupLine = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 
@@ -122,16 +112,16 @@ const AddGroupLine = ({ RefreshData }) => {
             />
             <CustomDialog
                 open={open}
-                maxWidth={'xs'}
+                maxWidth={'sm'}
                 DialogTitles={isToUpdate ? "Update Employee List" : "Add New Employee List"}
                 onClose={CloseDialog}
                 DialogContents={
                     <Box sx={{ mt: 1 }}>
-                        <TextField label="ChapaID" value={chapa_id} onChange={(e) => { setChapaID(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                        <TextField label="Firstname" value={firstname} onChange={(e) => { setFirstname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                        <TextField label="Middlename" value={middlename} onChange={(e) => { setMiddlename(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                        <TextField label="Lastname" value={lastname} onChange={(e) => { setLastname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                        <TextField label="Extname" value={extname} onChange={(e) => { setExtname(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                        <TextField label="ChapaID" value={chapa_id} onChange={(e) => { setChapaID(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                        <TextField label="Firstname" value={firstname} onChange={(e) => { setFirstname(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                        <TextField label="Middlename" value={middlename} onChange={(e) => { setMiddlename(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                        <TextField label="Lastname" value={lastname} onChange={(e) => { setLastname(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                        <TextField label="Extname" value={extname} onChange={(e) => { setExtname(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
                         <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
                             <InputLabel>Select Default Activity</InputLabel>
                             <OutlinedInput size="medium"
@@ -145,6 +135,14 @@ const AddGroupLine = ({ RefreshData }) => {
                                 value={activityname} name="activityname"
                             />
                         </FormControl>
+                        <Grid container spacing={1} sx={{mt:.2}}>
+                            <Grid item xs={12} md={6} lg={6}>
+                                <TextField inputProps={{ readOnly: true }} fullWidth label="Cost Center" value={costcenter} onChange={(e) => {setCostCenter(e.target.value)}}  />
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={6}>
+                                <TextField inputProps={{ readOnly: true }} fullWidth label="GL Code" value={gl_code} onChange={(e) => {setGLCode(e.target.value)}} />
+                            </Grid>
+                        </Grid>
                     </Box>
                 }
                 DialogAction={
