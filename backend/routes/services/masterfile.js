@@ -23,6 +23,7 @@ module.exports.routes = {
         [ '/post-accounttocharge', AccontToChargeCtrl.saveAccountToCharge ],
         [ '/post-group', GroupCtrl.saveGroupData ],
         [ '/post-client', ClientCtrl.saveClientList ],
+        [ '/remove-multiple-employee', EmpCtrl.deleteMultipleEmployees ],
     ], 
     get: [
         [ '/get-location', LocCtrl.getLocationList ],

@@ -25,14 +25,9 @@ const AddLocationListModal = ({ RefreshData }) => {
     const SaveOrUpdateData = async () => {
         const LocationListData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            location_name: LocationList,
+            location_name: (LocationList).toLocaleUpperCase(),
         };
-        try {
-            await saveNewLocationListData.mutateAsync(LocationListData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewLocationListData.mutateAsync(LocationListData);
     };
     const saveNewLocationListData = useMutation({
         mutationFn: (LocationListData) => http.post('/post-location', LocationListData),
@@ -43,7 +38,8 @@ const AddLocationListModal = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 
@@ -61,7 +57,7 @@ const AddLocationListModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Location" value={LocationList} onChange={(e) => { setLocationList(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Location" value={LocationList} onChange={(e) => { setLocationList(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
                 </Box>
             }
             DialogAction={

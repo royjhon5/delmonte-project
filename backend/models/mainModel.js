@@ -116,22 +116,28 @@ const mainModel = {
 
 
     remove: async function (params) {
-        // const query = `INSERT INTO tblmyportalfolder (folder_name, user_id_link) VALUES (?,?)`;
         return new Promise((resolve, reject) => {
             if (!params) return resolve({ success: false, error: 'required data', message: 'no data supplied' });
-            var query = "DELETE"; // start insert query
-            // table - String
+    
+            let query = "DELETE FROM ";
             if (!params.tableName) return resolve({ success: false, error: 'required data', message: 'missing table' });
-            else query += " FROM " + params.tableName + " ";
-            // field and value - Object e.g. {id: 1, name: 'test'}
-            if (params.where && !Array.isArray(params.whereValue)) return resolve({ success: false, error: 'required data', message: 'missing where value' });
-            if (params.where && Array.isArray(params.where)) {
-                query += " WHERE " + params.where.join("/-/").replace(/\/-\//g, " AND ") + " ";
+    
+            query += params.tableName;
+    
+            if (Array.isArray(params.where) && Array.isArray(params.whereValue)) {
+                query += " WHERE " + params.where.join(" AND ");
+            } else if (Array.isArray(params.whereConditions) && Array.isArray(params.whereValues)) {
+                const conditions = params.whereConditions.join(" AND ");
+                const placeholders = params.whereValues.map(() => `(${conditions})`).join(" OR ");
+                query += " WHERE " + placeholders;
+                params.whereValue = params.whereValues.flat();
+            } else {
+                return resolve({ success: false, error: 'Invalid data format', message: 'Check parameters' });
             }
-            // query
+    
             db.query(query, params.whereValue, (err, result) => {
                 if (err) return reject(err);
-                return resolve({ success: true, message: "successfully deleted" });
+                return resolve({ success: true, message: "Successfully deleted" });
             });
         });
     },

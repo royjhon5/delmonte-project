@@ -1,4 +1,4 @@
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, Grid, Popper, TextField } from "@mui/material";
 import CustomDialog from "../../../components/CustomDialog";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from 'prop-types';
@@ -24,23 +24,17 @@ const AddAccountMasterModal = ({ RefreshData }) => {
         dispatch({ type: IS_UPDATE_FORM, isUpdateForm: false });
         clearData();
     }
-    const [activity_id_link, setActivityLinkID] = useState('');
-    const [glcode_id_link, setGLCodeLinkID] = useState('');
-    const [costcenter_id_link, setCostCenterLinkID] = useState('');
-
+    const [selectedActivity, setSelectedActivity] = useState(null);
+    const [selectedGLCode, setSelectedGLCode] = useState(null);
+    const [selectedCostCenter, setSelectedCostCenter] = useState(null);
     const SaveOrUpdateData = async () => {
         const AccountMasterData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            activity_id_link: activity_id_link,
-            glcode_id_link: glcode_id_link,
-            costcenter_id_link: costcenter_id_link,
+            activity_id_link: selectedActivity ? selectedActivity.id : "",
+            glcode_id_link: selectedGLCode ? selectedGLCode.id : "",
+            costcenter_id_link: selectedCostCenter ? selectedCostCenter.id : "",
         };
-        try {
-            await saveNewAccountMasterData.mutateAsync(AccountMasterData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewAccountMasterData.mutateAsync(AccountMasterData);
     };
     const saveNewAccountMasterData = useMutation({
         mutationFn: (AccountMasterData) => http.post('/post-accounttocharge', AccountMasterData),
@@ -51,22 +45,32 @@ const AddAccountMasterModal = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 
     useEffect(() => {
-        if (isToUpdate) {
-            setActivityLinkID(toUpdateData.activity_id_link);
-            setGLCodeLinkID(toUpdateData.glcode_id_link);
-            setCostCenterLinkID(toUpdateData.costcenter_id_link);
+        if (isToUpdate && toUpdateData && activityList.length > 0) {
+          const matchedActivity = activityList.find(activity => activity.id === toUpdateData.activity_id_link);    
+          if (matchedActivity) {
+            setSelectedActivity(matchedActivity);
+          }
+          const matchedGLCode = glCodeList.find(glcode => glcode.id === toUpdateData.glcode_id_link);    
+          if (matchedGLCode) {
+            setSelectedGLCode(matchedGLCode);
+          }
+          const matchedCostCenter = costCenterList.find(costcenter => costcenter.id === toUpdateData.costcenter_id_link);    
+          if (matchedCostCenter) {
+            setSelectedCostCenter(matchedCostCenter);
+          }
         }
-    }, [isToUpdate, toUpdateData])
+      }, [isToUpdate, toUpdateData, activityList, glCodeList, costCenterList]);
 
     const clearData = () => {
-        setActivityLinkID('');
-        setGLCodeLinkID('');
-        setCostCenterLinkID('');
+        setSelectedActivity(null);
+        setSelectedGLCode(null);
+        setSelectedCostCenter(null);
     }
 
     return (
@@ -76,31 +80,46 @@ const AddAccountMasterModal = ({ RefreshData }) => {
             DialogTitles={isToUpdate ? "Update Account Master" : "Add New Account Master"}
             onClose={CloseDialog}
             DialogContents={
-                <Box sx={{ mt: 1 }}>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={activity_id_link} onChange={(e) => { setActivityLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {activityList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.activityname}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select GL Code" select value={glcode_id_link} onChange={(e) => { setGLCodeLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {glCodeList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.gl_code}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Cost Center" select value={costcenter_id_link} onChange={(e) => { setCostCenterLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
-                        <option></option>
-                        {costCenterList?.map((option) => (
-                            <option key={option.id} value={`${option.id}`}>
-                                {option.costcenter}
-                            </option>
-                        ))}
-                    </TextField>
+                <Box sx={{ mt: 1, display: 'flex', flexDirection:'column', gap:1 }}>
+                    <Autocomplete 
+                        disablePortal
+                        options={activityList ?? []}
+                        value={selectedActivity}
+                        getOptionLabel={(option) => option.activityname || ''} 
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        onChange={(event, newValue) => setSelectedActivity(newValue)}
+                        renderInput={(params) => <TextField {...params} label="Select Activity" />}
+                        ListboxProps={{ style: { maxHeight: '200px', overflow: 'auto' } }}
+                        PopperComponent={(props) => <Popper {...props} placement="bottom-start" disablePortal={false} />}
+                    />
+
+                    <Autocomplete 
+                        disablePortal
+                        options={glCodeList ?? []}
+                        value={selectedGLCode}
+                        getOptionLabel={(option) => option.gl_code || ''} 
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        sx={{ width: '100%' }}
+                        onChange={(event, newValue) => setSelectedGLCode(newValue)}
+                        renderInput={(params) => <TextField {...params} label="Select GL Code" />}
+                        ListboxProps={{ style: { maxHeight: '200px', overflow: 'auto' } }}
+                        PopperComponent={(props) => <Popper {...props} placement="bottom-start" disablePortal={false} />}
+                    />
+
+                    <Autocomplete 
+                        disablePortal
+                        options={costCenterList ?? []}
+                        value={selectedCostCenter}
+                        getOptionLabel={(option) => option.costcenter || ''} 
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        sx={{ width: '100%' }}
+                        onChange={(event, newValue) => setSelectedCostCenter(newValue)}
+                        renderInput={(params) => <TextField {...params} label="Select GL Code" />}
+                        ListboxProps={{ style: { maxHeight: '200px', overflow: 'auto' } }}
+                        PopperComponent={(props) => <Popper {...props} placement="bottom-start" disablePortal={false} />}
+                    />
+
+                    
                 </Box>
             }
             DialogAction={

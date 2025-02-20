@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AccountToChargeJoin } = require("../../models/rawQueryModel/rawQueryModel");
+const { AccountToChargeJoin, VerifyOnSave } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getAccountToCharge = async function (req, res) {
 	const data = req.query;
@@ -30,11 +30,28 @@ module.exports.saveAccountToCharge = async function (req, res) {
 			costcenter_id_link: data.costcenter_id_link,
 		}
 	}
+	const checkParams = {
+        table: "tblaccount_to_charge",
+        conditions: {
+            activity_id_link: data.activity_id_link,
+            glcode_id_link: data.glcode_id_link,
+            costcenter_id_link: data.costcenter_id_link
+        }
+    };
 	try {
-		var result = await data.id > 0 ? update(params) : insert(params);
-		result.then(function(response){
-			res.status(200).json(response);
-		})
+		if (data.activity_id_link === '') return res.status(400).json({ error: "Activity Required!" });
+		if (data.glcode_id_link === '') return res.status(400).json({ error: "GL Code Required!" });
+		if (data.costcenter_id_link === '') return res.status(400).json({ error: "Cost Center Required!" });
+        const verifyResult = await VerifyOnSave(checkParams);
+        if (verifyResult.data.length > 0) {
+            const existingRecord = verifyResult.data[0];
+            if (existingRecord.id === data.id) {
+                return res.status(200).json({ message: "No changes made." });
+            }
+            return res.status(400).json({ error: "Account master data already exists!" });
+        } 
+        const result = await (data.id > 0 ? update(params) : insert(params));
+        res.status(200).json(result);
 	} catch (error) {
 		res.status(400).send({ error: 'Server Error' });
 		console.error(error)

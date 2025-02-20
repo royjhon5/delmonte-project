@@ -30,19 +30,14 @@ const AddDayTypeModal = ({ RefreshData }) => {
     const SaveOrUpdateData = async () => {
         const DayTypeData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            client_code: client_code,
-            client_name: client_name,
-            client_address: client_address,
-            client_contactno: client_contactno,
+            client_code: (client_code).toLocaleUpperCase(),
+            client_name: (client_name).toLocaleUpperCase(),
+            client_address: (client_address).toLocaleUpperCase(),
+            client_contactno: (client_contactno).toLocaleUpperCase(),
             client_email: client_email,
             client_tinno: client_tinno
         };
-        try {
-            await saveNewDayTypeData.mutateAsync(DayTypeData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewDayTypeData.mutateAsync(DayTypeData);
     };
     const saveNewDayTypeData = useMutation({
         mutationFn: (DayTypeData) => http.post('/post-client', DayTypeData),
@@ -53,7 +48,8 @@ const AddDayTypeModal = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 
@@ -85,12 +81,12 @@ const AddDayTypeModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Code" value={client_code} onChange={(e) => { setClientCode(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Client Name" value={client_name} onChange={(e) => { setClientName(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Address" value={client_address} onChange={(e) => { setClientAddress(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Contact No" value={client_contactno} onChange={(e) => { setContactNo(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Email" value={client_email} onChange={(e) => { setEmail(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
-                    <TextField label="TIN No" value={client_tinno} onChange={(e) => { setTINNo(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Code" value={client_code} onChange={(e) => { setClientCode(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField label="Client Name" value={client_name} onChange={(e) => { setClientName(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField label="Address" value={client_address} onChange={(e) => { setClientAddress(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField type="number" label="Contact No" value={client_contactno} onChange={(e) => { setContactNo(e.target.value) }} fullWidth inputProps={{ style: { textTransform: "uppercase" } }} sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Email" value={client_email} onChange={(e) => { setEmail(e.target.value) }} fullWidth sx={{ mt: 1 }}  size="medium" />
+                    <TextField label="TIN No" value={client_tinno} onChange={(e) => { setTINNo(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
                 </Box>
             }
             DialogAction={

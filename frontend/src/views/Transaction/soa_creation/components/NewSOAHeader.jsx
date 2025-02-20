@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import SearchTemplateModal from "./SearchTemplate.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
-import SearchSignatoryModal from "../../dar_creation/components/SearchSignatory.jsx";
+// import SearchSignatoryModal from "../../dar_creation/components/SearchSignatory.jsx";
 import dayjs from 'dayjs';
 
 const NewSOAHeaderModal = (props) => {
@@ -152,10 +152,10 @@ const NewSOAHeaderModal = (props) => {
     return (
         <>
             {loadSaving ? <div className="wrapper-bg"><LoadSaving title={loadSaving} /></div> : ''}
-            <SearchSignatoryModal
+            {/* <SearchSignatoryModal
                 openModal={openSignatoryModal}
                 onCloseModal={modalCloseSignatoryModal}
-            />
+            /> */}
             <CustomDialog
                 open={openModal}
                 maxWidth={'lg'}

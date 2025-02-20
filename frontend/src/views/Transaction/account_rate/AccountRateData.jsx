@@ -22,11 +22,11 @@ const AccountRateData = () => {
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => {
         return { ...row, id: row.id };
     }) : [];
-    // const SearchFilter = (rows) => {
-    //     return rows.filter(row =>
-    //         row.daytype.toLowerCase().includes(search.toLowerCase())
-    //     );
-    // };
+    const SearchFilter = (rows) => {
+        return rows.filter(row =>
+            row.daytype.toLowerCase().includes(search.toLowerCase())
+        );
+    };
 
     const ColumnHeader = [
         {
@@ -111,7 +111,7 @@ const AccountRateData = () => {
                     columns={ColumnHeader}
                     maxHeight={450}
                     height={450}
-                    rows={constMappedData}
+                    rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
                 />
             </Paper>

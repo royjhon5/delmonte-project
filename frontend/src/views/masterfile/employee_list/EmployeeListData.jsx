@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Paper, Stack, TextField } from "@mui/material"
+import { Box, Button, Grow, IconButton, Paper, Stack, TextField } from "@mui/material"
 import CustomDataGrid from "../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
@@ -12,10 +12,13 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddEmployeeListModal from "./AddEmployeeListModal";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 
 const EmployeeListData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
+    const [checkedData, setCheckedData] = useState([]);
     const queryClient = useQueryClient();
     const [selectedID, setSelectedID] = useState(0);
     const { data: mainData } = hookContainer('/get-employee');
@@ -156,6 +159,26 @@ const EmployeeListData = () => {
         deleteData.mutate(selectedID);
     };
 
+
+    const deleteDataMultiple = useMutation({
+        mutationFn: (checkedData) => http.post(`/remove-multiple-employee`, { ids: checkedData }), 
+        onSuccess: () => {
+            toast.success('Selected data has been deleted successfully.');
+            queryClient.invalidateQueries(['/get-employee']);
+        }
+    });
+    
+    const DeleteDataMultiple = () => {
+        if (!checkedData || checkedData.length === 0) {
+            toast.error('Please select at least one item to delete.');
+            return;
+        }
+        deleteDataMultiple.mutate(checkedData);
+    };
+    const handleSelectionChange = (selectionModel) => {
+        setCheckedData(selectionModel);
+    };
+
     return (
         <>
             <AddEmployeeListModal RefreshData={refreshData} />
@@ -163,9 +186,14 @@ const EmployeeListData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Box>
-                        <Button variant="contained" color="warning" onClick={openAddEmployeeListModal} sx={{mr:1}}>IMPORT NEW DATA</Button>
-                        <Button variant="contained" onClick={openAddEmployeeListModal}>ADD EMPLOYEE</Button>
+                    <Box> 
+                    {   checkedData.length > 1 && (
+                            <Grow in={true}>
+                                <Button startIcon={<DeleteIcon />} variant="contained" color="error" onClick={DeleteDataMultiple} sx={{mr:1}}>DELETE ALL</Button>
+                            </Grow>
+                        )}          
+                        <Button startIcon={<ImportExportIcon />} variant="contained" color="warning" onClick={openAddEmployeeListModal} sx={{mr:1}}>IMPORT NEW DATA</Button>
+                        <Button startIcon={<PersonAddIcon />}  variant="contained" onClick={openAddEmployeeListModal}>ADD EMPLOYEE</Button>
                     </Box>
                 </Stack>
                 <CustomDataGrid
@@ -175,6 +203,8 @@ const EmployeeListData = () => {
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
                     checkboxSelection={true}
+                    onRowSelectionModelChange={handleSelectionChange}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

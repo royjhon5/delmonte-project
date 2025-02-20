@@ -12,6 +12,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddDepartmentListModal from "./AddDepartmentListModal";
+import AddIcon from '@mui/icons-material/Add';
 
 const DepartmentListData = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const DepartmentListData = () => {
 
     const ColumnHeader = [
         {
-            field: 'department_name', headerName: 'Department Name', width: 450,
+            field: 'department_name', headerName: 'Department Name', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.department_name}
@@ -38,7 +39,7 @@ const DepartmentListData = () => {
             ),
         },
         {
-            field: 'client_name', headerName: 'Client Name', width: 450,
+            field: 'client_name', headerName: 'Client Name', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.client_name}
@@ -106,7 +107,7 @@ const DepartmentListData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddDepartmentListModal}>Add Department</Button>
+                    <Button startIcon={<AddIcon />} variant="contained" onClick={openAddDepartmentListModal}>ADD NEW</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -114,6 +115,7 @@ const DepartmentListData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

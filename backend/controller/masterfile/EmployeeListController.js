@@ -81,3 +81,24 @@ module.exports.deleteEmployeeData = async function (req, res) {
 		console.error(error)
 	}
 }
+
+
+module.exports.deleteMultipleEmployees = async function (req, res) {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, message: "Invalid request, 'ids' must be an array." });
+    }
+    const params = {
+        tableName: "tblemployeelist",
+        whereConditions: ["id = ?"],
+        whereValues: ids.map(id => [id]),
+    };
+
+    try {
+        const result = await remove(params);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).send({ error: 'Server Error' });
+        console.error(error);
+    }
+};

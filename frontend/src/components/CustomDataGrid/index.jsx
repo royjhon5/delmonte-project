@@ -9,7 +9,8 @@ const CustomDataGrid = ({ columns,
   maxHeight, height, 
   gridOverLay, onRowClick, 
   columnGroupingModel, checkboxSelection,
-  rowSelection, disableRowSelectionOnClick }) => {
+  rowSelection, disableRowSelectionOnClick,
+  onRowSelectionModelChange }) => {
   const theme = useTheme();
   return (
     <DataGrid
@@ -27,6 +28,7 @@ const CustomDataGrid = ({ columns,
       hideFooter={hideFooter}
       columnGroupingModel={columnGroupingModel}
       hideFooterPagination={hideFooterPagination}
+      onRowSelectionModelChange={onRowSelectionModelChange}
       initialState={{
         pagination: { paginationModel: { pageSize: 25 } },
       }}
@@ -86,7 +88,8 @@ CustomDataGrid.propTypes = {
   columnGroupingModel: PropTypes.array,
   checkboxSelection: PropTypes.bool,
   disableRowSelectionOnClick: PropTypes.bool,
-  rowSelection: PropTypes.bool 
+  rowSelection: PropTypes.bool,
+  onRowSelectionModelChange: PropTypes.func
 }
 
 

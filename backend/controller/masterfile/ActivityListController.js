@@ -8,7 +8,7 @@ module.exports.getActivityList = async function (req, res) {
 	}
 	try {
 		await select(params).then(function(response){
-			if(response.success) res.status(200).json(response.data);
+			if(response.success) res.status(200).json(response.data);			
 			else res.status(200).json(response);
 		});
 	} catch (error) {
