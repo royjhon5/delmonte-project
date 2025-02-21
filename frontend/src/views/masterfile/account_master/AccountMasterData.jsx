@@ -12,6 +12,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddAccountMasterModal from "./AddAccountMasterModal";
+import AddIcon from '@mui/icons-material/Add';
 
 const AccountMasterData = () => {
     const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const AccountMasterData = () => {
     
     const ColumnHeader = [
         {
-            field: 'activityname', headerName: 'Activity Name', width: 300,
+            field: 'activityname', headerName: 'Activity Name', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.activityname}
@@ -39,7 +40,7 @@ const AccountMasterData = () => {
             ),
         },
         {
-            field: 'gl_code', headerName: 'GL Code', width: 300,
+            field: 'gl_code', headerName: 'GL Code', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.gl_code}
@@ -47,7 +48,7 @@ const AccountMasterData = () => {
             ),
         },
         {
-            field: 'costcenter', headerName: 'Cost Center', width: 300,
+            field: 'costcenter', headerName: 'Cost Center', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.costcenter}
@@ -116,7 +117,7 @@ const AccountMasterData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddAccountMasterModal}>Add Account Master</Button>
+                    <Button startIcon={<AddIcon />} variant="contained" onClick={openAddAccountMasterModal}>ADD NEW</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -124,6 +125,7 @@ const AccountMasterData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

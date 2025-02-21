@@ -12,6 +12,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddGLCodeModal from "./AddGLCodeModal";
+import AddIcon from '@mui/icons-material/Add';
 
 const GLCodeData = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const GLCodeData = () => {
 
     const ColumnHeader = [
         {
-            field: 'gl_code', headerName: 'GL Code Name', width: 900,
+            field: 'gl_code', headerName: 'GL Code Name', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.gl_code}
@@ -95,9 +96,9 @@ const GLCodeData = () => {
             <AddGLCodeModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
-                <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }} >
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddGLCodeModal}>Add GL Code</Button>
+                    <Button startIcon={<AddIcon />} variant="contained" onClick={openAddGLCodeModal}>ADD NEW</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -105,6 +106,7 @@ const GLCodeData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

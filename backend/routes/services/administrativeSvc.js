@@ -5,6 +5,7 @@ module.exports.routes = {
     get: [
         [ '/get-employeemasterfile', AdminCtrl.getEmployeeMasterfile ],
         [ '/export-packhouse-employee', AdminCtrl.exportPackhouseEmployee ],
+        [ '/export-for-employeelist', AdminCtrl.exportForEmployeeList ],
         [ '/get-packhouse-employee', AdminCtrl.getPackhouseEmployees ],
         [ '/get-signatory', SignatoryCtrl.getSignatory ],
         [ '/get-users', UserListCtrl.getUsers ],

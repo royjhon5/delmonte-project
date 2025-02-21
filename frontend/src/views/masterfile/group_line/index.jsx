@@ -10,7 +10,7 @@ const GroupLineList = () => {
   return (
     <Fragment>
         <Helmet>
-            <title>Group Line List</title>
+            <title>Group / Line List</title>
         </Helmet>
         <Box sx={{ mb: '20px' }}>
             <Stack sx={{
@@ -19,7 +19,7 @@ const GroupLineList = () => {
                 alignItems: 'center'
             }}>
                 <Box sx={{ flexGrow: 1 , display: 'flex', flexDirection: 'column', }}>
-                    <Typography variant="h4">Group Line List</Typography>
+                    <Typography variant="h4">Group / Line List</Typography>
                     <BreadCrumbs />
                 </Box>
             </Stack>

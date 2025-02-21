@@ -25,14 +25,9 @@ const AddGLCode = ({ RefreshData }) => {
     const SaveOrUpdateData = async () => {
         const GLCodeData = {
             id: isToUpdate ? toUpdateData.id : 0,
-            gl_code: GLCode,
+            gl_code: (GLCode).toLocaleUpperCase(),
         };
-        try {
-            await saveNewGLCodeData.mutateAsync(GLCodeData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewGLCodeData.mutateAsync(GLCodeData);
     };
     const saveNewGLCodeData = useMutation({
         mutationFn: (GLCodeData) => http.post('/post-glcode', GLCodeData),
@@ -43,7 +38,8 @@ const AddGLCode = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 
@@ -61,7 +57,7 @@ const AddGLCode = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="GL Code" value={GLCode} onChange={(e) => { setGLCode(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="GL Code" value={GLCode} onChange={(e) => { setGLCode(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
                 </Box>
             }
             DialogAction={

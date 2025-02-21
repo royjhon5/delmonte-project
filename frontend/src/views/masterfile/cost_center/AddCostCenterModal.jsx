@@ -27,12 +27,7 @@ const AddCostCenterModal = ({ RefreshData }) => {
             id: isToUpdate ? toUpdateData.id : 0,
             costcenter: CostCenter,
         };
-        try {
-            await saveNewCostCenterData.mutateAsync(CostCenterData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewCostCenterData.mutateAsync(CostCenterData);
     };
     const saveNewCostCenterData = useMutation({
         mutationFn: (CostCenterData) => http.post('/post-costcenter', CostCenterData),
@@ -43,7 +38,8 @@ const AddCostCenterModal = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 

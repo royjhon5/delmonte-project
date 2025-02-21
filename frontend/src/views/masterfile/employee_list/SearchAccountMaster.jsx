@@ -17,13 +17,13 @@ const SearchAccountMasterModal = (props) => {
         return { ...row, id: row.id };
     }) : [];
     const [search, setSearch] = useState('');
-    const SearchFilter = (rows) => {
-        return rows.filter(row =>
-            row.activityname.toLowerCase().includes(search.toLowerCase()) ||
-            row.costcenter.toLowerCase().includes(search.toLowerCase()) ||
-            row.gl_code.toLowerCase().includes(search.toLowerCase())
-        );
-    };
+    // const SearchFilter = (rows) => {
+    //     return rows.filter(row =>
+    //         row.activityname.toLowerCase().includes(search.toLowerCase()) ||
+    //         row.costcenter.toLowerCase().includes(search.toLowerCase()) ||
+    //         row.gl_code.toLowerCase().includes(search.toLowerCase())
+    //     );
+    // };
     const queryClient = useQueryClient();
     useEffect(() => {
         queryClient.invalidateQueries(['/get-accounttocharge']);
@@ -73,7 +73,7 @@ const SearchAccountMasterModal = (props) => {
                             </Stack>
                             <CustomDataGrid
                                 columns={ColumnHeader}
-                                rows={SearchFilter(constMappedData)}
+                                rows={constMappedData}
                                 maxHeight={450}
                                 height={450}
                                 slots={{ noRowsOverlay: NoData }}

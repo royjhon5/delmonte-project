@@ -12,6 +12,7 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddFieldListModal from "./AddFieldListModal";
+import AddIcon from '@mui/icons-material/Add';
 
 const FieldListData = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const FieldListData = () => {
 
     const ColumnHeader = [
         {
-            field: 'field_name', headerName: 'Field List Name', width: 900,
+            field: 'field_name', headerName: 'Field List Name', flex:1,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.field_name}
@@ -97,7 +98,7 @@ const FieldListData = () => {
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddFieldListModal}>Add Field List</Button>
+                    <Button startIcon={<AddIcon />} variant="contained" onClick={openAddFieldListModal}>ADD NEW</Button>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -105,6 +106,7 @@ const FieldListData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>

@@ -123,7 +123,7 @@ const MasterFile = () => {
                             onClick={navigateAccountMasterList}
                         />
                         <CustomMenuButton
-                            label="Group Line List"
+                            label="Group / Line List"
                             activePath="/dashboard/group-line"
                             onClick={navigateGroupLine}
                         />
@@ -177,7 +177,7 @@ const MasterFile = () => {
                     onClick={navigateAccountMasterList}
                 />
                 <ListBtn
-                    label="Group Line List"
+                    label="Group / Line List"
                     activePath="/dashboard/group-line"
                     onClick={navigateGroupLine}
                 />

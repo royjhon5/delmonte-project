@@ -27,12 +27,7 @@ const AddActivityList = ({ RefreshData }) => {
             id: isToUpdate ? toUpdateData.id : 0,
             activityname: ActivityList,
         };
-        try {
-            await saveNewActivityListData.mutateAsync(ActivityListData);
-        } catch (error) {
-            console.error('Error saving:', error);
-            toast.error('Failed to save.');
-        }
+        await saveNewActivityListData.mutateAsync(ActivityListData);
     };
     const saveNewActivityListData = useMutation({
         mutationFn: (ActivityListData) => http.post('/post-activity', ActivityListData),
@@ -43,7 +38,8 @@ const AddActivityList = ({ RefreshData }) => {
             CloseDialog();
         },
         onError: (error) => {
-            toast.error(error)
+            const errorMessage = error.response?.data?.error
+            toast.error(errorMessage);
         }
     });
 

@@ -1,10 +1,10 @@
-import { Box, Button, IconButton, Paper, Stack, TextField } from "@mui/material"
+import { Box, Button, Grow, IconButton, Paper, Stack, TextField } from "@mui/material"
 import CustomDataGrid from "../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_DELETESWAL, FORM_DATA, OPEN_CUSTOM_MODAL } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_DELETESWAL, FORM_DATA, OPEN_CUSTOM_MODAL, OPEN_IMPORT_DATA } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,10 +12,14 @@ import DeleteSwal from "../../../components/Swal/DeleteSwal";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import AddEmployeeListModal from "./AddEmployeeListModal";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import ImportData from "./ImportDataModal";
 
 const EmployeeListData = () => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
+    const [checkedData, setCheckedData] = useState([]);
     const queryClient = useQueryClient();
     const [selectedID, setSelectedID] = useState(0);
     const { data: mainData } = hookContainer('/get-employee');
@@ -40,42 +44,58 @@ const EmployeeListData = () => {
             ),
         },
         {
-            field: 'fullname', headerName: 'Fullname', flex: 1,
+            field: 'lastname', headerName: 'LAST NAME', width: 150,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {data.row.firstname + " " + data.row.middlename + " " + data.row.lastname + " " + data.row.extname}
+                    {data.row.lastname}
                 </Box>
             ),
         },
-        // {
-        //     field: 'location_name', headerName: 'Location', width: 250,
-        //     renderCell: (data) => (
-        //         <Box sx={{ paddingLeft: 1 }}>
-        //             {data.row.location_name}
-        //         </Box>
-        //     ),
-        // },
-        // {
-        //     field: 'department_name', headerName: 'Department', width: 250,
-        //     renderCell: (data) => (
-        //         <Box sx={{ paddingLeft: 1 }}>
-        //             {data.row.department_name}
-        //         </Box>
-        //     ),
-        // },
-        // {
-        //     field: 'groupline_name', headerName: 'Group', width: 250,
-        //     renderCell: (data) => (
-        //         <Box sx={{ paddingLeft: 1 }}>
-        //             {data.row.groupline_name}
-        //         </Box>
-        //     ),
-        // },
         {
-            field: 'activityname', headerName: 'Activity', width: 250,
+            field: 'firstname', headerName: 'FIRST NAME', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.firstname}
+                </Box>
+            ),
+        },
+        {
+            field: 'middlename', headerName: 'MIDDLE NAME', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.middlename}
+                </Box>
+            ),
+        },
+        {
+            field: 'extname', headerName: 'EXT. NAME', width: 100,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.extname}
+                </Box>
+            ),
+        },
+        {
+            field: 'activityname', headerName: 'Assigned Activity', width: 150,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.activityname}
+                </Box>
+            ),
+        },
+        {
+            field: 'gl_code', headerName: 'GL Code', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.gl_code}
+                </Box>
+            ),
+        },
+        {
+            field: 'costcenter', headerName: 'Assigned Activity', width: 150,
+            renderCell: (data) => (
+                <Box sx={{ paddingLeft: 1 }}>
+                    {data.row.costcenter}
                 </Box>
             ),
         },
@@ -120,6 +140,10 @@ const EmployeeListData = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
+    const openImportData = () => {
+        dispatch({ type: OPEN_IMPORT_DATA, openImportData: true });
+    }
+
     const refreshData = () => queryClient.invalidateQueries(['/get-employee']);
 
     const selectToDelete = (data) => {
@@ -128,7 +152,7 @@ const EmployeeListData = () => {
     }
 
     const deleteData = useMutation({
-        mutationFn: () => http.delete(`/remove-group?id=${selectedID}`),
+        mutationFn: () => http.delete(`/remove-employee?id=${selectedID}`),
         onSuccess: () => {
             toast.success('Data has been deleted successfully.');
             queryClient.invalidateQueries(['/get-employee']);
@@ -140,14 +164,43 @@ const EmployeeListData = () => {
         deleteData.mutate(selectedID);
     };
 
+
+    const deleteDataMultiple = useMutation({
+        mutationFn: (checkedData) => http.post(`/remove-multiple-employee`, { ids: checkedData }), 
+        onSuccess: () => {
+            toast.success('Selected data has been deleted successfully.');
+            queryClient.invalidateQueries(['/get-employee']);
+        }
+    });
+    
+    const DeleteDataMultiple = () => {
+        if (!checkedData || checkedData.length === 0) {
+            toast.error('Please select at least one item to delete.');
+            return;
+        }
+        deleteDataMultiple.mutate(checkedData);
+    };
+    const handleSelectionChange = (selectionModel) => {
+        setCheckedData(selectionModel);
+    };
+
     return (
         <>
+            <ImportData />
             <AddEmployeeListModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
                 <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
-                    <Button variant="contained" onClick={openAddEmployeeListModal}>Add Employee</Button>
+                    <Box> 
+                    {   checkedData.length > 1 && (
+                            <Grow in={true}>
+                                <Button startIcon={<DeleteIcon />} variant="contained" color="error" onClick={DeleteDataMultiple} sx={{mr:1}}>DELETE ALL</Button>
+                            </Grow>
+                        )}          
+                        <Button startIcon={<FileUploadIcon />} variant="contained" color="warning" onClick={openImportData} sx={{mr:1}}>IMPORT NEW DATA</Button>
+                        <Button startIcon={<PersonAddIcon />}  variant="contained" onClick={openAddEmployeeListModal}>ADD EMPLOYEE</Button>
+                    </Box>
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
@@ -155,6 +208,9 @@ const EmployeeListData = () => {
                     height={450}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
+                    checkboxSelection={true}
+                    onRowSelectionModelChange={handleSelectionChange}
+                    disableRowSelectionOnClick={true}
                 />
             </Paper>
         </>
