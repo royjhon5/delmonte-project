@@ -31,7 +31,8 @@ module.exports.saveFieldData = async function (req, res) {
         conditions: { field_name: data.field_name }
     };
 	try {
-		if (data.field_name === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+		const trimmedField = data.field_name.trim();
+		if (trimmedField === '') return res.status(400).json({ error: "Empty fields not allowed!" });
 		const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];

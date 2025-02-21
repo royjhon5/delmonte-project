@@ -19,6 +19,24 @@ module.exports.getEmployeeMasterfile = async function (req, res) {
 	}
 }
 
+module.exports.getByDate = async function (req, res) {
+	var params = {
+		fields: ["*"],
+		tableName: "tblemployeemasterfile",
+		where: ["EmployeeStatus = ?"],
+		whereValue: ['ACTIVE'],
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 
 module.exports.saveEmployeeMasterFile = async function (req, res) {
 	const data = req.body
@@ -26,7 +44,8 @@ module.exports.saveEmployeeMasterFile = async function (req, res) {
 		tableName: "tblemployeemasterfile",
 		fieldValue: {
 			EmpID: data.EmpID,
-			IsPH: data.IsPH
+			IsPH: data.IsPH,
+			DateSetPHEmployee: data.DateSetPHEmployee
 		}
 	}
 	try {
@@ -59,6 +78,7 @@ module.exports.getPackhouseEmployees = async function (req, res) {
 }
 
 module.exports.exportPackhouseEmployee = async function (req, res) {
+	const { fromDate, toDate, checkReport } = req.query;
 	const data = req.body
 	var params = {
 		fields: ["*"],
@@ -66,32 +86,23 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 		where: ["EmployeeStatus = ?", "IsPH = ?"],
 		whereValue: ['ACTIVE', 1],
 	}
+	if (fromDate && toDate) {
+        params.where.push("DateSetPHEmployee BETWEEN ? AND ?");
+        params.whereValue.push(fromDate, toDate);
+    }
 	try {
-		// update employee flag : already exported
-		// var params = {
-		// 	tableName: "tblemployeemasterfile",
-		// 	fieldValue: {
-		// 		IsPH: 1, // where IsPH is 1 change flag to already exported employee/s
-		// 		[new_db_table_field]: 1
-		// 	}
-		// }
-		// await update(params);
-		// 
 		const response = await select(params);
 		if (response.success) {
-			if (data.checkReport == 1) return res.status(200).json({ success: true, message: "Successfully generated report." });
-			else {
+			if (checkReport == 1) {
+                return res.status(200).json({ success: true, message: "Successfully generated report." });
+            } else {
                 const result = response;
 				const mappedResults = result.data.map(prevState => {
                     return {
                         ...prevState,
-                        // CurrentDateTime: currentDateTime, if naay need e change sa result data
                     };
                 });
 				const filename = 'Pack House Employees';
-				const heading1 = 'Pack House Employees';
-				const months = ['Januray', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-				// 
 				var xl = require('excel4node');
 				var wb = new xl.Workbook();
 				var ws = wb.addWorksheet('Sheet 1');
@@ -157,3 +168,57 @@ module.exports.exportPackhouseEmployee = async function (req, res) {
 		console.error(error)
 	}
 }
+
+
+
+module.exports.exportForEmployeeList = async function (req, res) {
+    const { fromDate, toDate, checkReport } = req.query; 
+    var params = {
+        fields: ["*"],
+        tableName: "tblemployeemasterfile",
+        where: ["EmployeeStatus = ?", "IsPH = ?"],
+        whereValue: ["ACTIVE", 1],
+    };
+    if (fromDate && toDate) {
+        params.where.push("DateSetPHEmployee BETWEEN ? AND ?");
+        params.whereValue.push(fromDate, toDate);
+    }
+
+    try {
+        const response = await select(params);
+        if (response.success) {
+            if (checkReport == 1) {
+                return res.status(200).json({ success: true, message: "Successfully generated report." });
+            } else {
+                const result = response;
+                const mappedResults = result.data.map(item => ({ ...item }));
+
+                const filename = "Pack House Employees";
+                var xl = require("excel4node");
+                var wb = new xl.Workbook();
+                var ws = wb.addWorksheet("Sheet 1");
+
+                ws.cell(1, 1).string("chapa_id");
+                ws.cell(1, 2).string("firstname");
+                ws.cell(1, 3).string("lastname");
+                ws.cell(1, 4).string("middlename");
+                ws.cell(1, 5).string("extname");
+
+                mappedResults.forEach((item, index) => {
+                    ws.cell(index + 2, 1).string(item.ChapaID_Old || "");
+                    ws.cell(index + 2, 2).string(item.FName || "");
+                    ws.cell(index + 2, 3).string(item.LName || "");
+                    ws.cell(index + 2, 4).string(item.MName || "");
+                    ws.cell(index + 2, 5).string(item.ExtName || "");
+                });
+
+                wb.write(filename + ".xlsx", res);
+            }
+        } else {
+            res.status(200).json(response);
+        }
+    } catch (error) {
+        res.status(400).send({ error: "Server Error" });
+        console.error(error);
+    }
+};

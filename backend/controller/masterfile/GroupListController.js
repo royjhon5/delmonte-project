@@ -32,7 +32,8 @@ module.exports.saveGroupData = async function (req, res) {
         conditions: { groupline_name: data.groupline_name }
     };
     try {
-        if (data.groupline_name === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+        const trimmedGroupLine = data.groupline_name.trim();
+		if (trimmedGroupLine === '') return res.status(400).json({ error: "Empty fields not allowed!" });
         const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];

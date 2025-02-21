@@ -4,7 +4,7 @@ import NoData from "../../../components/CustomDataTable/NoData";
 import { hookContainer } from "../../../hooks/globalQuery";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { IS_UPDATE_FORM, OPEN_DELETESWAL, FORM_DATA, OPEN_CUSTOM_MODAL } from "../../../store/actions";
+import { IS_UPDATE_FORM, OPEN_DELETESWAL, FORM_DATA, OPEN_CUSTOM_MODAL, OPEN_IMPORT_DATA } from "../../../store/actions";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,7 +13,8 @@ import http from "../../../api/http";
 import { toast } from "sonner";
 import AddEmployeeListModal from "./AddEmployeeListModal";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import ImportExportIcon from '@mui/icons-material/ImportExport';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import ImportData from "./ImportDataModal";
 
 const EmployeeListData = () => {
     const dispatch = useDispatch();
@@ -139,6 +140,10 @@ const EmployeeListData = () => {
         dispatch({ type: OPEN_CUSTOM_MODAL, openCustomModal: true });
     }
 
+    const openImportData = () => {
+        dispatch({ type: OPEN_IMPORT_DATA, openImportData: true });
+    }
+
     const refreshData = () => queryClient.invalidateQueries(['/get-employee']);
 
     const selectToDelete = (data) => {
@@ -181,6 +186,7 @@ const EmployeeListData = () => {
 
     return (
         <>
+            <ImportData />
             <AddEmployeeListModal RefreshData={refreshData} />
             <DeleteSwal maxWidth="xs" onClick={DeleteData} />
             <Paper>
@@ -192,7 +198,7 @@ const EmployeeListData = () => {
                                 <Button startIcon={<DeleteIcon />} variant="contained" color="error" onClick={DeleteDataMultiple} sx={{mr:1}}>DELETE ALL</Button>
                             </Grow>
                         )}          
-                        <Button startIcon={<ImportExportIcon />} variant="contained" color="warning" onClick={openAddEmployeeListModal} sx={{mr:1}}>IMPORT NEW DATA</Button>
+                        <Button startIcon={<FileUploadIcon />} variant="contained" color="warning" onClick={openImportData} sx={{mr:1}}>IMPORT NEW DATA</Button>
                         <Button startIcon={<PersonAddIcon />}  variant="contained" onClick={openAddEmployeeListModal}>ADD EMPLOYEE</Button>
                     </Box>
                 </Stack>

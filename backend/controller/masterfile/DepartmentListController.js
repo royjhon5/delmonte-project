@@ -16,7 +16,8 @@ module.exports.saveDepartmentList = async function (req, res) {
         conditions: { department_name: data.department_name }
     };
 	try {
-		if (data.department_name === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+        const trimmedDepartment = data.department_name.trim();
+		if (trimmedDepartment === '') return res.status(400).json({ error: "Empty fields not allowed!" });
         if (data.client_idlink === '') return res.status(400).json({ error: "Client name required!" });
         const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {

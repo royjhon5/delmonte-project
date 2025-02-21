@@ -31,7 +31,8 @@ module.exports.saveCostCenterData = async function (req, res) {
         conditions: { costcenter: data.costcenter }
     };
 	try {
-		if (data.costcenter === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+		const trimmedCostCenter = data.costcenter.trim();
+		if (trimmedCostCenter === '') return res.status(400).json({ error: "Empty fields not allowed!" });
         const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];

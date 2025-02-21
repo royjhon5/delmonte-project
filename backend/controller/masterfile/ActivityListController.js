@@ -31,7 +31,8 @@ module.exports.saveActivityData = async function (req, res) {
         conditions: { activityname: data.activityname }
     };
 	try {
-		if (data.activityname === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+		const trimmedActivityName = data.activityname.trim();
+		if (trimmedActivityName === '') return res.status(400).json({ error: "Empty fields not allowed!" });
         const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];

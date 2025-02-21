@@ -31,7 +31,8 @@ module.exports.saveDataDay = async function (req, res) {
         conditions: { dt_name: data.dt_name }
     };
 	try {
-		if (data.dt_name === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+		const trimmedDayType = data.dt_name.trim();
+		if (trimmedDayType === '') return res.status(400).json({ error: "Empty fields not allowed!" });
 		const verifyResult = await VerifyOnSave(checkParams);
 		if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];

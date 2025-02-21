@@ -47,6 +47,7 @@ export const initialState = {
     isUpdateForm: false,
     isUpdateHeaderForm: false,
     openDarReport: false,
+    openImportData: false,
 };
 
 const customizationReducer = (state = initialState, action) => {
@@ -237,6 +238,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 openDarReport: action.openDarReport
+            };
+        case actionTypes.OPEN_IMPORT_DATA:
+            return {
+                ...state,
+                openImportData: action.openImportData
             };
         default:
             return state;

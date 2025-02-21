@@ -31,7 +31,8 @@ module.exports.saveGlCodeData = async function (req, res) {
         conditions: { gl_code: data.gl_code }
     };
 	try {
-		if (data.gl_code === '') return res.status(400).json({ error: "Empty fields not allowed!" });
+		const trimmedGl = data.gl_code.trim();
+		if (trimmedGl === '') return res.status(400).json({ error: "Empty fields not allowed!" });
         const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];

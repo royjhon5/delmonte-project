@@ -9,7 +9,11 @@ const DayCtrl = require('../../controller/masterfile/DayTypeListController');
 const AccontToChargeCtrl = require('../../controller/masterfile/AccountToChargeController');
 const GroupCtrl = require('../../controller/masterfile/GroupListController');
 const ClientCtrl = require('../../controller/masterfile/ClientListController');
-
+const fileUpload = require('express-fileupload');
+const uploadOptions = {
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}
 module.exports.routes = {
     post: [
         [ '/post-location', LocCtrl.saveLocationData ],
@@ -31,6 +35,7 @@ module.exports.routes = {
         [ '/get-costcenter', CostCtrl.getCostCenterList ],
         [ '/get-activity', ActCtrl.getActivityList ],
         [ '/get-employee', EmpCtrl.getEmployeeList ],
+        [ '/get-employee-imported', EmpCtrl.getEmployeeListImported ],
         [ '/get-department', DeptCtrl.getDepartmentList ],
         [ '/get-field', FieldCtrl.getDataField ],
         [ '/get-daytype', DayCtrl.getDataDay ],

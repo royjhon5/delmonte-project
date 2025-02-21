@@ -1,5 +1,8 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
 const { EmployeeListJoin, VerifyOnSave } = require("../../models/rawQueryModel/rawQueryModel");
+const XLSX = require('xlsx');
+const fs = require('fs');
+const db = require('../../config/dbConnection')
 
 module.exports.getEmployeeList = async function (req, res) {
 	const data = req.query;
@@ -18,6 +21,24 @@ module.exports.getEmployeeList = async function (req, res) {
 		console.error(error)
 	}
 }
+
+
+module.exports.getEmployeeListImported = async function (req, res) {
+	var params = {
+		fields: ["*"],
+		tableName: "tblemployeelist_import",
+	}
+	try {
+		await select(params).then(function(response){
+			if(response.success) res.status(200).json(response.data);			
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
 
 module.exports.saveEmployeeData = async function (req, res) {
 	const data = req.body
