@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime, generateDARNo, saveDARActivityBreakdown } = require("../../models/rawQueryModel/rawQueryModel");
+const { AutoInsertDetailTemplate, AutoComputeDARTime, DARDetailTime, generateDARNo, saveDARActivityBreakdown, saveDARDetail } = require("../../models/rawQueryModel/rawQueryModel");
 
 module.exports.getDARHeader = async function (req, res) {
 	var params = {
@@ -157,15 +157,17 @@ module.exports.saveDARDetail = async function (req, res) {
 			ot: data.ot ? data.ot : 0,
 			nd: data.nd ? data.nd : 0,
 			ndot: data.ndot ? data.ndot : 0,
-			gl: data.gl,
-			cost_center: data.cost_center,
-			activitylink_id: data.activitylink_id,
-			activity: data.activity,
+			gl: data.gl ? data.gl : "",
+			cost_center: data.cost_center ? data.cost_center : "",
+			activitylink_id: data.activitylink_id ? data.activitylink_id : 0,
+			activity: data.activity ? data.activity : "",
+			is_main: data.is_main ? data.is_main : 0,
+			costcenterlink_id: data.costcenterlink_id ? data.costcenterlink_id : 0,
+			glcodelink_id: data.glcodelink_id ? data.glcodelink_id : 0,
 		},
-
 	}
 	try {
-		var result = await data.id > 0 ? update(params) : insert(params);
+		var result = await data.id > 0 ? update(params) : saveDARDetail(params);
 		result.then(function (response) {
 			res.status(200).json(response);
 		})
@@ -201,6 +203,26 @@ module.exports.saveDARDetailBreakdown = async function (req, res) {
 		await saveDARActivityBreakdown(params).then(async function (response) {
 			res.status(200).json(response);
 		})
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}
+
+module.exports.bulkDARDtlDelete = async function (req, res) {
+	const idList = req.body.ids;
+	try {
+		if(idList.length > 0) {
+			idList.forEach(element => {
+				var params = {
+					tableName: "tbldardtl",
+					where: ["id = ?"],
+					whereValue: [element],
+				}
+				remove(params);
+			});
+			res.status(200).json({ success: true, message: "successfully deleted" });
+		} else res.status(200).json({ success: false, message: "no record to delete." });
 	} catch (error) {
 		res.status(400).send({ error: 'Server Error' });
 		console.error(error)

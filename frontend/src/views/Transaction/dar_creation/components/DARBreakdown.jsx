@@ -49,26 +49,26 @@ const DARBreakdownModal = (props) => {
 
     const ColumnHeader = [
         {
-            field: 'time_in', headerName: 'Time In', flex: 1,
+            field: 'activity', headerName: 'Activity', flex: 1,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.time_in}
+                    {params.row.activity}
                 </Box>
             ),
         },
+        { field: 'time_in', headerName: 'Time In', flex: 1, },
         { field: 'time_out', headerName: 'Time Out', flex: 1, },
         { field: 'st', headerName: 'ST', flex: 1, },
         { field: 'ot', headerName: 'OT', flex: 1, },
         { field: 'nd', headerName: 'ND', flex: 1, },
         { field: 'ndot', headerName: 'NDOT', flex: 1, },
-        { field: 'activity', headerName: 'Activity', flex: 1, },
         { field: 'gl', headerName: 'GL Code', flex: 1, },
         { field: 'cost_center	', headerName: 'Cost Center', flex: 1, },
         {
-            field: "action", headerAlign: 'right',
-            headerName: '',
+            field: "action", headerAlign: 'center',
+            headerName: 'Action',
             width: 150,
-            align: 'right',
+            align: 'center',
             renderCell: (params) => {
                 const SelectedRow = () => {
                     setPassDataDetail(params.row);
@@ -80,14 +80,16 @@ const DARBreakdownModal = (props) => {
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
-                        <Box sx={{ paddingRight: 1 }}>
-                            <IconButton color="primary" size="small" onClick={SelectedRow}>
-                                <EditIcon fontSize="inherit" />
-                            </IconButton>
-                            <IconButton color="error" size="small" onClick={() => selectToDelete()}>
-                                <DeleteIcon fontSize="inherit" />
-                            </IconButton>
-                        </Box>
+                        {params.row.is_main == 0 ?
+                            <Box sx={{ paddingRight: 1 }}>
+                                <IconButton color="primary" size="small" onClick={SelectedRow}>
+                                    <EditIcon fontSize="inherit" />
+                                </IconButton>
+                                <IconButton color="error" size="small" onClick={() => selectToDelete()}>
+                                    <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                            </Box>
+                            : "BIO RECORD"}
                     </Box>
                 )
             }
@@ -103,6 +105,7 @@ const DARBreakdownModal = (props) => {
             emp_fname: emp_fname,
             emp_mname: emp_mname,
             emp_ext_name: emp_ext_name,
+            is_main: 0
         });
     }
 
@@ -171,10 +174,10 @@ const DARBreakdownModal = (props) => {
                             <Typography variant="h5" component="h2">Employee: {personName}</Typography>
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Typography variant="h5" component="h2">Time In: {timeIn}</Typography>
+                            {/* <Typography variant="h5" component="h2">Time In: {timeIn}</Typography> */}
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Typography variant="h5" component="h2">Time Out: {timeOut}</Typography>
+                            {/* <Typography variant="h5" component="h2">Time Out: {timeOut}</Typography> */}
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h5" component="h2">Breakdown of Activity</Typography>
