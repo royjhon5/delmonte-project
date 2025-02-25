@@ -7,7 +7,12 @@ const db = require('./config/dbConnection')
 const socketServer = require('socket.io')(http, {
     cors: {
         origin: [
+<<<<<<< HEAD
             "http://192.168.1.10:3000",
+=======
+            // "http://192.168.1.2:3000",
+            "http://location:3000",
+>>>>>>> bcce21d00b9b5ddd78bc7b5d94a4a729e45929b2
         ]
     }
 });
@@ -17,8 +22,12 @@ app.use(express.static('user_profile_picture'))
 app.use(cookieParser()); 
 app.use(cors({
     origin: (origin, callback) => {
+<<<<<<< HEAD
         const allowedOrigins = ["http://192.168.1.10:3000"];
+=======
+>>>>>>> bcce21d00b9b5ddd78bc7b5d94a4a729e45929b2
         // const allowedOrigins = ["http://192.168.1.2:3000"];
+        const allowedOrigins = ["http://localhost:3000"];
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
@@ -49,5 +58,10 @@ socketServer.on('connection', (socket) => {
     
 
 });
+<<<<<<< HEAD
 // http.listen(8000, "127.0.0.1");
 http.listen(8000, "192.168.1.10");
+=======
+http.listen(8000, "localhost");
+// http.listen(8000, "192.168.1.2");
+>>>>>>> bcce21d00b9b5ddd78bc7b5d94a4a729e45929b2

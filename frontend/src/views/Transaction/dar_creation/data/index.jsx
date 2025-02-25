@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paper, Stack, TextField, IconButton } from "@mui/material"
+import { Box, Button, Grid, Paper, Stack, TextField, IconButton, Checkbox, Chip } from "@mui/material"
 import { Fragment, useState, useCallback } from "react";
 import CustomDataGrid from "../../../../components/CustomDataGrid";
 import NoData from "../../../../components/CustomDataTable/NoData";
@@ -122,6 +122,15 @@ const DARdata = () => {
                 loadDARDetail(dataVariableHeader.id);
             } else toast.error(response.data.message);
             setLoadSaving(false);
+        } else if (confirmationType == 'bulk delete') {
+            setLoadSaving("Deleting...");
+            let idList = chapaChecked;
+            const response = await http.post('/post-bulkdardtldelete', { ids: idList });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                loadDARDetail(dataVariableHeader.id);
+            } else toast.error(response.data.message);
+            setLoadSaving(false);
         }
         setOpenConfirmation(false);
     }
@@ -137,6 +146,14 @@ const DARdata = () => {
         if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
         setConfirmationType('compute');
         setConfirmationTitle('Are you sure you want to execute auto computation?');
+        setOpenConfirmation(true);
+    }
+
+    const bulkDelete = () => {
+        if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
+        if (chapaChecked.length == 0) return toast.error("Please select row using the provided checkbox.");
+        setConfirmationType('bulk delete');
+        setConfirmationTitle('Are you sure you want to execute bulk delete?');
         setOpenConfirmation(true);
     }
 
@@ -156,17 +173,53 @@ const DARdata = () => {
         );
     };
 
+    const [chapaChecked, setChapaChecked] = useState([]);
+    const checkCkbx = (checked, chapa = '') => {
+        if (!chapa) {
+            if (checked) {
+                setChapaChecked(constMappedData.map(row => row.id));
+            } else {
+                setChapaChecked([]);
+            }
+        } else {
+            if (checked) {
+                setChapaChecked(prevState => [...prevState, chapa]);
+            } else {
+                let array = chapaChecked; // make a separate copy of the array
+                let index = array.indexOf(chapa)
+                if (index !== -1) {
+                    array.splice(index, 1);
+                    setChapaChecked(array);
+                }
+            }
+        }
+    }
+
     const ColumnHeader = [
+        {
+            field: 'id', headerName: '', width: 150, align: 'left',
+            renderCell: (params) => (
+                <>
+                    <Checkbox
+                        checked={chapaChecked.includes(params.row.id)}
+                        sx={{ paddingLeft: 2 }}
+                        onChange={(event) => { checkCkbx(event.target.checked, params.row.id) }}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                    {params.row.is_main == 1 ? <Chip size="small" label="FROM BIO" color="warning" variant="outlined" /> : <Chip size="small" label="BREAKDOWN" color="success" variant="outlined" />}
+                </>
+            ),
+        },
         {
             field: 'ChapaID', headerName: 'Chapa ID', width: 150,
             renderCell: (params) => (
                 <>
-                    {params.row.is_main == 1 ?
-                        <Box sx={{ paddingLeft: 1 }}>
-                            {params.row.ChapaID}
-                        </Box>
-                        : ""
-                    }
+                    {/* {params.row.is_main == 1 ? */}
+                    <Box sx={{ paddingLeft: 1 }}>
+                        {params.row.ChapaID}
+                    </Box>
+                    : ""
+                    {/* } */}
                 </>
             ),
         },
@@ -174,18 +227,48 @@ const DARdata = () => {
             field: 'fullname', headerName: 'Name', width: 250,
             renderCell: (params) => (
                 <>
-                    {params.row.is_main == 1 ?
-                        <Box>
-                            {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
-                        </Box>
-                        : ""
-                    }
+                    {/* {params.row.is_main == 1 ? */}
+                    <Box>
+                        {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
+                    </Box>
+                    : ""
+                    {/* } */}
                 </>
             ),
         },
         { field: 'activity', headerName: 'Activity', flex: 1, },
-        { field: 'time_in', headerName: 'Time In', flex: 1, },
-        { field: 'time_out', headerName: 'Time Out', flex: 1, },
+        {
+            field: 'time_in', headerName: 'Time In', flex: 1,
+            renderCell: (params) => (
+                <>
+                    {params.row.time_in == "" ?
+                        <Box sx={{ backgroundColor: "#f44336" }}>
+                            N/A
+                        </Box>
+                        :
+                        <Box>
+                            {params.row.time_in}
+                        </Box>
+                    }
+                </>
+            ),
+        },
+        {
+            field: 'time_out', headerName: 'Time Out', flex: 1,
+            renderCell: (params) => (
+                <>
+                    {params.row.time_out == "" ?
+                        <Box sx={{ backgroundColor: "#f44336" }}>
+                            N/A
+                        </Box>
+                        :
+                        <Box>
+                            {params.row.time_out}
+                        </Box>
+                    }
+                </>
+            ),
+        },
         { field: 'st', headerName: 'ST', flex: 1, },
         { field: 'ot', headerName: 'OT', flex: 1, },
         { field: 'nd', headerName: 'ND', flex: 1, },
@@ -207,6 +290,7 @@ const DARdata = () => {
                     if (dataVariableHeader.dar_status == "POSTED") return toast.error("Cannot delete. DAR is already Posted.");
                     deleteData(params.row.id);
                     dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
+                    console.log(chapaChecked);
                 }
                 const selectDARBreakdown = () => {
                     if (!dataVariableHeader.id) return toast.error("Please select DAR Header to continue.");
@@ -248,6 +332,7 @@ const DARdata = () => {
         setPassDataDetail(prevState => ({
             ...prevState,
             dar_idlink: dataVariableHeader.id,
+            is_main: 1
         }));
     }
 
@@ -335,6 +420,7 @@ const DARdata = () => {
     const clearData = async (type = 'all') => {
         setConstMappedData([]);
         setDataVariableHeader(initialDataVariableHeader);
+        setChapaChecked([]);
     }
 
     return (
@@ -438,10 +524,18 @@ const DARdata = () => {
                 <Grid item xs={12} md={12}>
                     <Paper>
                         <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
+                            <Box sx={{ display: 'flex', gap: '5px' }}>
+                                <Checkbox
+                                    // checked={checked}
+                                    onChange={(event) => { checkCkbx(event.target.checked) }}
+                                    inputProps={{ 'aria-label': 'controlled' }}
+                                />
+                                <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '500px', lg: '500px' } }} />
+                            </Box>
                             {dataVariableHeader.dar_status == "ACTIVE" ?
                                 <Box sx={{ display: 'flex', gap: '5px' }}>
-                                    <Button variant="contained" size="small" color="error" onClick={() => { activityBreakdown() }}>Add Activity Breakdown</Button>
+                                    <Button variant="contained" size="small" color="error" onClick={() => { bulkDelete() }}>Bulk Delete</Button>
+                                    <Button variant="contained" size="small" color="info" onClick={() => { activityBreakdown() }}>Add Activity Breakdown</Button>
                                     <Button variant="contained" size="small" color="secondary" onClick={() => { autoComputeTime() }}>Auto Compute Time</Button>
                                     <Button variant="contained" size="small" onClick={() => { addDARDetail() }}>Add DAR Details</Button>
                                     <Button variant="contained" size="small" color="warning" onClick={() => { transferEmployee() }}>Transfer Employee</Button>

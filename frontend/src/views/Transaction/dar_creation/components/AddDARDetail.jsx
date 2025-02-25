@@ -8,6 +8,8 @@ import SearchEmployeeModal from "./SearchEmployee.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
 import { hookContainer } from "../../../../hooks/globalQuery.jsx";
 import SearchAccountMasterModal from "./SearchAccountMaster";
+import SearchGLCodeModal from "../../../../components/SearchMasterfile/SearchGLCode.jsx";
+import SearchCostCenterModal from "../../../../components/SearchMasterfile/SearchCostCenter.jsx";
 
 const AddDARDetail = (props) => {
     const { openModal, onCloseModal, passedData } = props;
@@ -36,6 +38,9 @@ const AddDARDetail = (props) => {
         cost_center: "",
         activitylink_id: "",
         activity: "",
+        is_main: 0,
+        costcenterlink_id: 0,
+        glcodelink_id: 0,
     };
     const [dataVariable, setDataVariable] = useState(initialDataVariable);
     const updateDataVariable = e => {
@@ -44,18 +49,6 @@ const AddDARDetail = (props) => {
             ...prevState,
             [name]: value
         }));
-        // if (name == 'activitylink_id') {
-        //     const selectedRow = filterIt(accounttochargeList, value, "id");
-        //     setDataVariable(prevState => ({
-        //         ...prevState,
-        //         activity: selectedRow[0].activityname,
-        //         cost_center: selectedRow[0].costcenter,
-        //         gl: selectedRow[0].gl_code
-        //     }));
-        // }
-        // if (name == 'time_in_hr') {
-
-        // }
     };
 
     function filterIt(arr, searchKey, keyValue = false) {
@@ -93,6 +86,22 @@ const AddDARDetail = (props) => {
     const [time_out_hr, setTimeOutHr] = useState("");
     const [time_out_min, setTimeOutMin] = useState("");
 
+    const changeToOT = () => {
+        setDataVariable(prevState => ({
+            ...prevState,
+            st: 0,
+            ot: dataVariable.st,
+        }));
+    };
+
+    const changeToST = () => {
+        setDataVariable(prevState => ({
+            ...prevState,
+            st: dataVariable.ot,
+            ot: 0,
+        }));
+    };
+
     // modal
     const [openModalEmployee, setOpenModalEmployee] = useState(false);
     async function modalClose(params) {
@@ -113,13 +122,36 @@ const AddDARDetail = (props) => {
     async function modalCloseSearchActivity(params) {
         setOpenModalSearchActivity(false);
         if (params) {
-            console.log(params);
             setDataVariable(prevState => ({
                 ...prevState,
                 activitylink_id: params.activity_id_link,
                 activity: params.activityname,
                 cost_center: params.costcenter,
                 gl: params.gl_code
+            }));
+        }
+    }
+
+    const [openModalSearchGLCode, setOpenModalSearchGLCode] = useState(false);
+    async function modalCloseSearchGLCode(params) {
+        setOpenModalSearchGLCode(false);
+        if (params) {
+            setDataVariable(prevState => ({
+                ...prevState,
+                glcodelink_id: params.id,
+                gl: params.gl_code
+            }));
+        }
+    }
+
+    const [openModalSearchCostCenter, setOpenModalSearchCostCenter] = useState(false);
+    async function modalCloseSearchCostCenter(params) {
+        setOpenModalSearchCostCenter(false);
+        if (params) {
+            setDataVariable(prevState => ({
+                ...prevState,
+                costcenterlink_id: params.id,
+                cost_center: params.costcenter,
             }));
         }
     }
@@ -143,10 +175,18 @@ const AddDARDetail = (props) => {
         else if (passedData.dar_idlink) {
             setDataVariable(prevState => ({
                 ...prevState,
-                dar_idlink: passedData.dar_idlink
+                dar_idlink: passedData.dar_idlink,
+            }));
+        }
+        if (passedData.is_main) {
+            console.log(passedData.is_main);
+            setDataVariable(prevState => ({
+                ...prevState,
+                is_main: passedData.is_main, // 1
             }));
         }
     }, [passedData]);
+
     useEffect(() => {
         if (time_in_hr && time_in_min) {
             setDataVariable(prevState => ({
@@ -181,7 +221,6 @@ const AddDARDetail = (props) => {
                 ...prevState,
                 st: ST,
             }));
-            console.log(ST);
             function diff_hours(dt2, dt1) {
                 dt2 = new Date(dt2);
                 dt1 = new Date(dt1);
@@ -200,13 +239,21 @@ const AddDARDetail = (props) => {
                 openModal={openModalEmployee}
                 onCloseModal={modalClose}
             />
-             <SearchAccountMasterModal
+            <SearchAccountMasterModal
                 openModal={openModalSearchActivity}
                 onCloseModal={modalCloseSearchActivity}
             />
+            <SearchGLCodeModal
+                openModal={openModalSearchGLCode}
+                onCloseModal={modalCloseSearchGLCode}
+            />
+            <SearchCostCenterModal
+                openModal={openModalSearchCostCenter}
+                onCloseModal={modalCloseSearchCostCenter}
+            />
             <CustomDialog
                 open={openModal}
-                maxWidth={'lg'}
+                maxWidth={'xl'}
                 DialogTitles={passedData.id ? "Update DAR Detail" : "Add New DAR Detail"}
                 onClose={() => { closeCurrentModal() }}
                 DialogContents={
@@ -227,27 +274,6 @@ const AddDARDetail = (props) => {
                                     />
                                 </FormControl>
                                 <TextField label="Lastname" value={dataVariable.emp_lname} onChange={updateDataVariable} name="emp_lname" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
-                                    <InputLabel>Select Activity</InputLabel>
-                                    <OutlinedInput size="medium"
-                                        inputProps={{ readOnly: true }}
-                                        label="Select Activity"
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <Button size="large" variant="contained" onClick={() => { setOpenModalSearchActivity(true) }}><SearchIcon fontSize="small" /></Button>
-                                            </InputAdornment>
-                                        }
-                                        value={dataVariable.activity} name="activity"
-                                    />
-                                </FormControl>
-                                {/* <TextField sx={{ mt: 1 }} size="medium" label="Select Activity" select value={dataVariable.activitylink_id} onChange={updateDataVariable} name="activitylink_id" SelectProps={{ native: true, }} fullWidth>
-                                    <option></option>
-                                    {accounttochargeList?.map((option) => (
-                                        <option key={option.id} value={`${option.id}`}>
-                                            {option.activityname + " | " + option.gl_code + " | " + option.costcenter}
-                                        </option>
-                                    ))}
-                                </TextField> */}
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField label="Firstname" value={dataVariable.emp_fname} onChange={updateDataVariable} name="emp_fname" fullWidth size="medium" inputProps={{ readOnly: true }} />
@@ -265,82 +291,169 @@ const AddDARDetail = (props) => {
                             </Grid>
                         </Grid>
                         <Grid container spacing={1}>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="h5" component="h2">Time In</Typography>
-                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Hour" select value={time_in_hr} onChange={(e) => { setTimeInHr(e.target.value) }} name="time_in_hr" SelectProps={{ native: true, }}>
-                                    <option></option>
-                                    <option value="00">00</option>
-                                    <option value="01">01</option>
-                                    <option value="02">02</option>
-                                    <option value="03">03</option>
-                                    <option value="04">04</option>
-                                    <option value="05">05</option>
-                                    <option value="06">06</option>
-                                    <option value="07">07</option>
-                                    <option value="08">08</option>
-                                    <option value="09">09</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
-                                    <option value="23">23</option>
-                                </TextField>
-                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Minute" select value={time_in_min} onChange={(e) => { setTimeInMin(e.target.value) }} name="time_in_min" SelectProps={{ native: true, }}>
-                                    <option></option>
-                                    <option value="00">00</option>
-                                    <option value="30">30</option>
-                                </TextField>
-                                <TextField label="Time In" value={dataVariable.time_in} onChange={updateDataVariable} name="time_in" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="ST" type="number" step="0.01" value={dataVariable.st} onChange={updateDataVariable} name="st" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="ND" type="number" step="0.01" value={dataVariable.nd} onChange={updateDataVariable} name="nd" fullWidth sx={{ mt: 1 }} size="medium" />
+                            <Grid item xs={12} md={12}>
+                                <Divider>Activty | GL Code | Cost Center</Divider>
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Typography variant="h5" component="h2">Time Out</Typography>
-                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Hour" select value={time_out_hr} onChange={(e) => { setTimeOutHr(e.target.value) }} name="time_out_hr" SelectProps={{ native: true, }}>
-                                    <option></option>
-                                    <option value="00">00</option>
-                                    <option value="01">01</option>
-                                    <option value="02">02</option>
-                                    <option value="03">03</option>
-                                    <option value="04">04</option>
-                                    <option value="05">05</option>
-                                    <option value="06">06</option>
-                                    <option value="07">07</option>
-                                    <option value="08">08</option>
-                                    <option value="09">09</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
-                                    <option value="23">23</option>
-                                </TextField>
-                                <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Minute" select value={time_out_min} onChange={(e) => { setTimeOutMin(e.target.value) }} name="time_out_min" SelectProps={{ native: true, }}>
-                                    <option></option>
-                                    <option value="00">00</option>
-                                    <option value="30">30</option>
-                                </TextField>
-                                <TextField label="Time Out" value={dataVariable.time_out} onChange={updateDataVariable} name="time_out" fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="OT" type="number" step="0.01" value={dataVariable.ot} onChange={updateDataVariable} name="ot" fullWidth sx={{ mt: 1 }} size="medium" />
-                                <TextField label="NDOT" type="number" step="0.01" value={dataVariable.ndot} onChange={updateDataVariable} name="ndot" fullWidth sx={{ mt: 1 }} size="medium" />
+                            <Grid item xs={12} md={4}>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Select Activity</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select Activity"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalSearchActivity(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.activity} name="activity"
+                                    />
+                                </FormControl>
                             </Grid>
+                            <Grid item xs={12} md={4}>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Select GL Code</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select GL Code"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalSearchGLCode(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.gl} name="gl"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                    <InputLabel>Select Cost Center</InputLabel>
+                                    <OutlinedInput size="medium"
+                                        inputProps={{ readOnly: true }}
+                                        label="Select Cost Center"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <Button size="large" variant="contained" onClick={() => { setOpenModalSearchCostCenter(true) }}><SearchIcon fontSize="small" /></Button>
+                                            </InputAdornment>
+                                        }
+                                        value={dataVariable.cost_center} name="cost_center"
+                                    />
+                                </FormControl>
+                            </Grid>
+                            {dataVariable.is_main == 0 ?
+                                <>
+                                    <Grid item xs={12} md={12}>
+                                        <Divider>Time Schedule</Divider>
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <Typography variant="h5" component="h2">Time In</Typography>
+                                        <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Hour" select value={time_in_hr} onChange={(e) => { setTimeInHr(e.target.value) }} name="time_in_hr" SelectProps={{ native: true, }}>
+                                            <option></option>
+                                            <option value="00">00</option>
+                                            <option value="01">01</option>
+                                            <option value="02">02</option>
+                                            <option value="03">03</option>
+                                            <option value="04">04</option>
+                                            <option value="05">05</option>
+                                            <option value="06">06</option>
+                                            <option value="07">07</option>
+                                            <option value="08">08</option>
+                                            <option value="09">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </TextField>
+                                        <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Minute" select value={time_in_min} onChange={(e) => { setTimeInMin(e.target.value) }} name="time_in_min" SelectProps={{ native: true, }}>
+                                            <option></option>
+                                            <option value="00">00</option>
+                                            <option value="30">30</option>
+                                        </TextField>
+                                        <TextField label="Time In" value={dataVariable.time_in} onChange={updateDataVariable} name="time_in" fullWidth sx={{ mt: 1, width: 300, marginLeft: "10px" }} size="medium" inputProps={{ readOnly: true }} />
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <Typography variant="h5" component="h2">Time Out</Typography>
+                                        <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Hour" select value={time_out_hr} onChange={(e) => { setTimeOutHr(e.target.value) }} name="time_out_hr" SelectProps={{ native: true, }}>
+                                            <option></option>
+                                            <option value="00">00</option>
+                                            <option value="01">01</option>
+                                            <option value="02">02</option>
+                                            <option value="03">03</option>
+                                            <option value="04">04</option>
+                                            <option value="05">05</option>
+                                            <option value="06">06</option>
+                                            <option value="07">07</option>
+                                            <option value="08">08</option>
+                                            <option value="09">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                        </TextField>
+                                        <TextField sx={{ mt: 1, width: 200 }} size="medium" label="Select Minute" select value={time_out_min} onChange={(e) => { setTimeOutMin(e.target.value) }} name="time_out_min" SelectProps={{ native: true, }}>
+                                            <option></option>
+                                            <option value="00">00</option>
+                                            <option value="30">30</option>
+                                        </TextField>
+                                        <TextField label="Time Out" value={dataVariable.time_out} onChange={updateDataVariable} name="time_out" fullWidth sx={{ mt: 1, width: 300, marginLeft: "10px" }} size="medium" inputProps={{ readOnly: true }} />
+                                    </Grid>
+                                    <Grid item xs={12} md={3}>
+                                        <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                            <InputLabel>ST</InputLabel>
+                                            <OutlinedInput size="medium"
+                                                inputProps={{ readOnly: true }}
+                                                label="ST"
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <Button size="large" variant="contained" onClick={() => { changeToOT(true) }}>Change to OT</Button>
+                                                    </InputAdornment>
+                                                }
+                                                value={dataVariable.st} onChange={updateDataVariable} name="st"
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} md={3}>
+                                        <TextField label="ND" type="number" step="0.01" value={dataVariable.nd} onChange={updateDataVariable} name="nd" fullWidth sx={{ mt: 1 }} size="medium" />
+                                    </Grid>
+                                    <Grid item xs={12} md={3}>
+                                        <FormControl variant="outlined" fullWidth sx={{ mt: 1 }}>
+                                            <InputLabel>OT</InputLabel>
+                                            <OutlinedInput size="medium"
+                                                inputProps={{ readOnly: true }}
+                                                label="OT"
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <Button size="large" variant="contained" onClick={() => { changeToST() }}>Change to ST</Button>
+                                                    </InputAdornment>
+                                                }
+                                                value={dataVariable.ot} onChange={updateDataVariable} name="ot"
+                                            />
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} md={3}>
+                                        <TextField label="NDOT" type="number" step="0.01" value={dataVariable.ndot} onChange={updateDataVariable} name="ndot" fullWidth sx={{ mt: 1 }} size="medium" />
+                                    </Grid>
+                                </>
+                                : ""}
                         </Grid>
                     </>
                 }

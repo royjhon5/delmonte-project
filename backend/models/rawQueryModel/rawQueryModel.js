@@ -287,6 +287,77 @@ const rawQueryModel = {
         });
     },
 
+    saveDARDetail: async function (params) {
+        return new Promise(async (resolve, reject) => {
+            const queryDARDtl = `SELECT * FROM tbldardtl WHERE dar_idlink = "${params.fieldValue.dar_idlink}" and ChapaID = "${params.fieldValue.ChapaID}" LIMIT 1`;
+            db.query(queryDARDtl, [], async (errDARDtl, resultDARDtl) => {
+                console.log(errDARDtl);
+                let toSave = params.fieldValue;
+                if (resultDARDtl.length > 0) {
+                    // insert dardtl breakdown
+                    const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, st, ot, nd, ndot, gl, cost_center, activitylink_id, activity, is_main, costcenterlink_id, glcodelink_id)
+                        VALUES (${toSave.dar_idlink}, "${toSave.ChapaID}", "${toSave.emp_lname}", "${toSave.emp_fname}", "${toSave.emp_mname}", "${toSave.emp_ext_name}", "${toSave.time_in}", "${toSave.time_out}", "${toSave.st}", "${toSave.ot}", 
+                        "${toSave.nd}", "${toSave.ndot}", "${toSave.gl}", "${toSave.cost_center}", "${toSave.activitylink_id}", "${toSave.activity}", "${toSave.is_main}", "${toSave.costcenterlink_id}", "${toSave.glcodelink_id}")`;
+                    db.query(query2, [], (err2, result2) => { console.log(err2); });
+                } else {
+                    // new employee added to dar
+                    toSave.is_main = 1;
+                    const darQuery = `SELECT * FROM tbldarhdr WHERE id = ${toSave.dar_idlink} LIMIT 1`;
+                    db.query(darQuery, [], async (errDar, resultDar) => {
+                        if (resultDar.length > 0) {
+                            // get dar time in from device here...
+                            let timeInHour = (parseInt(resultDar[0].shift_time_in_hour) - 2).toString().padStart(2, "0"); // minus 2hrs
+                            let timeOutHour = (parseInt(resultDar[0].shift_time_out_hour) + 2).toString().padStart(2, "0"); // add 2hrs
+                            let darScheduleIn = resultDar[0].xDate + " " + timeInHour + ":" + resultDar[0].shift_time_in_min + ":00";
+                            let darScheduleOut = resultDar[0].xDate + " " + timeOutHour + ":" + resultDar[0].shift_time_out_min + ":00";
+                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${toSave.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
+                            db.query(queryDTR, [], (errDTR, resultDTR) => {
+                                let timeIn = "";
+                                if (resultDTR.length > 0) timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
+                                const queryDTROut = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${toSave.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
+                                db.query(queryDTROut, [], (errDTROut, resultDTROut) => {
+                                    let timeOut = "";
+                                    if (resultDTROut.length > 0) {
+                                        if (timeIn != resultDTROut[0].auth_time.split(':')[0] + "" + resultDTROut[0].auth_time.split(':')[1]) {
+                                            timeOut = resultDTROut[0].auth_time.split(':')[0] + "" + resultDTROut[0].auth_time.split(':')[1];
+                                        }
+                                    }
+                                    // compute st
+                                    let ST = 0;
+                                    if (timeIn && timeOut) {
+                                        let timeInDateTime = "2025-01-01 " + resultDar[0].shift_time_in_hour + ":" + resultDar[0].shift_time_in_min;
+                                        let timeOutDateTime = "2025-01-01 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                        if (parseInt(resultDar[0].shift_time_in_hour) > parseInt(resultDar[0].shift_time_out_hour)) { // next day
+                                            timeOutDateTime = "2025-01-02 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                        }
+                                        let diff = diff_hours(timeInDateTime, timeOutDateTime);
+                                        ST = parseFloat(diff);
+                                        ST = ST > 8 ? 8 : ST; // make sure only 8 hrs ST
+                                    }
+                                    // insert dardtl
+                                    const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, st, ot, nd, ndot, gl, cost_center, activitylink_id, activity, is_main, costcenterlink_id, glcodelink_id)
+                                        VALUES (${toSave.dar_idlink}, "${toSave.ChapaID}", "${toSave.emp_lname}", "${toSave.emp_fname}", "${toSave.emp_mname}", "${toSave.emp_ext_name}", "${toSave.time_in}", "${toSave.time_out}", "${ST}", "0", 
+                                        "0", "0", "${toSave.gl}", "${toSave.cost_center}", "${toSave.activitylink_id}", "${toSave.activity}", "${toSave.is_main}", "${toSave.costcenterlink_id}", "${toSave.glcodelink_id}")`;
+                                    db.query(query2, [], (err2, result2) => { console.log(err2); });
+                                })
+                            });
+                        }
+                    })
+                    // compute hour diff of two dates
+                    function diff_hours(dt2, dt1) {
+                        dt2 = new Date(dt2);
+                        dt1 = new Date(dt1);
+                        var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+                        diff /= (60 * 60);
+                        // Return the absolute value of the rounded difference in hours
+                        return Math.abs(diff.toFixed(2));
+                    }
+                }
+                resolve({ success: true, message: "successfully saved" });
+            });
+        });
+    },
+
 
     submitSOAToDMPI: async function (params) {
         return new Promise((resolve, reject) => {
