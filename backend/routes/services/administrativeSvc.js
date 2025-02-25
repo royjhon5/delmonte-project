@@ -9,6 +9,8 @@ module.exports.routes = {
         [ '/get-packhouse-employee', AdminCtrl.getPackhouseEmployees ],
         [ '/get-signatory', SignatoryCtrl.getSignatory ],
         [ '/get-users', UserListCtrl.getUsers ],
+        [ '/get-formlist', UserListCtrl.getFormList ],
+        [ '/access-rights', UserListCtrl.getAccessRights]
     ], 
     post: [
         [ '/save-employeemasterfile', AdminCtrl.saveEmployeeMasterFile ],

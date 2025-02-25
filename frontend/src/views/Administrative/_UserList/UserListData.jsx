@@ -1,76 +1,40 @@
-import { Box, Button, FormControl, Grid, IconButton, InputLabel, ListItem, MenuItem, Paper, Select, Stack, TextField } from "@mui/material"
+import { Box, Button, FormControl, Grid, InputLabel, ListItem, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material"
 import { Fragment, useState } from "react";
 import CustomDataGrid from "../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { hookContainer } from "../../../hooks/globalQuery";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { OPEN_DELETESWAL } from "../../../store/actions";
-import { useDispatch } from "react-redux";
-import DeleteSwal from "../../../components/Swal/DeleteSwal";
 
 const UserListData = () => {
-  const dispatch = useDispatch();
-  const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
-  const { data: userData } = hookContainer('/get-users');
+  const { data: userData } = hookContainer('/get-formlist');
   const [selectedRowData, setSelectedRowData] = useState(null);
-  const [selectedID, setSelectedID] = useState(0);
   const [UserName, setUserName] = useState('');
   const [userLevel, setUserLevel] = useState('');
   const [fullName, setFullName] = useState('');
   const [descripTion, setDescription] = useState('');
+  const [checkedData, setCheckedData] = useState([]);
   const constMappedData = Array.isArray(userData) ? userData.map((row) => {
-    return { ...row, id: row.LoginID  };
+    return { ...row, id: row.id  };
   }) : [];
-  const SearchFilter = (rows) => {
-    return rows.filter(row =>
-        row.Username.toLowerCase().includes(search.toLowerCase()) || 
-        row.UserLevel.toLowerCase().includes(search.toLowerCase())
-    );
-  };
-
-
 
   const ColumnHeader = [
-    { field: 'Username', headerName: 'Username', width: 250,
+    { field: 'form_name', headerName: 'Form name', width: 250,
       renderCell: (params) => (
         <Box sx={{paddingLeft:1}}>
-          {params.row.Username}
+          {params.row.form_name}
         </Box>
       ),
      },
-    { field: 'UserLevel', headerName: 'User Level', flex:1, },
-    { field: 'FullName', headerName: 'Full Name', flex:1, },
-    { field: 'Description', headerName: 'Description', flex:1, },
-    { field: "action", headerAlign: 'right',
-      headerName: '',    
-      width: 150,
-      align: 'right',
-      renderCell: (params) => {   
-        const SelectedRow = () => {
-          setSelectedRowData(params.row);
-          setUserName(params.row.Username);
-          setUserLevel(params.row.UserLevel);
-          setFullName(params.row.FullName);
-          setDescription(params.row.Description);
-
-        }
-      return (
-        <Box sx={{paddingRight:1}}>
-          <IconButton color="primary" size="small" onClick={SelectedRow}>
-            <EditIcon fontSize="inherit" />
-          </IconButton>
-          <IconButton color="error" size="small" onClick={() => selectToDelete(params.row.LoginID)}>
-            <DeleteIcon fontSize="inherit" />
-          </IconButton>
+    { field: 'form_type', headerName: 'Form type', flex:1, 
+      renderCell: (params) => (
+        <Box sx={{paddingLeft:1}}>
+          {params.row.form_type}
         </Box>
-      )
-      }
-    }
+      ),
+    },
   ];
 
 
@@ -81,6 +45,7 @@ const UserListData = () => {
       UserLevel: userLevel, 
       FullName: fullName,
       Description: descripTion,
+      form_id: checkedData
     };
     try {
       await UserData.mutateAsync(UserRegistrationData);
@@ -103,25 +68,8 @@ const UserListData = () => {
     onError: (error) => {
       toast.error(error)
     }
-  });
+  })
 
-  const selectToDelete = (data) => {
-    setSelectedID(data);
-    dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
-  }
-
-  const deleteData = useMutation({
-    mutationFn: () => http.delete(`/delete-user?LoginID=${selectedID}`),
-    onSuccess: () => {
-      toast.success('Data has been deleted successfully.');
-      queryClient.invalidateQueries(['/get-users']);
-      dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
-    }
-  });
-  
-  const DeleteData = () => {
-    deleteData.mutate(selectedID);
-  };
 
   const NewClearData = () => {
     setSelectedRowData(null);
@@ -131,11 +79,14 @@ const UserListData = () => {
     setDescription('');
   }
 
+  const handleSelectionChange = (selectionModel) => {
+    setCheckedData(selectionModel);
+  };
+
   return (
     <Fragment>
-      <DeleteSwal maxWidth="xs" onClick={DeleteData} />
     <Grid container spacing={2}>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={4}>
             <Paper sx={{padding: 2}}>
                         <form noValidate onSubmit={handleSubmit}>
                             <Grid container spacing={2}>
@@ -198,24 +149,26 @@ const UserListData = () => {
                                 </Grid>
                                 <Grid item xs={12} md={12} sx={{display: 'flex', flexDirection:'row', gap: 1, justifyContent:'flex-end'}}>
                                     {selectedRowData ? <Button variant="contained" size="large" onClick={handleSubmit}>Update</Button> : 
-                                    <Button variant="contained" size="large" onClick={handleSubmit}>Save</Button>}
+                                    <Button variant="contained" size="large" onClick={handleSubmit} >Save</Button>}
                                     <Button variant="contained" size="large" color="secondary" onClick={NewClearData}>New/Clear</Button>
                                 </Grid>
                             </Grid>
                         </form>                   
             </Paper>
         </Grid>
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12} md={8}>
             <Paper>
-            <Stack sx={{ display: 'flex', padding: 2, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <TextField variant='outlined' value={search} onChange={(e) => {setSearch(e.target.value)}} label="Search" size='medium'  sx={{ width: { xl: '30%', lg: '30%' }}} />
+            <Stack sx={{ display: 'flex', padding: 2, flexDirection: 'row',  }}>
+                <Typography>Access Form</Typography>
             </Stack>
             <CustomDataGrid 
                 columns={ColumnHeader}
-                rows={SearchFilter(constMappedData)}
+                rows={constMappedData}
                 maxHeight={450}
                 height={450}
                 slots={{ noRowsOverlay: NoData }}
+                checkboxSelection
+                onRowSelectionModelChange={handleSelectionChange}
             />
             </Paper>
         </Grid>

@@ -1,5 +1,5 @@
 const { select, insert, update, remove } = require("../../models/mainModel");
-const { EmployeeListJoin, VerifyOnSave } = require("../../models/rawQueryModel/rawQueryModel");
+const { EmployeeListJoin, VerifyOnSave, saveEmployeeListImport } = require("../../models/rawQueryModel/rawQueryModel");
 const XLSX = require('xlsx');
 const fs = require('fs');
 const db = require('../../config/dbConnection')
@@ -123,3 +123,36 @@ module.exports.deleteMultipleEmployees = async function (req, res) {
         console.error(error);
     }
 };
+
+
+module.exports.deleteSelectedDuplicates = async function (req, res) {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, message: "Invalid request, 'ids' must be an array." });
+    }
+    const params = {
+        tableName: "tblemployeelist_import",
+        whereConditions: ["chapa_id = ?"],
+        whereValues: ids.map(id => [id]),
+    };
+
+    try {
+        const result = await remove(params);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).send({ error: 'Server Error' });
+        console.error(error);
+    }
+};
+
+module.exports.saveEmployeeListImport = async function (req, res) {
+	try {
+        await saveEmployeeListImport().then(function(response){
+			if(response.success) res.status(200).json(response);			
+			else res.status(200).json(response);
+		});
+	} catch (error) {
+		res.status(400).send({ error: 'Server Error' });
+		console.error(error)
+	}
+}

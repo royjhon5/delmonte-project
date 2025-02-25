@@ -104,11 +104,11 @@ const DataContainer = () => {
     const [dateFrom, setDateFrom] = useState(dayjs().format('YYYY-MM-DD'));
     const [dateTo, setDateTo] = useState(dayjs().format('YYYY-MM-DD'));
     const exportData = async () => {
-        window.open(`http://192.168.1.2:8000/api/export-packhouse-employee?fromDate=${dateFrom}&toDate=${dateTo}`)        
+        window.open(`http://192.168.1.10:8000/api/export-packhouse-employee?fromDate=${dateFrom}&toDate=${dateTo}`)        
     };
 
     const exportForEmployeeList = async () => {
-        window.open(`http://192.168.1.2:8000/api/export-for-employeelist?fromDate=${dateFrom}&toDate=${dateTo}`);
+        window.open(`http://192.168.1.10:8000/api/export-for-employeelist?fromDate=${dateFrom}&toDate=${dateTo}`);
     };
 
     return (
