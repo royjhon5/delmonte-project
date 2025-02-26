@@ -16,19 +16,19 @@ const AccessDenied = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 5
+        gap: 2
       }}>
 
-        <Typography variant="h2">Access denied! &#128540;</Typography>
+        <Typography variant="h2" color="error">Access denied!</Typography>
         <Stack sx={{ textAlign: 'center' }}>
           <Typography variant="h4">You do not have permission to access this page. </Typography>
           <Typography variant="h4">Please contact the administrator for further assistance.</Typography>
           <Typography variant="h4">Thank you!</Typography>
         </Stack>
-        {/* <Page403Error /> */}
-        <Typography sx={{ fontSize: '1000%' }}>403</Typography>
-        <Stack sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
-          {/* <Button variant="contained" size="large">Override access</Button> */}
+        <Page403Error />
+        {/* <Typography sx={{ fontSize: '1000%' }}>403</Typography> */}
+        <Stack sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 3, mt:2 }}>
+          <Button variant="contained" size="large">Override access</Button>
           <Button variant="contained" size="large" color="error" onClick={() => { goBack() }}>Go Back</Button>
         </Stack>
       </Box>

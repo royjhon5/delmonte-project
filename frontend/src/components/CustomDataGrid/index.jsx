@@ -19,6 +19,8 @@ const CustomDataGrid = ({
   disableRowSelectionOnClick,
   onRowSelectionModelChange,
   getRowClassName,
+  isRowSelectable,
+  rowSelectionModel
 }) => {
   const theme = useTheme();
 
@@ -39,6 +41,8 @@ const CustomDataGrid = ({
       columnGroupingModel={columnGroupingModel}
       hideFooterPagination={hideFooterPagination}
       onRowSelectionModelChange={onRowSelectionModelChange}
+      isRowSelectable={isRowSelectable}
+      rowSelectionModel={rowSelectionModel}
       initialState={{
         pagination: { paginationModel: { pageSize: 25 } },
       }}
@@ -96,6 +100,8 @@ CustomDataGrid.propTypes = {
   rowSelection: PropTypes.bool,
   onRowSelectionModelChange: PropTypes.func,
   getRowClassName: PropTypes.array,
+  isRowSelectable: PropTypes.bool,
+  rowSelectionModel: PropTypes.array,
 };
 
 export default CustomDataGrid;

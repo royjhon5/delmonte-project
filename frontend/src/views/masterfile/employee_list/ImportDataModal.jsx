@@ -9,7 +9,7 @@ import CustomDataGrid from "../../../components/CustomDataGrid";
 import NoData from "../../../components/CustomDataTable/NoData";
 import http from "../../../api/http";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const fileTypes = ["XLS", "XLSX", "CSV"];
 
@@ -20,24 +20,30 @@ const ImportData = () => {
     const open = useSelector((state) => state.customization.openImportData);
     const [file, setFile] = useState(null);
     const [duplicateRows, setDuplicateRows] = useState([]);
-    const [verified, setVerified] = useState(false); 
-
-    // Map data for the DataGrid
+    const [verifyBtn, setVerifyBtn] = useState(true);
+    const [deleteBtn, setDeleteBtn] = useState(true);
+    const [saveBtn, setSaveBtn] = useState(true);
     const constMappedData = Array.isArray(mainData) ? mainData.map((row) => ({
         ...row, id: row.id
     })) : [];
 
     const validateDuplicates = async () => {
-        const filteredData = mainData.map(row =>
-          Object.keys(row).reduce((acc, key) => {
-            if (key !== "id" && key !== "name") acc[key] = row[key];
-            return acc;
-          }, {})
-        );
-      
         try {
-          const response = await http.post("/validate-duplicates", filteredData);    
+          const response = await http.post("/validate-duplicates", constMappedData);    
           setDuplicateRows(response.data.duplicates);
+          setDeleteBtn(false);
+        } catch (error) {
+          console.error("Error:", error.response ? error.response.data : error.message);
+        }
+    };
+
+    const SaveAllData = async () => {
+        if(duplicateRows.length > 0) return toast.error('Delete duplicates first before saving.');
+        try {
+          const response = await http.post("/post-saveemployelistimport", constMappedData);    
+            toast.success(response.data.success);
+            queryClient.invalidateQueries(['/get-employee-imported']);
+            queryClient.invalidateQueries(['/get-employee']);
         } catch (error) {
           console.error("Error:", error.response ? error.response.data : error.message);
         }
@@ -45,8 +51,10 @@ const ImportData = () => {
 
     const CloseDialog = () => {
         dispatch({ type: OPEN_IMPORT_DATA, openCustomModal: false });
-        setDuplicateRows([]); 
-        setVerified(false);
+        setDuplicateRows([]);   
+        setVerifyBtn(true);
+        setDeleteBtn(true);
+        setFile(null);
     };
 
     const handleFileChange = (file) => {
@@ -63,9 +71,27 @@ const ImportData = () => {
             });  
             toast.success(`Failed: ${response.data.success} | Success: ${response.data.failure}`);
             queryClient.invalidateQueries(['/get-employee-imported']);
+            setVerifyBtn(false);
+            setFile(null);
         } catch (error) {
             console.error("Error uploading file:", error);
         }
+    };
+
+    const deleteDataMultiple = useMutation({
+        mutationFn: (duplicateRows) => http.post(`/remove-duplicate`, { ids: duplicateRows }), 
+        onSuccess: () => {
+            toast.success('Selected data has been deleted successfully.');
+            queryClient.invalidateQueries(['/get-employee-imported']);
+            setDuplicateRows([]);
+            setVerifyBtn(true);
+            setDeleteBtn(true);
+            setSaveBtn(false);
+        }
+    });
+    
+    const DeleteDataMultiple = () => {
+        deleteDataMultiple.mutate(duplicateRows);
     };
     const ColumnHeader = [
         { field: 'chapa_id', headerName: 'Chapa ID', width: 200,
@@ -108,15 +134,17 @@ const ImportData = () => {
                                     slots={{ noRowsOverlay: NoData }}
                                     checkboxSelection
                                     disableRowSelectionOnClick={true}
+                                    rowSelectionModel={constMappedData
+                                        .filter(row => duplicateRows.includes(row.chapa_id))
+                                        .map(row => row.id)
+                                    }
                                 />
-                                {verified && (
                                     <Typography color={duplicateRows.length > 0 ? "error" : "success"} sx={{ mt: 1 }}>
                                         {duplicateRows.length > 0 
                                             ? `Warning: ${duplicateRows.length} duplicate(s) found!`
                                             : "No duplicates found."
                                         }
                                     </Typography>
-                                )}
                             </Grid>
                         </Grid>
                     </Box>
@@ -124,9 +152,9 @@ const ImportData = () => {
                 DialogAction={
                     <Grid container spacing={1}>
                         <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
-                            <Button variant="contained" fullWidth color="error">DELETE ALREADY IN THE LIST</Button>
-                            <Button variant="contained" fullWidth color="warning" onClick={validateDuplicates}>VERIFY ALREADY EXIST</Button>
-                            <Button variant="contained" fullWidth disabled={duplicateRows.length > 0}>SAVE TO EMPLOYEE LIST</Button>
+                            <Button variant="contained" fullWidth color="error" disabled={deleteBtn} onClick={DeleteDataMultiple}>DELETE ALREADY IN THE LIST</Button>
+                            <Button variant="contained" fullWidth color="warning" disabled={verifyBtn} onClick={validateDuplicates}>VERIFY ALREADY EXIST</Button>
+                            <Button variant="contained" fullWidth disabled={saveBtn} onClick={SaveAllData}>SAVE TO EMPLOYEE LIST</Button>
                         </Grid>
                     </Grid>
                 }

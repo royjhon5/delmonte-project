@@ -46,24 +46,23 @@ export const AuthProvider = ({ children }) => {
       const decoded = jwtDecode(response.data.accessToken);
       localStorage.setItem('accessToken', response.data.accessToken);
       setAccessToken(decoded);
-      setIsAuthenticated(true);
-      
+      setIsAuthenticated(true);    
       checkTokenExpiration(decoded);
       setLoadingBtn(false);
     } catch (error) {
-      console.error(error);
-      if (error.response && error.response.status === 400) {
-        if (error.response.data.error === "Invalid username or password.") {
+      console.log(error.response.data.error);
+        if (error.response.data.error === "Invalid username or password") {
             setError("Invalid username or password.");
             setLoadingBtn(false);
-        } else if (error.response.data.error === "Password incorrect") {
-            setError("Password incorrect");
+        } else if (error.response.data.error === "Invalid password!") {
+            setError("Invalid password!");
             setLoadingBtn(false);
-        }
-      } else {
+        } else {
           setError("Server Error");
           setLoadingBtn(false);
-      }
+        }
+    } finally {
+      setLoadingBtn(false);
     }
   };
 

@@ -1,8 +1,8 @@
 import { lazy } from "react"
 import Loadable from '../components/Loadable/Loadable'
-import ProtectedRoute from './ProtectedRoute'
 import UpdateExportEmployeeLocation from "../views/PH/NF/JP_Device_Process";
 import BatchingDar from "../views/Batching/BatchingDar";
+import AccessRightsRoutes from "./AccessRightsRoutes";
 const MainLayout = Loadable(lazy(() => import('../layouts/Mainlayout/MainLayout')));
 const Dashboard = Loadable(lazy(() => import('../views/dashboard/index')));
 
@@ -40,157 +40,120 @@ const DashboardRoutes = {
 		{
 			path: '/dashboard',
 			element: (
-				<ProtectedRoute pageName='Dashboard'>
-					<Dashboard />
-				</ProtectedRoute>
+				<Dashboard />
 			)
 		},
 		// masterfile
 		{
-			path: '/dashboard/group-line',
-			element: (
-				<ProtectedRoute pageName='Group Line'>
-					<GroupLineList />
-				</ProtectedRoute>
-			)
-		},
-		{
 			path: '/dashboard/employee-list',
 			element: (
-				<ProtectedRoute pageName='Employee List'>
-					<EmployeeList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/day-type',
-			element: (
-				<ProtectedRoute pageName='Day Type'>
-					<DayTypeList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/field-list',
-			element: (
-				<ProtectedRoute pageName='Field List'>
-					<FieldList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/activity-list',
-			element: (
-				<ProtectedRoute pageName='Activity List'>
-					<ActivityList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/gl-code',
-			element: (
-				<ProtectedRoute pageName='GL Code'>
-					<GLCodeList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/cost-center',
-			element: (
-				<ProtectedRoute pageName='Cost Center'>
-					<CostCenterList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/location-list',
-			element: (
-				<ProtectedRoute pageName='Location List'>
-					<LocationList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/department-list',
-			element: (
-				<ProtectedRoute pageName='Department List'>
-					<DepartmentList />
-				</ProtectedRoute>
-			)
-		},
-		{
-			path: '/dashboard/client-list',
-			element: (
-				<ProtectedRoute pageName='Client List'>
-					<ClientList />
-				</ProtectedRoute>
+				<AccessRightsRoutes element={<EmployeeList />} requiredFormID={1} />
 			)
 		},
 		{
 			path: '/dashboard/account-master',
 			element: (
-				<ProtectedRoute pageName='Account Master'>
-					<AccountMasterList />
-				</ProtectedRoute>
+				<AccessRightsRoutes element={<AccountMasterList />} requiredFormID={2} />
 			)
 		},
+		{
+			path: '/dashboard/group-line',
+			element: (
+				<AccessRightsRoutes element={<GroupLineList />} requiredFormID={3} />
+			)
+		},	
+		{
+			path: '/dashboard/day-type',
+			element: (
+					<AccessRightsRoutes element={<DayTypeList />} requiredFormID={4} />
+			)
+		},
+		{
+			path: '/dashboard/field-list',
+			element: (
+					<AccessRightsRoutes element={<FieldList />} requiredFormID={5} />
+			)
+		},
+		{
+			path: '/dashboard/activity-list',
+			element: (
+					<AccessRightsRoutes element={<ActivityList />} requiredFormID={6} />
+			)
+		},
+		{
+			path: '/dashboard/gl-code',
+			element: (
+					<AccessRightsRoutes element={<GLCodeList />} requiredFormID={7} />
+			)
+		},
+		{
+			path: '/dashboard/cost-center',
+			element: (
+					<AccessRightsRoutes element={<CostCenterList />} requiredFormID={8} />
+			)
+		},
+		{
+			path: '/dashboard/location-list',
+			element: (
+					<AccessRightsRoutes element={<LocationList />} requiredFormID={9} />
+			)
+		},
+		{
+			path: '/dashboard/department-list',
+			element: (
+					<AccessRightsRoutes element={<DepartmentList />} requiredFormID={10} />
+			)
+		},
+		{
+			path: '/dashboard/client-list',
+			element: (
+					<AccessRightsRoutes element={<ClientList />} requiredFormID={11} />
+			)
+		},
+
 		// transaction
 		{
 			path: '/dashboard/employee-templates',
 			element: (
-				<ProtectedRoute pageName='User List'>
-					<EmployeeTemplates />
-				</ProtectedRoute>
+					<AccessRightsRoutes element={<EmployeeTemplates />} requiredFormID={12} />
 			)
 		},
 		{
 			path: '/dashboard/account-rate',
 			element: (
-				<ProtectedRoute pageName='Account Rate'>
-					<AccountRate />
-				</ProtectedRoute>
+					<AccessRightsRoutes element={<AccountRate />} requiredFormID={13} />
 			)
 		},
 		{
 			path: '/dashboard/dar-preparation',
 			element: (
-				<ProtectedRoute pageName='User List'>
-					<DARPreparation />
-				</ProtectedRoute>
+					<AccessRightsRoutes element={<DARPreparation />} requiredFormID={14} />
 			)
 		},
 		{
 			path: '/dashboard/soa-creation',
 			element: (
-				<ProtectedRoute pageName='User List'>
-					<SOACreation />
-				</ProtectedRoute>
+					<AccessRightsRoutes element={<SOACreation />} requiredFormID={15} />
 			)
 		},
 		// administrative
 		{
 			path: '/dashboard/user-list',
 			element: (
-				<ProtectedRoute pageName='User List'>
-					<UserList />
-				</ProtectedRoute>
+					<AccessRightsRoutes element={<UserList />} requiredFormID={16} />
 			)
 		},
 		{
 			path: '/dashboard/signatories',
 			element: (
-				<ProtectedRoute pageName='User List'>
-					<SignatoryList />
-				</ProtectedRoute>
+					<AccessRightsRoutes element={<SignatoryList />} requiredFormID={17} />
 			)
 		},
 		// PH/NF/JP DeviceProcess
 		{
 			path: '/dashboard/update-employee-location',
 			element: (
-				<ProtectedRoute pageName='User List'>
 					<UpdateExportEmployeeLocation/>
-				</ProtectedRoute>
 			)
 		},
 
@@ -199,9 +162,7 @@ const DashboardRoutes = {
 		{
 			path: '/dashboard/batching-dar',
 			element: (
-				<ProtectedRoute pageName='User List'>
 					<BatchingDar/>
-				</ProtectedRoute>
 			)
 		},
 		// others

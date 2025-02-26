@@ -633,6 +633,25 @@ const rawQueryModel = {
     //         });
     //     });
     // },
+
+    saveEmployeeListImport: async function (params) {
+        return new Promise((resolve, reject) => {
+            const query = `INSERT INTO tblemployeelist (chapa_id, lastname, firstname, middlename, extname) SELECT chapa_id, lastname, firstname, middlename, extname FROM tblemployeelist_import WHERE chapa_id NOT IN (SELECT chapa_id FROM tblemployeelist)`;
+            db.query(query, [], (err, result) => {
+                if (err) return reject(err);
+                console.log(result);
+                if (result) {
+                    const query = `TRUNCATE TABLE tblemployeelist_import`;
+                    db.query(query, [], (err, result) => {
+                        if (err) return reject(err);
+                        resolve({ success: true, message: "successfully saved" });
+                    })
+                } else {
+                    resolve({ success: false, message: "failed saving" });
+                }
+            });
+        });
+    },
 }
 
 module.exports = rawQueryModel;

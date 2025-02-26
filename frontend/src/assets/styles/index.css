@@ -90,3 +90,8 @@
   font-size: 300%;
   margin-top: 20% !important;
 }
+
+.duplicate-row {
+  background-color: rgba(255, 0, 0, 0.2) !important; /* Light red */
+  color: red !important;
+}

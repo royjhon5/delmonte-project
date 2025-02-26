@@ -82,7 +82,6 @@ router.post('/import-excel', fileUpload(uploadOptions), async (req, res) => {
           }
         } catch (err) {
           failureData.push(data[i]);
-          console.error(`Failed to insert row: ${JSON.stringify(data[i])}`, err);
         }
       }
       fs.unlinkSync(excel.tempFilePath);
@@ -102,30 +101,42 @@ router.post('/import-excel', fileUpload(uploadOptions), async (req, res) => {
 
 router.post("/validate-duplicates", async (req, res) => {
   try {
-      const importedData = req.body; // Expecting an array of objects [{ chapa_id: '123' }, { chapa_id: '456' }]
-
-      if (!importedData || importedData.length === 0) {
-          return res.status(400).json({ message: "No data provided." });
-      }
-
+      const importedData = req.body;
+      if (!importedData || importedData.length === 0) {return res.status(400).json({ message: "No data provided." });}
       const chapaIds = importedData.map(emp => emp.chapa_id);
-      const sql = `SELECT chapa_id FROM tblemployeelist_import WHERE chapa_id IN (${chapaIds.map(() => "?").join(",")})`;
-      
+      const sql = `SELECT chapa_id FROM tblemployeelist WHERE chapa_id IN (${chapaIds.map(() => "?").join(",")})`;
       db.query(sql, chapaIds, (err, results) => {
           if (err) {
               console.error(err);
               return res.status(500).json({ message: "Database error." });
           }
-
           const existingChapaIds = results.map(row => row.chapa_id);
           return res.json({ duplicates: existingChapaIds });
       });
-
   } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Server error." });
   }
 });
+
+
+router.post('/save-form', async (req, res) => {
+  try {
+      const { form_ids } = req.body;
+      const user_id = req.user?.id; 
+      if (!Array.isArray(form_ids) || form_ids.length === 0 || !user_id) {
+          return res.status(400).json({ msg: 'Invalid form_ids or missing user_id' });
+      }
+      const sql = 'INSERT INTO tbl_user_access_rights (form_id, user_id) VALUES ?';
+      const values = form_ids.map(form_id => [form_id, user_id]);
+      const [result] = await db.query(sql, [values]);
+      return res.status(200).json({ msg: 'Forms saved successfully', success: result.affectedRows });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: 'Internal server error' });
+  }
+});
+
 
 module.exports = router;
 

@@ -18,6 +18,7 @@ app.use(express.static('user_profile_picture'))
 app.use(cookieParser()); 
 app.use(cors({
     origin: (origin, callback) => {
+        // const allowedOrigins = ["http://192.168.1.10:3000"];
         // const allowedOrigins = ["http://192.168.1.2:3000"];
         const allowedOrigins = ["http://localhost:3000"];
         if (allowedOrigins.includes(origin) || !origin) {
@@ -50,5 +51,5 @@ socketServer.on('connection', (socket) => {
     
 
 });
-http.listen(8000, "localhost");
-// http.listen(8000, "192.168.1.2");
+http.listen(8000, "127.0.0.1");
+// http.listen(8000, "192.168.1.10");

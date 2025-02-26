@@ -28,7 +28,9 @@ module.exports.routes = {
         [ '/post-accounttochargehdr', AccontToChargeCtrl.saveAccountToChargeHdr ],
         [ '/post-group', GroupCtrl.saveGroupData ],
         [ '/post-client', ClientCtrl.saveClientList ],
+        [ '/post-saveemployelistimport', EmpCtrl.saveEmployeeListImport ],
         [ '/remove-multiple-employee', EmpCtrl.deleteMultipleEmployees ],
+        [ '/remove-duplicate', EmpCtrl.deleteSelectedDuplicates ],
     ], 
     get: [
         [ '/get-location', LocCtrl.getLocationList ],
