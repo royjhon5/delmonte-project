@@ -6,7 +6,6 @@ import http from "../../../../api/http.jsx";
 import { useEffect, useState } from "react";
 import SearchEmployeeModal from "./SearchEmployee.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
-import { hookContainer } from "../../../../hooks/globalQuery.jsx";
 import SearchAccountMasterModal from "./SearchAccountMaster";
 import SearchGLCodeModal from "../../../../components/SearchMasterfile/SearchGLCode.jsx";
 import SearchCostCenterModal from "../../../../components/SearchMasterfile/SearchCostCenter.jsx";
@@ -19,7 +18,6 @@ const AddDARDetail = (props) => {
     }
     const [loadSaving, setLoadSaving] = useState(false);
 
-    const { data: accounttochargeList } = hookContainer('/get-accounttocharge');
     const initialDataVariable = {
         id: "",
         dar_idlink: "",
