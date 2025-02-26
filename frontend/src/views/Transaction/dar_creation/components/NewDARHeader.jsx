@@ -3,14 +3,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import CustomDialog from "../../../../components/CustomDialog/index.jsx";
 import { toast } from "sonner";
 import http from "../../../../api/http.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import SearchTemplateModal from "../../../../components/SearchMasterfile/SearchTemplate.jsx";
 import SearchLocationModal from "../../../../components/SearchMasterfile/SearchLocation.jsx";
 import SearchDepartmentModal from "../../../../components/SearchMasterfile/SearchDepartment.jsx";
 import SearchClientModal from "../../../../components/SearchMasterfile/SearchClient.jsx";
 import SearchSignatoryModal from "../../../../components/SearchMasterfile/SearchSignatory.jsx";
 import LoadSaving from "../../../../components/LoadSaving/Loading.jsx";
-import { hookContainer } from "../../../../hooks/globalQuery.jsx";
 import dayjs from 'dayjs';
 
 const NewDarHeader = (props) => {
@@ -21,7 +20,19 @@ const NewDarHeader = (props) => {
     }
     const [loadSaving, setLoadSaving] = useState(false);
 
-    const { data: dayTypeList } = hookContainer('/get-daytype');
+    const [dayTypeList, setDayTypeList] = useState([]);
+    const loadDayType = useCallback(async () => {
+        const response = await http.get(`/get-daytype`);
+        if (response.data.length > 0) {
+            setDayTypeList(Array.isArray(response.data) ? response.data.map((row) => {
+                return { ...row, id: row.id };
+            }) : []);
+        }
+    }, []);
+
+    useEffect(() => {
+        if(openModal) loadDayType();
+    }, [openModal]);
 
     const initialDataVariable = {
         id: "",

@@ -2,9 +2,8 @@ import { Box, Button, Grid, TextField, Paper, Stack } from "@mui/material";
 import CustomDataGrid from "../CustomDataGrid";
 import NoData from "../CustomDataTable/NoData";
 import CustomDialog from "../CustomDialog";
-import { useState, useEffect } from "react";
-import { hookContainer } from "../../hooks/globalQuery";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect, useCallback } from "react";
+import http from "../../api/http.jsx";
 
 const SearchCostCenterModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
@@ -12,19 +11,25 @@ const SearchCostCenterModal = (props) => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-costcenter');
-    const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
-        return { ...row, id: row.id };
-    }) : [];
+    const [constMappedData, setConstMappedData] = useState([]);
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
             row.costcenter.toLowerCase().includes(search.toLowerCase())
         );
     };
-    const queryClient = useQueryClient();
+    
+    const loadData = useCallback(async () => {
+        const response = await http.get(`/get-costcenter`);
+        if (response.data.length > 0) {
+            setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
+                return { ...row, id: row.id };
+            }) : []);
+        }
+    }, []);
+
     useEffect(() => {
-        if(openModal) queryClient.invalidateQueries(['/get-costcenter']);
+        if(openModal) loadData();
     }, [openModal]);
 
     const ColumnHeader = [

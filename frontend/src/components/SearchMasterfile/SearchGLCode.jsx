@@ -20,8 +20,7 @@ const SearchGLCodeModal = (props) => {
     };
 
     const loadData = useCallback(async () => {
-        const response = await http.get(`/get-glcode`); // get time in and time out of employee selected
-        console.log(response);
+        const response = await http.get(`/get-glcode`);
         if (response.data.length > 0) {
             setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
                 return { ...row, id: row.id };
