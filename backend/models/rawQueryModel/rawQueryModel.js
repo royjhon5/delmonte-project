@@ -17,13 +17,13 @@ const rawQueryModel = {
 
     VerifyOnSave: async function (params) {
         return new Promise((resolve, reject) => {
-            const { table, conditions } = params; 
+            const { table, conditions } = params;
             if (!table || !conditions || Object.keys(conditions).length === 0) {
                 return reject(new Error("Invalid parameters"));
             }
             const whereClauses = Object.keys(conditions)
                 .map((key) => `${key} = ?`)
-                .join(" AND ");   
+                .join(" AND ");
             const values = Object.values(conditions);
             const query = `SELECT * FROM ${table} WHERE ${whereClauses}`;
             db.query(query, values, (err, result) => {
@@ -32,20 +32,20 @@ const rawQueryModel = {
             });
         });
     },
-    
 
-    AccountToChargeJoin: async function (params) {
-        return new Promise((resolve, reject) => {
-            const activityJoin = " LEFT JOIN tblactivitylist a ON a.id = el.activity_id_link ";
-            const glcodeJoin = " LEFT JOIN tblgl_list b ON b.id = el.glcode_id_link ";
-            const costcenterJoin = " LEFT JOIN tblcostcenterlist c ON c.id = el.costcenter_id_link ";
-            const query = 'SELECT el.*, a.activityname, b.gl_code, c.costcenter FROM tblaccount_to_charge el ' + activityJoin + glcodeJoin + costcenterJoin;
-            db.query(query, params.paramValue, (err, result) => {
-                if (err) return reject(err);
-                resolve({ success: true, data: result });
-            });
-        });
-    },
+
+    // AccountToChargeJoin: async function (params) {
+    //     return new Promise((resolve, reject) => {
+    //         const activityJoin = " LEFT JOIN tblactivitylist a ON a.id = el.activity_id_link ";
+    //         const glcodeJoin = " LEFT JOIN tblgl_list b ON b.id = el.glcode_id_link ";
+    //         const costcenterJoin = " LEFT JOIN tblcostcenterlist c ON c.id = el.costcenter_id_link ";
+    //         const query = 'SELECT el.*, a.activityname, b.gl_code, c.costcenter FROM tblaccount_to_charge el ' + activityJoin + glcodeJoin + costcenterJoin;
+    //         db.query(query, params.paramValue, (err, result) => {
+    //             if (err) return reject(err);
+    //             resolve({ success: true, data: result });
+    //         });
+    //     });
+    // },
 
     AutoInsertDetailTemplate: async function (params) {
         return new Promise((resolve, reject) => {
@@ -61,11 +61,11 @@ const rawQueryModel = {
                             let timeOutHour = (parseInt(resultDar[0].shift_time_out_hour) + 2).toString().padStart(2, "0"); // add 2hrs
                             let darScheduleIn = resultDar[0].xDate + " " + timeInHour + ":" + resultDar[0].shift_time_in_min + ":00";
                             let darScheduleOut = resultDar[0].xDate + " " + timeOutHour + ":" + resultDar[0].shift_time_out_min + ":00";
-                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
+                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${element.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
                                 let timeIn = "";
                                 if (resultDTR.length > 0) timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
-                                const queryDTROut = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
+                                const queryDTROut = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${element.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
                                 db.query(queryDTROut, [], (errDTROut, resultDTROut) => {
                                     let timeOut = "";
                                     if (resultDTROut.length > 0) {
@@ -76,14 +76,24 @@ const rawQueryModel = {
                                     // compute st
                                     let ST = 0;
                                     if (timeIn && timeOut) {
-                                        let timeInDateTime = "2025-01-01 " + resultDar[0].shift_time_in_hour + ":" + resultDar[0].shift_time_in_min;
-                                        let timeOutDateTime = "2025-01-01 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                        let timeInDateTimeSchedule = "2025-01-01 " + resultDar[0].shift_time_in_hour + ":" + resultDar[0].shift_time_in_min;
+                                        let timeOutDateTimeSchedule = "2025-01-01 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
                                         if (parseInt(resultDar[0].shift_time_in_hour) > parseInt(resultDar[0].shift_time_out_hour)) { // next day
-                                            timeOutDateTime = "2025-01-02 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                            timeOutDateTimeSchedule = "2025-01-02 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
                                         }
+
+                                        let timeInDateTime = "2025-01-01 " + resultDTR[0].auth_time;
+                                        let timeOutDateTime = "2025-01-01 " + resultDTROut[0].auth_time;
+                                        if (parseInt(resultDar[0].shift_time_in_hour) > parseInt(resultDar[0].shift_time_out_hour)) { // next day
+                                            timeOutDateTime = "2025-01-02 " + resultDTROut[0].auth_time;
+                                        }
+
+                                        if (new Date(timeInDateTime) < new Date(timeInDateTimeSchedule)) timeInDateTime = timeInDateTimeSchedule;
+                                        if (new Date(timeOutDateTime) > new Date(timeOutDateTimeSchedule)) timeOutDateTime = timeOutDateTimeSchedule;
+
                                         let diff = diff_hours(timeInDateTime, timeOutDateTime);
                                         ST = parseFloat(diff);
-                                        ST = ST > 8 ? 8 : ST; // make sure only 8 hrs ST
+                                        // ST = ST > 8 ? 8 : ST; // make sure only 8 hrs ST
                                     }
                                     // insert dardtl
                                     const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, gl, cost_center, activitylink_id, activity, st, is_main)
@@ -172,7 +182,7 @@ const rawQueryModel = {
                         let diff = 0;
                         let time_out = "";
                         if (chapaCounter == element.count) { // to know that this record is the last and this is where to save the final time out of employee
-                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${element.ChapaID}" AND auth_date = "${element.darDate}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
+                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${element.ChapaID}" AND auth_date = "${element.darDate}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
                                 let timeOut = "";
                                 if (resultDTR.length > 0) timeOut = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
@@ -238,12 +248,12 @@ const rawQueryModel = {
             // timeIn and person name
             let timeIn = "N/A";
             let timeOut = "N/A";
-            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${params.chapa_id}" and auth_date = "${params.date}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
+            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${params.chapa_id}" and auth_date = "${params.date}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
             db.query(queryDTR, [], async (errDTR, resultDTR) => {
                 if (resultDTR.length > 0) {
                     timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];;
                     // timeOut
-                    const queryDTR2 = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${params.chapa_id}" and auth_date = "${params.date}" ORDER BY auth_datetime DESC`; // get first time in
+                    const queryDTR2 = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${params.chapa_id}" and auth_date = "${params.date}" ORDER BY auth_datetime DESC`; // get first time in
                     db.query(queryDTR2, [], async (errDTR2, resultDTR2) => {
                         if (resultDTR2.length > 1) {
                             timeOut = resultDTR2[0].auth_time.split(':')[0] + "" + resultDTR2[0].auth_time.split(':')[1];
@@ -263,20 +273,40 @@ const rawQueryModel = {
                 await params.empids.forEach(element => {
                     let toSave = params.fieldValue;
                     const queryEmp = `SELECT * FROM tblemployeelist WHERE chapa_id = "${element}" LIMIT 1`;
-                    db.query(queryEmp, [], async (errEmp, resultEmp) => {
-                        console.log(errEmp);
+                    db.query(queryEmp, [], (errEmp, resultEmp) => {
                         if (resultEmp.length > 0) {
-                            toSave.ChapaID = resultEmp[0].chapa_id;
-                            toSave.emp_lname = resultEmp[0].lastname;
-                            toSave.emp_fname = resultEmp[0].firstname;
-                            toSave.emp_mname = resultEmp[0].middlename;
-                            toSave.emp_ext_name = resultEmp[0].extname;
+                            // check timein
+                            const chapaIn = `SELECT * FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${toSave.dar_idlink} AND dtl.ChapaID = "${resultEmp[0].chapa_id}" AND dtl.is_main = 1 LIMIT 1`; // get time in
+                            db.query(chapaIn, [], (errChapaIn, resultChapaIn) => {
+                                if (resultChapaIn.length > 0) {
+                                    if (resultChapaIn[0].time_in) {
+                                        toSave.ChapaID = resultEmp[0].chapa_id;
+                                        toSave.emp_lname = resultEmp[0].lastname;
+                                        toSave.emp_fname = resultEmp[0].firstname;
+                                        toSave.emp_mname = resultEmp[0].middlename;
+                                        toSave.emp_ext_name = resultEmp[0].extname;
 
-                            // insert
-                            const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, st, ot, nd, ndot, gl, cost_center, activitylink_id, activity, is_main, costcenterlink_id, glcodelink_id)
-                                VALUES (${toSave.dar_idlink}, "${toSave.ChapaID}", "${toSave.emp_lname}", "${toSave.emp_fname}", "${toSave.emp_mname}", "${toSave.emp_ext_name}", "${toSave.time_in}", "${toSave.time_out}", "${toSave.st}", "${toSave.ot}", 
-                                "${toSave.nd}", "${toSave.ndot}", "${toSave.gl}", "${toSave.cost_center}", "${toSave.activitylink_id}", "${toSave.activity}", "${toSave.is_main}", "${toSave.costcenterlink_id}", "${toSave.glcodelink_id}")`;
-                            db.query(query2, [], (err2, result2) => { console.log(err2); });
+                                        let timeInDateTimeScheduleDar = "2025-01-01 " + resultChapaIn[0].shift_time_in_hour + ":" + resultChapaIn[0].shift_time_in_min;
+                                        let timeInDateTimeBio = "2025-01-01 " + resultChapaIn[0].time_in.substring(0, 2) + ":" + resultChapaIn[0].time_in.substring(2, 4);
+                                        let timeInDateTime = "2025-01-01 " + toSave.time_in.substring(0, 2) + ":" + toSave.time_in.substring(2, 4);
+
+                                        // check bio in < dar schedule in
+                                        if (new Date(timeInDateTimeBio) < new Date(timeInDateTimeScheduleDar)) {
+                                            // check if activity in < schedule dar in
+                                            if (new Date(timeInDateTime) < new Date(timeInDateTimeScheduleDar)) toSave.time_in = resultChapaIn[0].shift_time_in_hour + "" + resultChapaIn[0].shift_time_in_min; // get schedule in
+                                        } else {
+                                            // check if activity in < bio in
+                                            if (new Date(timeInDateTime) < new Date(timeInDateTimeBio)) toSave.time_in = resultChapaIn[0].time_in.substring(0, 2) + "" + resultChapaIn[0].time_in.substring(2, 4);
+                                        }
+
+                                        // insert
+                                        const query2 = `INSERT INTO tbldardtl (dar_idlink, ChapaID, emp_lname, emp_fname, emp_mname, emp_ext_name, time_in, time_out, st, ot, nd, ndot, gl, cost_center, activitylink_id, activity, is_main, costcenterlink_id, glcodelink_id)
+                                                VALUES (${toSave.dar_idlink}, "${toSave.ChapaID}", "${toSave.emp_lname}", "${toSave.emp_fname}", "${toSave.emp_mname}", "${toSave.emp_ext_name}", "${toSave.time_in}", "${toSave.time_out}", "${toSave.st}", "${toSave.ot}", 
+                                                "${toSave.nd}", "${toSave.ndot}", "${toSave.gl}", "${toSave.cost_center}", "${toSave.activitylink_id}", "${toSave.activity}", "${toSave.is_main}", "${toSave.costcenterlink_id}", "${toSave.glcodelink_id}")`;
+                                        db.query(query2, [], (err2, result2) => { console.log(err2); });
+                                    }
+                                }
+                            });
                         }
                     });
                 });
@@ -291,7 +321,6 @@ const rawQueryModel = {
         return new Promise(async (resolve, reject) => {
             const queryDARDtl = `SELECT * FROM tbldardtl WHERE dar_idlink = "${params.fieldValue.dar_idlink}" and ChapaID = "${params.fieldValue.ChapaID}" LIMIT 1`;
             db.query(queryDARDtl, [], async (errDARDtl, resultDARDtl) => {
-                console.log(errDARDtl);
                 let toSave = params.fieldValue;
                 if (resultDARDtl.length > 0) {
                     // insert dardtl breakdown
@@ -310,11 +339,11 @@ const rawQueryModel = {
                             let timeOutHour = (parseInt(resultDar[0].shift_time_out_hour) + 2).toString().padStart(2, "0"); // add 2hrs
                             let darScheduleIn = resultDar[0].xDate + " " + timeInHour + ":" + resultDar[0].shift_time_in_min + ":00";
                             let darScheduleOut = resultDar[0].xDate + " " + timeOutHour + ":" + resultDar[0].shift_time_out_min + ":00";
-                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${toSave.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
+                            const queryDTR = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${toSave.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime ASC LIMIT 1`; // get first time in
                             db.query(queryDTR, [], (errDTR, resultDTR) => {
                                 let timeIn = "";
                                 if (resultDTR.length > 0) timeIn = resultDTR[0].auth_time.split(':')[0] + "" + resultDTR[0].auth_time.split(':')[1];
-                                const queryDTROut = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE person_name LIKE "%${toSave.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
+                                const queryDTROut = `SELECT auth_time FROM ${process.env.DB_NAME2}.device_logs WHERE chapa = "${toSave.ChapaID}" AND auth_datetime BETWEEN "${darScheduleIn}" AND "${darScheduleOut}" ORDER BY auth_datetime DESC LIMIT 1`; // get last dtr of chapa
                                 db.query(queryDTROut, [], (errDTROut, resultDTROut) => {
                                     let timeOut = "";
                                     if (resultDTROut.length > 0) {
@@ -325,11 +354,21 @@ const rawQueryModel = {
                                     // compute st
                                     let ST = 0;
                                     if (timeIn && timeOut) {
-                                        let timeInDateTime = "2025-01-01 " + resultDar[0].shift_time_in_hour + ":" + resultDar[0].shift_time_in_min;
-                                        let timeOutDateTime = "2025-01-01 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                        let timeInDateTimeSchedule = "2025-01-01 " + resultDar[0].shift_time_in_hour + ":" + resultDar[0].shift_time_in_min;
+                                        let timeOutDateTimeSchedule = "2025-01-01 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
                                         if (parseInt(resultDar[0].shift_time_in_hour) > parseInt(resultDar[0].shift_time_out_hour)) { // next day
-                                            timeOutDateTime = "2025-01-02 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
+                                            timeOutDateTimeSchedule = "2025-01-02 " + resultDar[0].shift_time_out_hour + ":" + resultDar[0].shift_time_out_min;
                                         }
+
+                                        let timeInDateTime = "2025-01-01 " + resultDTR[0].auth_time;
+                                        let timeOutDateTime = "2025-01-01 " + resultDTROut[0].auth_time;
+                                        if (parseInt(resultDar[0].shift_time_in_hour) > parseInt(resultDar[0].shift_time_out_hour)) { // next day
+                                            timeOutDateTime = "2025-01-02 " + resultDTROut[0].auth_time;
+                                        }
+
+                                        if (new Date(timeInDateTime) < new Date(timeInDateTimeSchedule)) timeInDateTime = timeInDateTimeSchedule;
+                                        if (new Date(timeOutDateTime) > new Date(timeOutDateTimeSchedule)) timeOutDateTime = timeOutDateTimeSchedule;
+
                                         let diff = diff_hours(timeInDateTime, timeOutDateTime);
                                         ST = parseFloat(diff);
                                         ST = ST > 8 ? 8 : ST; // make sure only 8 hrs ST
@@ -398,7 +437,7 @@ const rawQueryModel = {
             const dataQuery = `
                 SELECT hdr.department, hdr.xDate, dtl.*, ${daytype}, hdr.prepared_by, hdr.checked_by, hdr.shift  
                 FROM tbldarhdr hdr, tbldardtl dtl 
-                WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} 
+                WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id}
                 ORDER BY dtl.emp_lname ASC, dtl.ChapaID ASC 
             `;
             db.query(dataQuery, params.paramValue, (err, result) => {
@@ -461,10 +500,12 @@ const rawQueryModel = {
                             element.emp_ext_name = "";
                         }
                         resultData.push(element);
-                        totalST += parseFloat(element.st);
-                        totalOT += parseFloat(element.ot);
-                        totalND += parseFloat(element.nd);
-                        totalNDOT += parseFloat(element.ndot);
+                        if (element.is_main == 0) {
+                            totalST += parseFloat(element.st);
+                            totalOT += parseFloat(element.ot);
+                            totalND += parseFloat(element.nd);
+                            totalNDOT += parseFloat(element.ndot);
+                        }
                         cntr += 1;
                     });
 
