@@ -31,7 +31,8 @@ const SOACreation = Loadable(lazy(() => import('../views/Transaction/soa_creatio
 
 // administrative
 const UserList = Loadable(lazy(() => import('../views/Administrative/_UserList')));
-const SignatoryList = Loadable(lazy(() => import('../views/Administrative/Signatory')));
+const ViewUserListIndex = Loadable(lazy(() => import('../views/Administrative/_UserList/ViewUserListIndex')));
+const SignatoryList = Loadable(lazy(() => import('../views/Administrative/_UserList/ViewUserList')));
 
 const DashboardRoutes = {
 	path: '/',
@@ -144,6 +145,11 @@ const DashboardRoutes = {
 			)
 		},
 		{
+			path: '/dashboard/view-user-list',
+			element: ( <ViewUserListIndex/>
+			)
+		},
+		{
 			path: '/dashboard/signatories',
 			element: (
 					<AccessRightsRoutes element={<SignatoryList />} requiredFormID={17} />
@@ -156,6 +162,8 @@ const DashboardRoutes = {
 					<UpdateExportEmployeeLocation/>
 			)
 		},
+
+		
 
 
 		// BATCHING

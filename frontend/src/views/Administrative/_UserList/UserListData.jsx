@@ -6,10 +6,13 @@ import { hookContainer } from "../../../hooks/globalQuery";
 import http from "../../../api/http";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import GroupIcon from '@mui/icons-material/Group';
+import { useNavigate } from "react-router-dom";
 
 const UserListData = () => {
   const queryClient = useQueryClient();
   const { data: userData } = hookContainer('/get-formlist');
+  const navigate = useNavigate();
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [UserName, setUserName] = useState('');
   const [userLevel, setUserLevel] = useState('');
@@ -82,6 +85,8 @@ const UserListData = () => {
   const handleSelectionChange = (selectionModel) => {
     setCheckedData(selectionModel);
   };
+
+  const navigteToUserList = () => { navigate('/dashboard/view-user-list') }
 
   return (
     <Fragment>
@@ -158,8 +163,9 @@ const UserListData = () => {
         </Grid>
         <Grid item xs={12} md={8}>
             <Paper>
-            <Stack sx={{ display: 'flex', padding: 2, flexDirection: 'row',  }}>
-                <Typography>Access Form</Typography>
+            <Stack sx={{ display: 'flex', padding: 2, flexDirection: 'row', justifyContent: 'space-between'  }}>
+                <Typography sx={{display: 'flex', justifyContent:'center', alignItems:'center'}} color="primary">Access Rights</Typography>
+                <Button onClick={navigteToUserList} startIcon={<GroupIcon />} variant="contained">View All Users</Button>
             </Stack>
             <CustomDataGrid 
                 columns={ColumnHeader}
