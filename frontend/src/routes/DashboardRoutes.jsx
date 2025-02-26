@@ -53,7 +53,7 @@ const DashboardRoutes = {
 		{
 			path: '/dashboard/account-master',
 			element: (
-				<AccessRightsRoutes element={<AccountMasterList />} requiredFormID={1} />
+				<AccessRightsRoutes element={<AccountMasterList />} requiredFormID={2} />
 			)
 		},
 		{
