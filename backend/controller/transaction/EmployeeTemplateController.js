@@ -23,21 +23,39 @@ module.exports.saveEmployeeTemplateHeader = async function (req, res) {
 		tableName: "tbltemplates_employeehdr",
 		fieldValue: {
 			id: data.id,
-			TName: data.TName,
 			location_idlink: data.location_idlink,
 			department_idlink: data.department_idlink,
 			group_idlink: data.group_idlink,
-			shifting: data.shifting,
 			location: data.location,
 			department: data.department,
 			emp_group: data.emp_group,
+			client_id: data.client_id,
+			client_name: data.client_name,
 		}
 	}
 	try {
-		var result = await data.id > 0 ? update(params) : insert(params);
-		result.then(function (response) {
-			res.status(200).json(response);
-		})
+		if (data.id > 0) {
+			await update(params).then(function (response) {
+				res.status(200).json(response);
+			})
+		} else {
+			var checkParams = {
+				fields: ["*"],
+				tableName: "tbltemplates_employeehdr",
+				where: ["emp_group = ?"],
+				whereValue: [data.emp_group],
+			}
+			// check exists
+			await select(checkParams).then(async function (response) {
+				if (response.data.length > 0) return res.status(200).send({ success: false, message: "Cannot add. Group already exists." });
+				else {
+					// save if not exists
+					await insert(params).then(function (response) {
+						res.status(200).json(response);
+					})
+				}
+			});
+		}
 	} catch (error) {
 		res.status(400).send({ error: 'Server Error' });
 		console.error(error)
@@ -93,7 +111,7 @@ module.exports.saveEmployeeTemplateDetail = async function (req, res) {
 	try {
 		// check exists
 		await select(checkParams).then(async function (response) {
-			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Cannot add. Employee already exists in a template: "+response.data[0].template_name+"." });
+			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Cannot add. Employee already exists in a template: " + response.data[0].template_name + "." });
 			else {
 				// save if not exists
 				var result = await data.id > 0 ? update(params) : insert(params);

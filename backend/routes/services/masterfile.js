@@ -25,6 +25,7 @@ module.exports.routes = {
         [ '/post-field', FieldCtrl.saveFieldData ],
         [ '/post-daytype', DayCtrl.saveDataDay ],
         [ '/post-accounttocharge', AccontToChargeCtrl.saveAccountToCharge ],
+        [ '/post-accounttochargehdr', AccontToChargeCtrl.saveAccountToChargeHdr ],
         [ '/post-group', GroupCtrl.saveGroupData ],
         [ '/post-client', ClientCtrl.saveClientList ],
         [ '/post-saveemployelistimport', EmpCtrl.saveEmployeeListImport ],
@@ -42,6 +43,7 @@ module.exports.routes = {
         [ '/get-field', FieldCtrl.getDataField ],
         [ '/get-daytype', DayCtrl.getDataDay ],
         [ '/get-accounttocharge', AccontToChargeCtrl.getAccountToCharge ],
+        [ '/get-accounttochargehdr', AccontToChargeCtrl.getAccountToChargeHdr ],
         [ '/get-group', GroupCtrl.getGroupData ],
         [ '/get-client', ClientCtrl.getClientList ],
     ], 
@@ -55,6 +57,7 @@ module.exports.routes = {
         [ '/remove-field', FieldCtrl.deleteFieldData ],
         [ '/remove-daytype', DayCtrl.deleteDataDay ],
         [ '/remove-accounttocharge', AccontToChargeCtrl.deleteAccoubtToCharge ],
+        [ '/remove-accounttochargehdr', AccontToChargeCtrl.deleteAccoubtToChargeHdr ],
         [ '/remove-group', GroupCtrl.deleteGroupData ],
         [ '/remove-client', ClientCtrl.deleteClientData ],
     ] 

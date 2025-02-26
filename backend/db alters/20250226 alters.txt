@@ -1,0 +1,2 @@
+CREATE TABLE `dbdar`.`tblaccount_to_charge_hdr` (`id` INT NOT NULL AUTO_INCREMENT , `client_name` VARCHAR(155) NOT NULL , `location` VARCHAR(155) NOT NULL , `department` VARCHAR(155) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `tblaccount_to_charge` ADD `header_id` INT NOT NULL AFTER `labor_type`;
