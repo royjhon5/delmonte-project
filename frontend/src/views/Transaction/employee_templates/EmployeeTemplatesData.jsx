@@ -25,21 +25,21 @@ const EmployeeTemplatesData = () => {
     }, []);
     const defaultHeaderData = {
         id: '',
-        TName: '',
         department: '',
         emp_group: '',
-        shifting: '',
+        location: '',
+        client_name: '',
     }
     const [headerData, setHeaderData] = useState(defaultHeaderData);
     const headerDataSelected = useSelector((state) => state.customization.searchSelectedData);
     useEffect(() => {
         if (headerDataSelected.id) {
             setHeaderData(headerDataSelected);
+            loadEmployeeTemplateDetail(headerDataSelected.id);
         } else {
             setHeaderData(defaultHeaderData);
         }
-        loadEmployeeTemplateDetail(headerData.id);
-    }, [headerDataSelected, headerData, defaultHeaderData])
+    }, [headerDataSelected])
 
     const [constMappedData, setConstMappedData] = useState([]);
     const loadEmployeeTemplateDetail = useCallback(async (headerID = 0) => {
@@ -104,7 +104,7 @@ const EmployeeTemplatesData = () => {
         dispatch({ type: OPEN_CUSTOM_HEADER_MODAL, openCustomHeaderModal: true });
     }
 
-    const refreshData = () => queryClient.invalidateQueries(['/get-location']);
+    const refreshData = () => loadEmployeeTemplateDetail(headerData.id);
 
     const openSearchModal = () => {
         dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: true });
@@ -114,10 +114,10 @@ const EmployeeTemplatesData = () => {
     const [deleteID, setDeleteID] = useState('');
     const selectToDelete = (type, id) => {
         setDeleteType(type);
-        if(type == "header"){
+        if (type == "header") {
             if (!headerDataSelected.id) return toast.error('Select header to continue.');
             setDeleteID(headerData.id);
-        }else{
+        } else {
             setDeleteID(id);
         }
         dispatch({ type: OPEN_DELETESWAL, confirmDelete: true });
@@ -126,15 +126,16 @@ const EmployeeTemplatesData = () => {
         try {
             if (deleteType == 'header') {
                 const response = await http.delete(`/remove-employeetemplateheader?id=${deleteID}`);
-                if(response.data.success){
+                if (response.data.success) {
                     toast.success('Data has been deleted successfully.');
                     dispatch({ type: SEARCH_SELECTED_DATA, searchSelectedData: {} })
                     dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
                     queryClient.invalidateQueries(['/get-employeetemplateheader']);
+                    loadEmployeeTemplateDetail(0);
                 } else toast.error(response.data.message);
             } else {
                 const response = await http.delete(`/remove-employeetemplatedetail?id=${deleteID}`);
-                if(response.data.success){
+                if (response.data.success) {
                     toast.success('Data has been deleted successfully.');
                     dispatch({ type: OPEN_DELETESWAL, confirmDelete: false })
                     loadEmployeeTemplateDetail(headerData.id);
@@ -166,26 +167,34 @@ const EmployeeTemplatesData = () => {
             <DetailModal RefreshData={refreshData} />
             <SearchHeaderModal />
             <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                    <Button sx={{ marginBottom: "1%", marginRight: "1%" }} variant="contained" size="medium" onClick={openSearchModal}>Search Header</Button>
-                    <Button sx={{ marginBottom: "1%" }} variant="contained" size="medium" onClick={openCustomHeaderModal}>Add Employee Template Header</Button>
+                <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'row', gap: 1 }}>
+                    <Button variant="contained" size="medium" onClick={openSearchModal}>Search Header</Button>
+                    <Button variant="contained" size="medium" onClick={openCustomHeaderModal}>Create New Template</Button>
+                    {headerData.id ?
+                        <>
+                            <Button variant="contained" size="medium" color="warning" onClick={updateHeader}>Update Header</Button>
+                            <Button variant="contained" size="medium" color="error" onClick={() => { selectToDelete('header') }}>Delete Header</Button>
+                            <Button variant="contained" size="medium" color="secondary" onClick={() => { clearData() }}>Clear</Button>
+                        </>
+                        : ""}
+                </Grid>
+                <Grid item xs={12} md={12}>
                     <Paper sx={{ padding: 2 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} md={12}>
-                                {/* <TextField label="Template Name" value={headerData.TName} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                <TextField label="Department" value={headerData.department} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /> */}
-                                <TextField label="Template Name/ Group" value={headerData.emp_group} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} />
-                                {/* <TextField label="Shifting" value={headerData.shifting} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /> */}
-                            </Grid>
+                            <Grid item xs={12} md={12}>Template Header</Grid>
+                            <Grid item xs={12} md={3}><TextField label="Group Name" value={headerData.emp_group} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /></Grid>
+                            <Grid item xs={12} md={3}><TextField label="Client" value={headerData.client_name} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /></Grid>
+                            <Grid item xs={12} md={3}><TextField label="location" value={headerData.location} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /></Grid>
+                            <Grid item xs={12} md={3}><TextField label="Department" value={headerData.department} fullWidth sx={{ mt: 1 }} size="medium" inputProps={{ readOnly: true }} /></Grid>
                         </Grid>
-                        <Button variant="contained" onClick={updateHeader} sx={{ marginTop: "2%", marginRight: "1%" }}>Update Header</Button>
-                        <Button variant="contained" color="error" onClick={() => { selectToDelete('header') }} sx={{ marginTop: "2%", marginRight: "1%" }}>Delete Header</Button>
-                        <Button variant="contained" color="secondary" onClick={() => { clearData() }} sx={{ marginTop: "2%" }}>Clear</Button>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} md={9}>
+                <Grid item xs={12} md={12}>
                     <Paper>
-                        <Stack sx={{ display: 'flex', padding: '20px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Stack sx={{ display: 'flex', paddingTop: '10px', paddingLeft: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            Template Employee List
+                        </Stack>
+                        <Stack sx={{ display: 'flex', padding: '10px', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <TextField variant='outlined' label="Search" size='small' value={search} onChange={(e) => { setSearch(e.target.value) }} sx={{ width: { xl: '30%', lg: '30%' } }} />
                             <Button variant="contained" size="small" onClick={openCustomModal}>Add Employee Template</Button>
                         </Stack>

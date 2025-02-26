@@ -18,11 +18,11 @@ const SearchAccountMasterModal = (props) => {
     }) : [];
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
-        return rows.filter(row =>
-            row.activityname.toLowerCase().includes(search.toLowerCase()) ||
+        return rows ? rows.filter(row =>
+            row.activity.toLowerCase().includes(search.toLowerCase()) ||
             row.costcenter.toLowerCase().includes(search.toLowerCase()) ||
             row.gl_code.toLowerCase().includes(search.toLowerCase())
-        );
+        ) : [];
     };
     const queryClient = useQueryClient();
     useEffect(() => {
@@ -31,10 +31,10 @@ const SearchAccountMasterModal = (props) => {
 
     const ColumnHeader = [
         {
-            field: 'activityname', headerName: 'Activity', width: 250,
+            field: 'activity', headerName: 'Activity', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.activityname}
+                    {params.row.activity}
                 </Box>
             ),
         },

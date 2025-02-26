@@ -68,26 +68,26 @@ const NewDarHeader = (props) => {
                 daytype: selectedRow[0].dt_name
             }));
         }
-        if (name == 'shift') {
-            if (value == 1) {
-                setDataVariable(prevState => ({
-                    ...prevState,
-                    shift_time_in_hour: "08",
-                    shift_time_in_min: "00",
-                    shift_time_out_hour: "16",
-                    shift_time_out_min: "00",
-                }));
-            }
-            if (value == 2) {
-                setDataVariable(prevState => ({
-                    ...prevState,
-                    shift_time_in_hour: "18",
-                    shift_time_in_min: "00",
-                    shift_time_out_hour: "02",
-                    shift_time_out_min: "00",
-                }));
-            }
-        }
+        // if (name == 'shift') {
+        //     if (value == 1) {
+        //         setDataVariable(prevState => ({
+        //             ...prevState,
+        //             shift_time_in_hour: "08",
+        //             shift_time_in_min: "00",
+        //             shift_time_out_hour: "16",
+        //             shift_time_out_min: "00",
+        //         }));
+        //     }
+        //     if (value == 2) {
+        //         setDataVariable(prevState => ({
+        //             ...prevState,
+        //             shift_time_in_hour: "18",
+        //             shift_time_in_min: "00",
+        //             shift_time_out_hour: "02",
+        //             shift_time_out_min: "00",
+        //         }));
+        //     }
+        // }
     };
 
     function filterIt(arr, searchKey, keyValue = false) {
@@ -134,6 +134,12 @@ const NewDarHeader = (props) => {
                 ...prevState,
                 templatelink_id: params.id,
                 group_name: params.emp_group,
+                location: params.location,
+                locationlink_id: params.location_idlink,
+                department: params.department,
+                departmend_id: params.department_idlink,
+                client_name: params.client_name,
+                client_id: params.client_id,
             }));
         }
     }
@@ -243,7 +249,7 @@ const NewDarHeader = (props) => {
                 totalHours: 0
             }));
         }
-    }, [dataVariable.shift_time_in_hour]);
+    }, [dataVariable.shift_time_in_hour, dataVariable.shift_time_in_min, dataVariable.shift_time_out_hour, dataVariable.shift_time_out_min]);
 
     return (
         <>
@@ -362,6 +368,8 @@ const NewDarHeader = (props) => {
                                     <option></option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
                                 </TextField>
                             </Grid>
                         </Grid>

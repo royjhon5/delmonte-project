@@ -161,15 +161,29 @@ const DARdata = () => {
     const [constMappedData, setConstMappedData] = useState([]);
     const loadDARDetail = useCallback(async (headerID = 0) => {
         const response = await http.get(`/get-dardetail?header_id=${headerID}`);
-        setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
-            return { ...row, id: row.id }
-        }) : []);
+        if (response.data.length > 0) {
+            console.log(response);
+            let lastChapa = response.data[0].ChapaID;
+            let dataArr = [];
+            await response.data.map((row, index) => {
+                if (lastChapa != row.ChapaID) {
+                    lastChapa = row.ChapaID;
+                    dataArr.push({ id: index + "index", ChapaID: "", emp_lname: "", emp_fname: "", is_blank: 1 });
+                }
+                row.is_blank = 0;
+                dataArr.push(row);
+            })
+            setConstMappedData(dataArr);
+        } else setConstMappedData([]);
+
+        // setConstMappedData(Array.isArray(response.data) ?  : []);
     }, []);
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
             row.ChapaID.toLowerCase().includes(search.toLowerCase()) ||
-            row.emp_lname.toLowerCase().includes(search.toLowerCase())
+            row.emp_lname.toLowerCase().includes(search.toLowerCase()) ||
+            row.emp_fname.toLowerCase().includes(search.toLowerCase())
         );
     };
 
@@ -200,13 +214,18 @@ const DARdata = () => {
             field: 'id', headerName: '', width: 150, align: 'left',
             renderCell: (params) => (
                 <>
-                    <Checkbox
-                        checked={chapaChecked.includes(params.row.id)}
-                        sx={{ paddingLeft: 2 }}
-                        onChange={(event) => { checkCkbx(event.target.checked, params.row.id) }}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                    />
-                    {params.row.is_main == 1 ? <Chip size="small" label="FROM BIO" color="warning" variant="outlined" /> : <Chip size="small" label="BREAKDOWN" color="success" variant="outlined" />}
+                    {params.row.is_blank == 0 ?
+                        <>
+                            <Checkbox
+                                checked={chapaChecked.includes(params.row.id)}
+                                sx={{ paddingLeft: 2 }}
+                                onChange={(event) => { checkCkbx(event.target.checked, params.row.id) }}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                            {params.row.is_main == 1 ? <Chip size="small" label="FROM BIO" color="warning" variant="outlined" /> : <Chip size="small" label="BREAKDOWN" color="success" variant="outlined" />}
+                        </>
+                        : ""
+                    }
                 </>
             ),
         },
@@ -214,12 +233,12 @@ const DARdata = () => {
             field: 'ChapaID', headerName: 'Chapa ID', width: 150,
             renderCell: (params) => (
                 <>
-                    {/* {params.row.is_main == 1 ? */}
-                    <Box sx={{ paddingLeft: 1 }}>
-                        {params.row.ChapaID}
-                    </Box>
-                    : ""
-                    {/* } */}
+                    {params.row.is_blank == 0 ?
+                        <Box sx={{ paddingLeft: 1 }}>
+                            {params.row.ChapaID}
+                        </Box>
+                        : ""
+                    }
                 </>
             ),
         },
@@ -227,12 +246,12 @@ const DARdata = () => {
             field: 'fullname', headerName: 'Name', width: 250,
             renderCell: (params) => (
                 <>
-                    {/* {params.row.is_main == 1 ? */}
-                    <Box>
-                        {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
-                    </Box>
-                    : ""
-                    {/* } */}
+                    {params.row.is_blank == 0 ?
+                        <Box>
+                            {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
+                        </Box>
+                        : ""
+                    }
                 </>
             ),
         },
@@ -309,17 +328,22 @@ const DARdata = () => {
                 }
                 return (
                     <Box sx={{ paddingRight: 1 }}>
-                        {params.row.is_main == 0 ?
-                            <IconButton color="primary" size="small" onClick={selectDARBreakdown}>
-                                <EditIcon fontSize="inherit" />
-                            </IconButton>
-                            : ""}
-                        {/* <IconButton color="primary" size="small" onClick={SelectedRow}>
-                            <EditIcon fontSize="inherit" />
-                        </IconButton> */}
-                        <IconButton color="error" size="small" onClick={() => selectToDelete()}>
-                            <DeleteIcon fontSize="inherit" />
-                        </IconButton>
+                        {params.row.is_blank == 0 ?
+                            <>
+                                {
+                                    params.row.is_main == 0 ?
+                                        <IconButton color="primary" size="small" onClick={selectDARBreakdown}>
+                                            <EditIcon fontSize="inherit" />
+                                        </IconButton>
+                                        : ""
+                                }
+                                <IconButton color="error" size="small" onClick={() => selectToDelete()}>
+                                    <DeleteIcon fontSize="inherit" />
+                                </IconButton>
+                            </>
+
+                            : ""
+                        }
                     </Box>
                 )
             }

@@ -60,12 +60,12 @@ const ActivityBreakdown = (props) => {
     }
 
     const SaveOrUpdateData = async () => {
-        setLoadSaving("Saving...");
         let chapaList = [];
         await constMappedDataTo.forEach(element => {
             chapaList.push(element.ChapaID);
         });
         if(chapaList.length == 0) return toast.error("No employee/s selected.");
+        setLoadSaving("Saving...");
         let toSaveParams = dataVariable;
         toSaveParams.empids = chapaList;
         const response = await http.post('/post-dardetailbreakdown', { dataVariable: toSaveParams });
@@ -213,7 +213,7 @@ const ActivityBreakdown = (props) => {
             setDataVariable(prevState => ({
                 ...prevState,
                 activitylink_id: params.activity_id_link,
-                activity: params.activityname,
+                activity: params.activity,
                 cost_center: params.costcenter,
                 gl: params.gl_code
             }));

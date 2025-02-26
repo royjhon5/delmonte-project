@@ -15,19 +15,23 @@ const SearchHeaderModal = () => {
         dispatch({ type: OPEN_CUSTOM_SEARCH_MODAL, openCustomSearchModal: false });
         
     }
-    const { data: mainDataHeader } = hookContainer('/get-employeetemplateheader');
+    const { data: mainDataHeader } = hookContainer('/get-accounttochargehdr');
     const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
         return { ...row, id: row.id };
     }) : [];
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
-            row.emp_group.toLowerCase().includes(search.toLowerCase())
+            row.client_name.toLowerCase().includes(search.toLowerCase()) ||
+            row.location.toLowerCase().includes(search.toLowerCase()) ||
+            row.department.toLowerCase().includes(search.toLowerCase())
         );
     };
 
     const ColumnHeader = [
-        { field: 'emp_group', headerName: 'Template Name/ Group', flex: 1, },
+        { field: 'client_name', headerName: 'Client Name', flex: 1, },
+        { field: 'location', headerName: 'Location', flex: 1, },
+        { field: 'department', headerName: 'Department', flex: 1, },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -52,8 +56,8 @@ const SearchHeaderModal = () => {
     return (
         <CustomDialog
             open={open}
-            maxWidth={'xs'}
-            DialogTitles={"Search Employee Template Header"}
+            maxWidth={'lg'}
+            DialogTitles={"Search Account To Charge Header"}
             onClose={CloseDialog}
             DialogContents={
                 <Grid container spacing={2}>
