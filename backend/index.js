@@ -7,8 +7,8 @@ const db = require('./config/dbConnection')
 const socketServer = require('socket.io')(http, {
     cors: {
         origin: [
-            "http://192.168.1.3:3000",
-            // "http://location:3000",
+            // "http://192.168.1.3:3000",
+            "http://location:3000",
         ]
     }
 });
@@ -19,8 +19,8 @@ app.use(cookieParser());
 app.use(cors({
     origin: (origin, callback) => {
         // const allowedOrigins = ["http://192.168.1.10:3000"];
-        const allowedOrigins = ["http://192.168.1.3:3000"];
-        // const allowedOrigins = ["http://localhost:3000"];
+        // const allowedOrigins = ["http://192.168.1.3:3000"];
+        const allowedOrigins = ["http://localhost:3000"];
         if (allowedOrigins.includes(origin) || !origin) {
             callback(null, true);
         } else {
@@ -51,5 +51,5 @@ socketServer.on('connection', (socket) => {
     
 
 });
-// http.listen(8000, "127.0.0.1");
-http.listen(8000, "192.168.1.3");
+http.listen(8000, "127.0.0.1");
+// http.listen(8000, "192.168.1.3");

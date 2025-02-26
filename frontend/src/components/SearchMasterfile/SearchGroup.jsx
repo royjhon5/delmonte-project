@@ -24,7 +24,7 @@ const SearchGroupModal = (props) => {
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-group']);
+        if(openModal) queryClient.invalidateQueries(['/get-group']);
     }, [openModal]);
 
     const ColumnHeader = [

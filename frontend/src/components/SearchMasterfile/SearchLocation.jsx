@@ -24,7 +24,7 @@ const SearchLocationModal = (props) => {
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-location']);
+        if(openModal) queryClient.invalidateQueries(['/get-location']);
     }, [openModal]);
 
     const ColumnHeader = [

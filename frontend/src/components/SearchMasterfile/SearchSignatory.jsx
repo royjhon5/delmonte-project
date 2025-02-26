@@ -24,7 +24,7 @@ const SearchSignatoryModal = (props) => {
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-signatory']);
+        if(openModal) queryClient.invalidateQueries(['/get-signatory']);
     }, [openModal]);
 
     const ColumnHeader = [

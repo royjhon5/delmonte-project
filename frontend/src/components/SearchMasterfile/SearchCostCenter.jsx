@@ -24,7 +24,7 @@ const SearchCostCenterModal = (props) => {
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-costcenter']);
+        if(openModal) queryClient.invalidateQueries(['/get-costcenter']);
     }, [openModal]);
 
     const ColumnHeader = [

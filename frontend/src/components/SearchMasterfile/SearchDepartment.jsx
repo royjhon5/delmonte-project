@@ -24,7 +24,7 @@ const SearchTemplateModal = (props) => {
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-department']);
+        if(openModal) queryClient.invalidateQueries(['/get-department']);
     }, [openModal]);
 
     const ColumnHeader = [

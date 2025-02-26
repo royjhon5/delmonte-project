@@ -24,7 +24,7 @@ const SearchActivityModal = (props) => {
     };
     const queryClient = useQueryClient();
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-activity']);
+        if(openModal) queryClient.invalidateQueries(['/get-activity']);
     }, [openModal]);
 
     const ColumnHeader = [

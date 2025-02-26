@@ -2,9 +2,8 @@ import { Box, Button, Grid, TextField, Paper, Stack } from "@mui/material";
 import CustomDataGrid from "../CustomDataGrid";
 import NoData from "../CustomDataTable/NoData";
 import CustomDialog from "../CustomDialog";
-import { useState, useEffect } from "react";
-import { hookContainer } from "../../hooks/globalQuery";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect, useCallback } from "react";
+import http from "../../api/http.jsx";
 
 const SearchGLCodeModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
@@ -12,19 +11,26 @@ const SearchGLCodeModal = (props) => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-glcode');
-    const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
-        return { ...row, id: row.id };
-    }) : [];
+    const [constMappedData, setConstMappedData] = useState([]);
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
             row.gl_code.toLowerCase().includes(search.toLowerCase())
         );
     };
-    const queryClient = useQueryClient();
+
+    const loadData = useCallback(async () => {
+        const response = await http.get(`/get-glcode`); // get time in and time out of employee selected
+        console.log(response);
+        if (response.data.length > 0) {
+            setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
+                return { ...row, id: row.id };
+            }) : []);
+        }
+    }, []);
+
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-glcode']);
+        if(openModal) loadData();
     }, [openModal]);
 
     const ColumnHeader = [
