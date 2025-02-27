@@ -96,11 +96,12 @@ const AddGroupLine = ({ RefreshData }) => {
     const [openModalSearchActivity, setOpenModalSearchActivity] = useState(false);
     async function modalCloseSearchActivity(params) {
         setOpenModalSearchActivity(false);
+        console.log(params);
         if (params) {
             setActivity(params.activity);
             setGLCode(params.gl_code);
             setCostCenter(params.costcenter);
-            setActivityLinkID(params.activity_id_link);
+            setActivityLinkID(params.id);
         }
     }
 

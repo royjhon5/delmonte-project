@@ -10,7 +10,7 @@ const AccountMasterList = () => {
   return (
     <Fragment>
         <Helmet>
-            <title>Account Master List</title>
+            <title>Account To Charge & Rate Info</title>
         </Helmet>
         <Box sx={{ mb: '20px' }}>
             <Stack sx={{
@@ -19,7 +19,7 @@ const AccountMasterList = () => {
                 alignItems: 'center'
             }}>
                 <Box sx={{ flexGrow: 1 , display: 'flex', flexDirection: 'column', }}>
-                    <Typography variant="h4">Account Master List</Typography>
+                    <Typography variant="h4">Account To Charge & Rate Info</Typography>
                     <BreadCrumbs />
                 </Box>
             </Stack>
