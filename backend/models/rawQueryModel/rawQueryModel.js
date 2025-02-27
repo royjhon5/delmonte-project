@@ -121,13 +121,13 @@ const rawQueryModel = {
 
     AddDARDetailsToSOA: async function (params) {
         return new Promise((resolve, reject) => {
-            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, hdr.day_type_idlink, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
-                SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} GROUP BY dtl.activitylink_id`;
+            const query = `SELECT COUNT(DISTINCT(dtl.ChapaID)) as head_count, hdr.daytype, dtl.activitylink_id, dtl.activitylink_id, dtl.gl, dtl.cost_center, dtl.activity, SUM(dtl.st) as total_st, SUM(dtl.ot) as total_ot,
+                SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} AND dtl.is_main = 0 GROUP BY dtl.activitylink_id`;
             db.query(query, [], async (err, result) => {
                 console.log(err)
                 await result.forEach(element => {
                     // get account rates here...
-                    const accountRateSql = `SELECT * FROM tblaccount_rates WHERE daytype_link = ${element.day_type_idlink} LIMIT 1`;
+                    const accountRateSql = `SELECT * FROM tblaccount_to_charge WHERE id = ${element.activitylink_id} LIMIT 1`;
                     db.query(accountRateSql, [], async (errRate, resultRate) => {
                         let c_rates_st = 0;
                         let c_rates_ot = 0;
@@ -139,14 +139,46 @@ const rawQueryModel = {
                         let amount_ndot = 0;
                         let total_amount = 0;
                         if (resultRate.length > 0) {
-                            c_rates_st = resultRate[0].st_rate;
-                            c_rates_ot = resultRate[0].ot_rate;
-                            c_rates_nd = resultRate[0].nd_rate;
-                            c_rates_ndot = resultRate[0].ndot_rate;
-                            amount_st = parseFloat(resultRate[0].st_rate) * parseFloat(element.total_st);
-                            amount_ot = parseFloat(resultRate[0].ot_rate) * parseFloat(element.total_ot);
-                            amount_nd = parseFloat(resultRate[0].nd_rate) * parseFloat(element.total_nd);
-                            amount_ndot = parseFloat(resultRate[0].ndot_rate) * parseFloat(element.total_ndot);
+                            if(element.daytype == "REGULAR DAY") {
+                                c_rates_st = resultRate[0].r_st;
+                                c_rates_ot = resultRate[0].r_ot;
+                                c_rates_nd = resultRate[0].r_nd;
+                                c_rates_ndot = resultRate[0].r_ndot;
+                            }
+                            if(element.daytype == "REGULAR HOLIDAY") {
+                                c_rates_st = resultRate[0].rh_st;
+                                c_rates_ot = resultRate[0].rh_ot;
+                                c_rates_nd = resultRate[0].rh_nd;
+                                c_rates_ndot = resultRate[0].rh_ndot;
+                            }
+                            if(element.daytype == "SPECIAL HOLIDAY") {
+                                c_rates_st = resultRate[0].sh_st;
+                                c_rates_ot = resultRate[0].sh_ot;
+                                c_rates_nd = resultRate[0].sh_nd;
+                                c_rates_ndot = resultRate[0].sh_ndot;
+                            }
+                            if(element.daytype == "REST DAY") {
+                                c_rates_st = resultRate[0].rd_st;
+                                c_rates_ot = resultRate[0].rd_ot;
+                                c_rates_nd = resultRate[0].rd_nd;
+                                c_rates_ndot = resultRate[0].rd_ndot;
+                            }
+                            if(element.daytype == "REST DAY REGULAR HOLIDAY") {
+                                c_rates_st = resultRate[0].rdrh_st;
+                                c_rates_ot = resultRate[0].rdrh_ot;
+                                c_rates_nd = resultRate[0].rdrh_nd;
+                                c_rates_ndot = resultRate[0].rdrh_ndot;
+                            }
+                            if(element.daytype == "REST DAY SPECIAL HOLIDAY") {
+                                c_rates_st = resultRate[0].rdsh_st;
+                                c_rates_ot = resultRate[0].rdsh_ot;
+                                c_rates_nd = resultRate[0].rdsh_nd;
+                                c_rates_ndot = resultRate[0].rdsh_ndot;
+                            }
+                            amount_st = parseFloat(c_rates_st) * parseFloat(element.total_st);
+                            amount_ot = parseFloat(c_rates_ot) * parseFloat(element.total_ot);
+                            amount_nd = parseFloat(c_rates_nd) * parseFloat(element.total_nd);
+                            amount_ndot = parseFloat(c_rates_ndot) * parseFloat(element.total_ndot);
                             total_amount = amount_st + amount_ot + amount_nd + amount_ndot;
                         }
                         // insert soa detail
@@ -537,7 +569,10 @@ const rawQueryModel = {
         let totalHC = 1;
         let cntr = 1;
         return new Promise((resolve, reject) => {
-            const sumFields = `SUM(h_st) as th_st, SUM(h_ot) as th_ot, SUM(h_nd) as th_nd, SUM(h_ndot) as th_ndot, SUM(amount_st) as tamount_st, SUM(amount_ot) as tamount_ot, SUM(amount_nd) as tamount_nd, SUM(amount_ndot) as tamount_ndot, SUM(total_amount) as ttotal_amount, SUM(head_count) as thead_count`;
+            // query for headcout get from dar dtl by activity id
+            const thead_count = `(SELECT COUNT(DISTINCT(ddtl.ChapaID)) FROM tbldarhdr dhdr, tbldardtl ddtl WHERE dhdr.soa_no_link = hdr.id AND dhdr.id = ddtl.dar_idlink AND dtl.activity_idlink = ddtl.activitylink_id AND is_main = 1 GROUP BY dhdr.id) as thead_count`;
+            // 
+            const sumFields = `SUM(h_st) as th_st, SUM(h_ot) as th_ot, SUM(h_nd) as th_nd, SUM(h_ndot) as th_ndot, SUM(amount_st) as tamount_st, SUM(amount_ot) as tamount_ot, SUM(amount_nd) as tamount_nd, SUM(amount_ndot) as tamount_ndot, SUM(total_amount) as ttotal_amount, ${thead_count}`;
             const query = `SELECT hdr.*, dtl.*, ${sumFields} FROM tblsoahdr hdr, tblsoa_dtl dtl WHERE hdr.id = dtl.soa_hdr_idlink and hdr.id = ${params.id} GROUP BY dtl.activity_idlink ORDER BY dtl.activity ASC, dtl.gl_account ASC`;
             db.query(query, params.paramValue, (err, result) => {
                 if (err) return reject(err);

@@ -2,9 +2,8 @@ import { Box, Button, Grid, TextField, Paper, Stack } from "@mui/material";
 import CustomDataGrid from "../../../../components/CustomDataGrid";
 import NoData from "../../../../components/CustomDataTable/NoData";
 import CustomDialog from "../../../../components/CustomDialog";
-import { useState, useEffect } from "react";
-import { hookContainer } from "../../../../hooks/globalQuery";
-import { useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect, useCallback } from "react";
+import http from "../../../../api/http.jsx";
 
 const SearchEmployeeModal = (props) => {
     const { openModal, onCloseModal, isUpdate } = props;
@@ -12,10 +11,7 @@ const SearchEmployeeModal = (props) => {
         onCloseModal(false);
     }
 
-    const { data: mainDataHeader } = hookContainer('/get-employee');
-    const constMappedData = Array.isArray(mainDataHeader) ? mainDataHeader.map((row) => {
-        return { ...row, id: row.id };
-    }) : [];
+    const [constMappedData, setConstMappedData] = useState([]);
     const [search, setSearch] = useState('');
     const SearchFilter = (rows) => {
         return rows.filter(row =>
@@ -23,9 +19,18 @@ const SearchEmployeeModal = (props) => {
             row.lastname.toLowerCase().includes(search.toLowerCase())
         );
     };
-    const queryClient = useQueryClient();
+    
+    const loadData = useCallback(async () => {
+        const response = await http.get(`/get-employee`);
+        if (response.data.length > 0) {
+            setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
+                return { ...row, id: row.id };
+            }) : []);
+        }
+    }, []);
+
     useEffect(() => {
-        queryClient.invalidateQueries(['/get-employee']);
+        if(openModal) loadData();
     }, [openModal]);
 
     const ColumnHeader = [
