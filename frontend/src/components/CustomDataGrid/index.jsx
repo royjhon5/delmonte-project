@@ -23,7 +23,10 @@ const CustomDataGrid = ({
   rowSelectionModel
 }) => {
   const theme = useTheme();
-
+  const customGetRowClassName = (params) => {
+    let baseClass = getRowClassName ? getRowClassName(params) : "";
+    return params.isSelected ? `${baseClass} checked-row` : baseClass;
+  };
   return (
     <DataGrid
       columnHeaderHeight={36}
@@ -47,7 +50,7 @@ const CustomDataGrid = ({
         pagination: { paginationModel: { pageSize: 25 } },
       }}
       pageSizeOptions={[25, 50, 100]}
-      getRowClassName={getRowClassName}
+      getRowClassName={customGetRowClassName}
       sx={{
         "--DataGrid-overlayHeight": gridOverLay,
         borderRadius: 0,
@@ -76,6 +79,12 @@ const CustomDataGrid = ({
           padding: 0,
         },
         "& .duplicate-row": {
+          backgroundColor: "rgba(255, 0, 0, 0.3) !important",
+        },
+        "& .Mui-checked": {
+          color: "red !important", // Checked state color red
+        },
+        "& .checked-row": {
           backgroundColor: "rgba(255, 0, 0, 0.3) !important",
         },
       }}
