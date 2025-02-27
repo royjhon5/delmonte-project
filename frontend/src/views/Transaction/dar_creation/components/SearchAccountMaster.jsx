@@ -24,7 +24,7 @@ const SearchAccountMasterModal = (props) => {
     const loadData = useCallback(async () => {
         const response = await http.get(`/get-accounttocharge`);
         if (response.data.length > 0) {
-            setDayTypeList(Array.isArray(response.data) ? response.data.map((row) => {
+            setConstMappedData(Array.isArray(response.data) ? response.data.map((row) => {
                 return { ...row, id: row.id };
             }) : []);
         }

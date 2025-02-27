@@ -199,12 +199,7 @@ const DARdata = () => {
             if (checked) {
                 setChapaChecked(prevState => [...prevState, chapa]);
             } else {
-                let array = chapaChecked; // make a separate copy of the array
-                let index = array.indexOf(chapa)
-                if (index !== -1) {
-                    array.splice(index, 1);
-                    setChapaChecked(array);
-                }
+                setChapaChecked((prevState) => prevState.filter((item) => item !== chapa));
             }
         }
     }

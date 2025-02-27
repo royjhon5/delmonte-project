@@ -59,9 +59,14 @@ const ActivityBreakdown = (props) => {
         setDataVariable(initialDataVariable);
     }
 
+    const [selectedRows, setSelectedRows] = useState([]);
+    const handleSelectionChange = (selectionModel) => {
+        setSelectedRows(selectionModel);
+    };
+
     const SaveOrUpdateData = async () => {
         let chapaList = [];
-        await constMappedDataTo.forEach(element => {
+        constMappedDataTo.map(element => {
             chapaList.push(element.ChapaID);
         });
         if(chapaList.length == 0) return toast.error("No employee/s selected.");
@@ -99,6 +104,15 @@ const ActivityBreakdown = (props) => {
         }));
     };
 
+    const bulkAppend = async () => {
+        let temp = [...constMappedDataTo];
+        selectedRows.map(element => {
+            temp.push(constMappedDataFrom.filter(item => item.id == element)[0]);
+            setConstMappedDataFrom(prevState => prevState.filter(item => item.id !== element)); // remove
+        })
+        setConstMappedDataTo(temp); // add
+    }
+
     // table
     const [constMappedDataFrom, setConstMappedDataFrom] = useState([]);
     const loadDARDetailGroup = useCallback(async (headerID = 0) => {
@@ -123,7 +137,14 @@ const ActivityBreakdown = (props) => {
                 </Box>
             ),
         },
-        { field: 'activity', headerName: 'Activity', flex: 1, },
+        {
+            field: 'fullname', headerName: 'Name', flex: 1,
+            renderCell: (params) => (
+                <Box>
+                    {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
+                </Box>
+            ),
+        },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -165,7 +186,14 @@ const ActivityBreakdown = (props) => {
                 </Box>
             ),
         },
-        { field: 'activity', headerName: 'Activity', flex: 1, },
+        {
+            field: 'fullname', headerName: 'Name', flex: 1,
+            renderCell: (params) => (
+                <Box>
+                    {params.row.emp_fname + " " + params.row.emp_mname + " " + params.row.emp_lname + " " + params.row.emp_ext_name}
+                </Box>
+            ),
+        },
         {
             field: "action", headerAlign: 'right',
             headerName: '',
@@ -212,7 +240,7 @@ const ActivityBreakdown = (props) => {
         if (params) {
             setDataVariable(prevState => ({
                 ...prevState,
-                activitylink_id: params.activity_id_link,
+                activitylink_id: params.id,
                 activity: params.activity,
                 cost_center: params.costcenter,
                 gl: params.gl_code
@@ -343,20 +371,30 @@ const ActivityBreakdown = (props) => {
                     <>
                         <Grid container spacing={1} sx={{ mt: 1 }}>
                             <Grid item xs={12} md={5}>
-                                <TextField variant='outlined' label="Search" size='small' value={searchFrom} onChange={(e) => { setSearchFrom(e.target.value) }} sx={{ width: { xl: '80%', lg: '80%' } }} />
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12} md={8}>
+                                        <TextField variant='outlined' label="Search" size='small' value={searchFrom} onChange={(e) => { setSearchFrom(e.target.value) }} sx={{ width: { xl: '80%', lg: '80%' } }} />
+                                    </Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <Button variant="contained" color="primary" fullWidth onClick={() => { bulkAppend() }}>Bulk Append</Button>
+                                    </Grid>
+                                </Grid>
                                 <CustomDataGrid
                                     columns={ColumnHeaderFrom}
                                     rows={SearchFilterFrom(constMappedDataFrom)}
                                     maxHeight={300}
                                     height={300}
                                     slots={{ noRowsOverlay: NoData }}
+                                    checkboxSelection={true}
+                                    onRowSelectionModelChange={handleSelectionChange}
+                                    disableRowSelectionOnClick={true}
                                 />
                             </Grid>
                             <Grid item xs={12} md={2} sx={{ textAlign: 'center', marginTop: '8%' }}>
                                 <CompareArrowsIcon color="primary" sx={{ fontSize: 100 }} />
                             </Grid>
                             <Grid item xs={12} md={5}>
-                                <TextField variant='outlined' label="Search" size='small' value={searchTo} onChange={(e) => { setSearchTo(e.target.value) }} sx={{ width: { xl: '80%', lg: '80%' } }} />
+                                <TextField variant='outlined' label="Search" size='small' value={searchTo} onChange={(e) => { setSearchTo(e.target.value) }} sx={{ width: { xl: '50%', lg: '50%' } }} />
                                 <CustomDataGrid
                                     columns={ColumnHeaderTo}
                                     rows={SearchFilterTo(constMappedDataTo)}

@@ -40,14 +40,15 @@ const AddSOADetailModal = (props) => {
 
     const ColumnHeader = [
         {
-            field: 'template_name', headerName: 'Template Name', width: 250,
+            field: 'group_name', headerName: 'Group', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.template_name}
+                    {params.row.group_name}
                 </Box>
             ),
         },
-        { field: 'group_name', headerName: 'Group', flex: 1 },
+        { field: 'client_name', headerName: 'Client', flex: 1 },
+        { field: 'location', headerName: 'Location', flex: 1 },
         { field: 'department', headerName: 'Department', flex: 1 },
         { field: 'shift', headerName: 'Shift', flex: 1 },
         {
