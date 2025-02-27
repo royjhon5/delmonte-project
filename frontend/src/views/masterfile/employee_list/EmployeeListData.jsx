@@ -92,7 +92,7 @@ const EmployeeListData = () => {
             ),
         },
         {
-            field: 'costcenter', headerName: 'Assigned Activity', width: 150,
+            field: 'costcenter', headerName: 'Cost Center', width: 150,
             renderCell: (data) => (
                 <Box sx={{ paddingLeft: 1 }}>
                     {data.row.costcenter}

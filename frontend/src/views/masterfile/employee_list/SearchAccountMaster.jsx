@@ -31,10 +31,10 @@ const SearchAccountMasterModal = (props) => {
 
     const ColumnHeader = [
         {
-            field: 'activityname', headerName: 'Activity', width: 250,
+            field: 'activity', headerName: 'Activity', width: 250,
             renderCell: (params) => (
                 <Box sx={{ paddingLeft: 1 }}>
-                    {params.row.activityname}
+                    {params.row.activity}
                 </Box>
             ),
         },

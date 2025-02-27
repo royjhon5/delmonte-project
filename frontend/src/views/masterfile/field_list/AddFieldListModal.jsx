@@ -58,7 +58,7 @@ const AddFieldList = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Field List" value={FieldList} onChange={(e) => { setFieldList(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Field List" value={FieldList} onChange={(e) => { setFieldList(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={

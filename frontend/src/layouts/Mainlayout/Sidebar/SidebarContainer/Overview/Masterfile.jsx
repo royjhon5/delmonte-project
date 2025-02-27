@@ -118,7 +118,7 @@ const MasterFile = () => {
                             onClick={navigateEmployeeList}
                         />
                         <CustomMenuButton
-                            label="Account Master List"
+                            label="Account To Charge and Rate Info"
                             activePath="/dashboard/account-master"
                             onClick={navigateAccountMasterList}
                         />
@@ -172,7 +172,7 @@ const MasterFile = () => {
                     onClick={navigateEmployeeList}
                 />
                 <ListBtn
-                    label="Account Master List"
+                    label="Account To Charge and Rate Info"
                     activePath="/dashboard/account-master"
                     onClick={navigateAccountMasterList}
                 />
