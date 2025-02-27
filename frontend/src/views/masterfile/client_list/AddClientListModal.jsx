@@ -81,12 +81,12 @@ const AddDayTypeModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Code" value={client_code} onChange={(e) => { setClientCode(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
-                    <TextField label="Client Name" value={client_name} onChange={(e) => { setClientName(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
-                    <TextField label="Address" value={client_address} onChange={(e) => { setClientAddress(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
-                    <TextField type="number" label="Contact No" value={client_contactno} onChange={(e) => { setContactNo(e.target.value) }} fullWidth inputProps={{ style: { textTransform: "uppercase" } }} sx={{ mt: 1 }} size="medium" />
-                    <TextField label="Email" value={client_email} onChange={(e) => { setEmail(e.target.value) }} fullWidth sx={{ mt: 1 }}  size="medium" />
-                    <TextField label="TIN No" value={client_tinno} onChange={(e) => { setTINNo(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField label="Code" value={client_code} onChange={(e) => { setClientCode(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField label="Client Name" value={client_name} onChange={(e) => { setClientName(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField label="Address" value={client_address} onChange={(e) => { setClientAddress(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField type="number" label="Contact No" value={client_contactno} onChange={(e) => { setContactNo(e.target.value.replace(/^\s+/, "")) }} fullWidth inputProps={{ style: { textTransform: "uppercase" } }} sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Email" value={client_email} onChange={(e) => { setEmail(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }}  size="medium" />
+                    <TextField label="TIN No" value={client_tinno} onChange={(e) => { setTINNo(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
                 </Box>
             }
             DialogAction={

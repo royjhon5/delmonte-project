@@ -72,10 +72,10 @@ module.exports.saveEmployeeData = async function (req, res) {
         const verifyResult = await VerifyOnSave(checkParams);
         if (verifyResult.data.length > 0) {
             const existingRecord = verifyResult.data[0];
-            if (existingRecord.id === data.id) {
-                return res.status(200).json({ message: "No changes made." });
+            if (existingRecord.id != data.id) {
+                // return res.status(200).json({ message: "No changes made." });
+				return res.status(400).json({ error: "Chapa ID already exists!" });
             }
-            return res.status(400).json({ error: "Chapa ID already exists!" });
         } 
 		var result = await data.id > 0 ? update(params) : insert(params);
 		res.status(200).json(result);

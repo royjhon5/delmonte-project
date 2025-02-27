@@ -50,7 +50,7 @@ const AddGroupLineModal = ({ RefreshData }) => {
         if (isToUpdate) {
             setGroupLine(toUpdateData.groupline_name);
         }
-    }, [isToUpdate, toUpdateData])
+    }, [isToUpdate, toUpdateData]);
 
     return (
         <CustomDialog
@@ -60,7 +60,7 @@ const AddGroupLineModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Group Line" value={GroupLine} onChange={(e) => { setGroupLine(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="Group Line" value={GroupLine} onChange={(e) => { setGroupLine(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={

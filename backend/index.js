@@ -8,7 +8,7 @@ const socketServer = require('socket.io')(http, {
     cors: {
         origin: [
             // "http://192.168.1.3:3000",
-            "http://location:3000",
+            "http://localhost:3000",
         ]
     }
 });

@@ -57,7 +57,7 @@ const AddDayTypeModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="DayType" value={DayType} onChange={(e) => { setDayType(e.target.value) }} fullWidth sx={{ mt: 1 }} size="medium" />
+                    <TextField label="DayType" value={DayType} onChange={(e) => { setDayType(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} size="medium" />
                 </Box>
             }
             DialogAction={

@@ -24,7 +24,7 @@ module.exports.saveGroupData = async function (req, res) {
         tableName: "tblgroupline_list",
         fieldValue: {
             id: data.id,
-            groupline_name: data.groupline_name
+            groupline_name: data.groupline_name.trim()
         }
     };
     const checkParams = {

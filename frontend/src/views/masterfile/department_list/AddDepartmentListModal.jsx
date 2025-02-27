@@ -67,8 +67,8 @@ const AddDepartmentListModal = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="Department" value={DepartmentList} onChange={(e) => { setDepartmentList(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
-                    <TextField sx={{ mt: 1 }} size="medium" label="Select Client" select value={client_idlink} onChange={(e) => { setClientLinkID(e.target.value) }} SelectProps={{ native: true, }} fullWidth>
+                    <TextField label="Department" value={DepartmentList} onChange={(e) => { setDepartmentList(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField sx={{ mt: 1 }} size="medium" label="Select Client" select value={client_idlink} onChange={(e) => { setClientLinkID(e.target.value.replace(/^\s+/, "")) }} SelectProps={{ native: true, }} fullWidth>
                         <option></option>
                         {clientList?.map((option) => (
                             <option key={option.id} value={`${option.id}`}>

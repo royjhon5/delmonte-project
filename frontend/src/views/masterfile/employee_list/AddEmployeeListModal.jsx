@@ -97,7 +97,7 @@ const AddGroupLine = ({ RefreshData }) => {
     async function modalCloseSearchActivity(params) {
         setOpenModalSearchActivity(false);
         if (params) {
-            setActivity(params.activityname);
+            setActivity(params.activity);
             setGLCode(params.gl_code);
             setCostCenter(params.costcenter);
             setActivityLinkID(params.activity_id_link);

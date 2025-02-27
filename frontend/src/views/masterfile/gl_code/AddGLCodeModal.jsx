@@ -57,7 +57,7 @@ const AddGLCode = ({ RefreshData }) => {
             onClose={CloseDialog}
             DialogContents={
                 <Box sx={{ mt: 1 }}>
-                    <TextField label="GL Code" value={GLCode} onChange={(e) => { setGLCode(e.target.value) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
+                    <TextField label="GL Code" value={GLCode} onChange={(e) => { setGLCode(e.target.value.replace(/^\s+/, "")) }} fullWidth sx={{ mt: 1 }} inputProps={{ style: { textTransform: "uppercase" } }} size="medium" />
                 </Box>
             }
             DialogAction={
