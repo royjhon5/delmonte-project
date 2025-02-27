@@ -95,3 +95,14 @@
   background-color: rgba(255, 0, 0, 0.2) !important; /* Light red */
   color: red !important;
 }
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 15px;
+  background-color: rgb(33,43,54);
+
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: grey;
+}

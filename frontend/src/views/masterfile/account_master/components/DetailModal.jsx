@@ -74,6 +74,9 @@ const DetailModal = ({ RefreshData }) => {
         // }
     };
     const SaveOrUpdateData = async () => {
+        for (var key of Object.keys(dataVariable)) {
+            if(dataVariable[key] == "" && key != 'id' && key != 'header_id') return toast.error('All fields are required.');
+        }
         let AccountMasterData = dataVariable;
         AccountMasterData.header_id = headerData.id;
         const response = await http.post('/post-accounttocharge', { AccountMasterData });
