@@ -44,12 +44,8 @@ const NewDarHeader = (props) => {
         dar_status: "ACTIVE",
         prepared_by: "",
         prepared_by_pos: "",
-        approved_by: "",
-        approved_by_pos: "",
         checked_by: "",
         checked_by_pos: "",
-        confirmed_by: "",
-        confirmed_by_pos: "",
         templatelink_id: "",
         department: "",
         group_name: "",
@@ -114,6 +110,10 @@ const NewDarHeader = (props) => {
     }
 
     const SaveOrUpdateData = async () => {
+        const exclude = ['id', 'soa_no_link', 'soa_no_link', 'day_type_idlink', 'totalHours', 'dar_no'];
+        for (var key of Object.keys(dataVariable)) {
+            if(dataVariable[key] == "" && !exclude.includes(key)) return toast.error('All fields are required.');
+        }
         setLoadSaving("Saving...");
         const response = await http.post('/post-darheader', { dataVariable });
         if (response.data.success) {
