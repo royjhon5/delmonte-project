@@ -319,8 +319,8 @@ const SOAdata = () => {
                         <CustomDataGrid
                             columns={ColumnHeader}
                             rows={SearchFilter(constMappedData)}
-                            maxHeight={450}
-                            height={450}
+                            maxHeight={550}
+                            height={550}
                             slots={{ noRowsOverlay: NoData }}
                         />
                     </Paper>

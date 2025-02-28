@@ -110,10 +110,10 @@ const NewDarHeader = (props) => {
     }
 
     const SaveOrUpdateData = async () => {
-        const exclude = ['id', 'soa_no_link', 'soa_no_link', 'day_type_idlink', 'totalHours', 'dar_no'];
-        for (var key of Object.keys(dataVariable)) {
-            if(dataVariable[key] == "" && !exclude.includes(key)) return toast.error('All fields are required.');
-        }
+        // const exclude = ['id', 'soa_no_link', 'soa_no_link', 'day_type_idlink', 'totalHours', 'dar_no'];
+        // for (var key of Object.keys(dataVariable)) {
+        //     if(dataVariable[key] == "" && !exclude.includes(key)) return toast.error('All fields are required.');
+        // }
         setLoadSaving("Saving...");
         const response = await http.post('/post-darheader', { dataVariable });
         if (response.data.success) {

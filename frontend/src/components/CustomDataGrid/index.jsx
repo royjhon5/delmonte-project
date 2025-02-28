@@ -29,13 +29,13 @@ const CustomDataGrid = ({
   };
   return (
     <DataGrid
-      columnHeaderHeight={36}
+      columnHeaderHeight={25}
       loading={loading}
       columns={columns}
       rows={rows}
       slots={slots}
       checkboxSelection={checkboxSelection}
-      rowHeight={36}
+      rowHeight={25}
       rowSelection={rowSelection}
       disableRowSelectionOnClick={disableRowSelectionOnClick}
       hoverStateEnabled={true}
@@ -46,16 +46,13 @@ const CustomDataGrid = ({
       onRowSelectionModelChange={onRowSelectionModelChange}
       isRowSelectable={isRowSelectable}
       rowSelectionModel={rowSelectionModel}
-      initialState={{
-        pagination: { paginationModel: { pageSize: 25 } },
-      }}
-      pageSizeOptions={[25, 50, 100]}
       getRowClassName={customGetRowClassName}
       sx={{
         "--DataGrid-overlayHeight": gridOverLay,
         borderRadius: 0,
         height: height,
         maxHeight: maxHeight,
+        fontSize: '9px',
         "&.MuiDataGrid-root": {
           border: 0,
           borderBottom:

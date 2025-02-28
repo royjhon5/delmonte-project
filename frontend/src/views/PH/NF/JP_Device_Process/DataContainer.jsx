@@ -132,8 +132,8 @@ const DataContainer = () => {
                 </Stack>
                 <CustomDataGrid
                     columns={ColumnHeader}
-                    maxHeight={450}
-                    height={450}
+                    maxHeight={650}
+                    height={600}
                     rows={SearchFilter(constMappedData)}
                     slots={{ noRowsOverlay: NoData }}
                     loading={isLoading}
