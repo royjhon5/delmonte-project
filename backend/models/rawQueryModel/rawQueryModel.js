@@ -51,7 +51,7 @@ const rawQueryModel = {
         return new Promise((resolve, reject) => {
             const query = `SELECT hdr.*, dtl.* FROM tbltemplates_employeehdr hdr, tbltemplates_employeedtl dtl WHERE hdr.id = dtl.template_employehdr_idlink AND hdr.id = ${params.templatelink_id} ORDER BY dtl.last_name ASC`;
             db.query(query, [], async (err, result) => {
-                await result.forEach(element => {
+                await result.map(element => {
                     // select dar header date
                     const darQuery = `SELECT * FROM tbldarhdr WHERE id = ${params.id} LIMIT 1`;
                     db.query(darQuery, [], async (errDar, resultDar) => {
@@ -125,7 +125,7 @@ const rawQueryModel = {
                 SUM(dtl.nd) as total_nd, SUM(dtl.ndot) as total_ndot FROM tbldarhdr hdr, tbldardtl dtl WHERE hdr.id = dtl.dar_idlink AND hdr.id = ${params.id} AND dtl.is_main = 0 GROUP BY dtl.activitylink_id`;
             db.query(query, [], async (err, result) => {
                 console.log(err)
-                await result.forEach(element => {
+                await result.map(element => {
                     // get account rates here...
                     const accountRateSql = `SELECT * FROM tblaccount_to_charge WHERE id = ${element.activitylink_id} LIMIT 1`;
                     db.query(accountRateSql, [], async (errRate, resultRate) => {
@@ -210,7 +210,7 @@ const rawQueryModel = {
                 if (result) {
                     let chapaCounter = 1;
                     let arrayCounter = 1;
-                    await result.forEach(element => {
+                    await result.map(element => {
                         let diff = 0;
                         let time_out = "";
                         if (chapaCounter == element.count) { // to know that this record is the last and this is where to save the final time out of employee
@@ -302,7 +302,7 @@ const rawQueryModel = {
     saveDARActivityBreakdown: async function (params) {
         return new Promise(async (resolve, reject) => {
             if (params.empids.length > 0) {
-                await params.empids.forEach(element => {
+                await params.empids.map(element => {
                     let toSave = params.fieldValue;
                     const queryEmp = `SELECT * FROM tblemployeelist WHERE chapa_id = "${element}" LIMIT 1`;
                     db.query(queryEmp, [], (errEmp, resultEmp) => {
@@ -499,7 +499,7 @@ const rawQueryModel = {
                         shift: result[0].shift
                     });
 
-                    result.forEach(element => {
+                    result.map(element => {
                         if (lastChapa != element.ChapaID) {
                             lastChapa = element.ChapaID;
                             totalHC += 1;
@@ -585,7 +585,7 @@ const rawQueryModel = {
                     let checkedby_position = result[0].checkedby_position;
                     let confirmedby_position = result[0].confirmedby_position;
                     let approvedby_position = result[0].approvedby_position;
-                    result.forEach(element => {
+                    result.map(element => {
                         element.count = cntr;
                         resultData.push(element);
                         totalST += parseFloat(element.st);

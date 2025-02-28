@@ -10,7 +10,7 @@ module.exports.getAccountToCharge = async function (req, res) {
 		fields: ["*"],
 		tableName: "tblaccount_to_charge",
 	}
-	if (data.header) {
+	if (data.header_id) {
 		params.where.push('header_id = ?');
 		params.whereValue.push(data.header_id);
 	}

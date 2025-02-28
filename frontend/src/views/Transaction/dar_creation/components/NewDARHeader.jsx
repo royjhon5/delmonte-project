@@ -110,7 +110,7 @@ const NewDarHeader = (props) => {
     }
 
     const SaveOrUpdateData = async () => {
-        const exclude = ['id', 'soa_no_link', 'soa_no_link', 'day_type_idlink', 'totalHours', 'dar_no', 'approved_by', 'approved_by_pos', 'confirmed_by', 'confirmed_by_pos'];
+        const exclude = ['id', 'soa_no_link', 'soa_no_link', 'totalHours', 'dar_no', 'approved_by', 'approved_by_pos', 'confirmed_by', 'confirmed_by_pos'];
         for (var key of Object.keys(dataVariable)) {
             if(dataVariable[key] == "" && !exclude.includes(key)) return toast.error('All fields are required.');
         }

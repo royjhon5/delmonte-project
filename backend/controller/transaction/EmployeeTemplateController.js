@@ -101,9 +101,9 @@ module.exports.saveEmployeeTemplateDetail = async function (req, res) {
 		},
 
 	}
-	$template_name = "(SELECT hdr.TName FROM tbltemplates_employeehdr hdr WHERE hdr.id = tbltemplates_employeedtl.template_employehdr_idlink LIMIT 1) as template_name";
+	$emp_group = "(SELECT hdr.emp_group FROM tbltemplates_employeehdr hdr WHERE hdr.id = tbltemplates_employeedtl.template_employehdr_idlink LIMIT 1) as emp_group";
 	var checkParams = {
-		fields: ["*," + $template_name],
+		fields: ["*," + $emp_group],
 		tableName: "tbltemplates_employeedtl",
 		where: ["ChapaID = ?"],
 		whereValue: [data.ChapaID],
@@ -111,7 +111,7 @@ module.exports.saveEmployeeTemplateDetail = async function (req, res) {
 	try {
 		// check exists
 		await select(checkParams).then(async function (response) {
-			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Cannot add. Employee already exists in a template: " + response.data[0].template_name + "." });
+			if (response.data.length > 0) return res.status(200).send({ success: false, message: "Cannot add. Employee already exists in a group: " + response.data[0].emp_group + "." });
 			else {
 				// save if not exists
 				var result = await data.id > 0 ? update(params) : insert(params);

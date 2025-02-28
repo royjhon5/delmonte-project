@@ -53,7 +53,7 @@ const DetailModal = ({ RefreshData }) => {
             field: "action", headerAlign: 'right',
             headerName: '',
             width: 150,
-            align: 'right',
+            align: 'center',
             renderCell: (params) => {
                 const SelectedRow = async () => {
                     var formVariable = {
@@ -84,9 +84,15 @@ const DetailModal = ({ RefreshData }) => {
                     dispatch({ type: OPEN_CUSTOM_MODAL, openCustomSearchModal: false });
                 }
                 return (
-                    <Box sx={{ paddingRight: 1 }}>
-                        <Button variant="contained" fullWidth color="primary" size="small" onClick={SelectedRow}>Add Employee</Button>
-                    </Box>
+                    <>
+                        {
+                            params.row.default_activity_idlink > 0 ?
+                                <Box sx={{ paddingRight: 1 }}>
+                                    <Button variant="contained" fullWidth color="primary" size="small" onClick={SelectedRow}>Add Employee</Button>
+                                </Box>
+                                : "NO ACTIVITY"
+                        }
+                    </>
                 )
             }
         }

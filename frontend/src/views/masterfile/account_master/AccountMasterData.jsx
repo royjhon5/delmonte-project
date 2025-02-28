@@ -42,6 +42,7 @@ const AccountMasterData = () => {
 
     const [constMappedData, setConstMappedData] = useState([]);
     const loadEmployeeTemplateDetail = useCallback(async (headerID = 0) => {
+        console.log(headerID);
         if (headerID == 0) return setConstMappedData([]);
         const response = await http.get(`/get-accounttocharge?header_id=${headerID}`);
         console.log(response);

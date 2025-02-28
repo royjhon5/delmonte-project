@@ -72,7 +72,7 @@ const AddDARDetail = (props) => {
                 }));
             }
             toast.success(response.data.message);
-            onCloseModal(dataVariable); // close modal after saving
+            onCloseModal("save"); // close modal after saving
             setDataVariable(initialDataVariable); // set initial variables | clear fields
         } else toast.error(response.data.message);
         setLoadSaving(false);

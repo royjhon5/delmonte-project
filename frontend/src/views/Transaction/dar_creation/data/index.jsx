@@ -202,7 +202,7 @@ const DARdata = () => {
 
     const ColumnHeader = [
         {
-            field: 'id', headerName: '', width: 150, align: 'left',
+            field: 'id', headerName: '', width: 200, align: 'left',
             renderCell: (params) => (
                 <>
                     {params.row.is_blank == 0 ?
@@ -397,9 +397,7 @@ const DARdata = () => {
     async function modalCloseDARDetail(params) {
         setOpenModalDARDetail(false);
         setPassDataDetail({});
-        if (params) {
-            loadDARDetail(dataVariableHeader.id);
-        }
+        loadDARDetail(dataVariableHeader.id);
     }
 
     const [openModalTransferEmployee, setOpenModalTransferEmployee] = useState(false);
@@ -417,19 +415,16 @@ const DARdata = () => {
     async function modalCloseDARBreakdown(params) {
         setOpenDARBreakdown(false);
         setPassDataDARBreakDown({});
-        if (params) {
-            loadDARDetail(dataVariableHeader.id);
-        }
+        loadDARDetail(dataVariableHeader.id);
     }
 
     const [openModalActivityBreakdown, setOpenModalActivityBreakdown] = useState(false);
     const [passDataActivityBreakdown, setPassDataActivityBreakdown] = useState({});
     async function modalCloseActivityBreakdown(params) {
+        console.log('here');
         setOpenModalActivityBreakdown(false);
         setPassDataActivityBreakdown({});
-        if (params) {
-            loadDARDetail(dataVariableHeader.id);
-        }
+        loadDARDetail(dataVariableHeader.id);
     }
 
     const clearData = async (type = 'all') => {

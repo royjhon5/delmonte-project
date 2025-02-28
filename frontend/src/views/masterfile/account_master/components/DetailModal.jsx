@@ -55,7 +55,7 @@ const DetailModal = ({ RefreshData }) => {
         rdsh_ot: "",
         rdsh_nd: "",
         rdsh_ndot: "",
-        labor_type: "",
+        labor_type: "Direct Labor",
     };
     const [dataVariable, setDataVariable] = useState(initialDataVariable);
     const updateDataVariable = e => {
@@ -64,14 +64,40 @@ const DetailModal = ({ RefreshData }) => {
             ...prevState,
             [name]: value
         }));
-        // if(name == 'r_st') {
-        //     setDataVariable(prevState => ({
-        //         ...prevState,
-        //         r_ot: value * 1.25,
-        //         r_nd: value * 1.25,
-        //         r_ndot: value * 1.25
-        //     }));
-        // }
+        // formula
+        if(name == 'r_st') {
+            setDataVariable(prevState => ({
+                ...prevState,
+                r_ot: (value * 1.25).toFixed(2),
+                r_nd: (value * 0.1).toFixed(2),
+                r_ndot: ((value * 1.25) * 0.1).toFixed(2),
+                // 
+                sh_st: (value * 1.3).toFixed(2),
+                sh_ot: ((value * 1.3) * 1.3).toFixed(2),
+                sh_nd: ((value * 1.3) * 0.1).toFixed(2),
+                sh_ndot: (((value * 1.3) * 1.3) * 1.3).toFixed(2),
+                // 
+                rh_st: (value * 2).toFixed(2),
+                rh_ot: ((value * 2) * 1.3).toFixed(2),
+                rh_nd: ((value * 2) * 0.1).toFixed(2),
+                rh_ndot: (((value * 2) * 1.3) * 0.1).toFixed(2),
+                // 
+                rd_st: (value * 1.3).toFixed(2),
+                rd_ot: ((value * 1.3) * 1.3).toFixed(2),
+                rd_nd: ((value * 1.3) * 0.1).toFixed(2),
+                rd_ndot: (((value * 1.3) * 1.3) * 0.1).toFixed(2),
+                // 
+                rdsh_st: (value * 1.5).toFixed(2),
+                rdsh_ot: ((value * 1.5) * 1.3).toFixed(2),
+                rdsh_nd: ((value * 1.5) * 0.1).toFixed(2),
+                rdsh_ndot: (((value * 1.5) * 1.3) * 0.1).toFixed(2),
+                // 
+                rdrh_st: (value * 2.6).toFixed(2),
+                rdrh_ot: ((value * 2.6) * 1.3).toFixed(2),
+                rdrh_nd: ((value * 2.6) * 0.1).toFixed(2),
+                rdrh_ndot: (((value * 2.6) * 1.3) * 0.1).toFixed(2),
+            }));
+        }
     };
     const SaveOrUpdateData = async () => {
         for (var key of Object.keys(dataVariable)) {
@@ -100,8 +126,6 @@ const DetailModal = ({ RefreshData }) => {
             setDataVariable(prevState => ({
                 ...prevState,
                 activity: params.activityname,
-                costcenter: params.costcenter,
-                gl_code: params.gl_code
             }));
         }
     }
@@ -168,7 +192,7 @@ const DetailModal = ({ RefreshData }) => {
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalSearchActivity(true) }}><SearchIcon fontSize="small" /></Button>
                                             </InputAdornment>
                                         }
-                                        value={dataVariable.activity} onChange={updateDataVariable} name="activity"
+                                        value={dataVariable.activity} name="activity"
                                     />
                                 </FormControl>
                             </Grid>
@@ -183,7 +207,7 @@ const DetailModal = ({ RefreshData }) => {
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalSearchGLCode(true) }}><SearchIcon fontSize="small" /></Button>
                                             </InputAdornment>
                                         }
-                                        value={dataVariable.gl_code} onChange={updateDataVariable} name="gl_code"
+                                        value={dataVariable.gl_code} name="gl_code"
                                     />
                                 </FormControl>
                             </Grid>
@@ -198,7 +222,7 @@ const DetailModal = ({ RefreshData }) => {
                                                 <Button size="large" variant="contained" onClick={() => { setOpenModalSearchCostCenter(true) }}><SearchIcon fontSize="small" /></Button>
                                             </InputAdornment>
                                         }
-                                        value={dataVariable.costcenter} onChange={updateDataVariable} name="costcenter"
+                                        value={dataVariable.costcenter} name="costcenter"
                                     />
                                 </FormControl>
                             </Grid>

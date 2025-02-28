@@ -76,7 +76,7 @@ const ActivityBreakdown = (props) => {
         const response = await http.post('/post-dardetailbreakdown', { dataVariable: toSaveParams });
         if (response.data.success) {
             toast.success(response.data.message);
-            onCloseModal(dataVariable); // close modal after saving
+            onCloseModal("save"); // close modal after saving
             setDataVariable(initialDataVariable); // set initial variables | clear fields
         } else toast.error(response.data.message);
         setLoadSaving(false);
@@ -295,6 +295,10 @@ const ActivityBreakdown = (props) => {
             }));
             loadDARDetailGroup(passedData.dar_idlink);
             setConstMappedDataTo([]);
+            setTimeInHr("");
+            setTimeInMin("");
+            setTimeOutHr("");
+            setTimeOutMin("");
         }
     }, [passedData]);
 
