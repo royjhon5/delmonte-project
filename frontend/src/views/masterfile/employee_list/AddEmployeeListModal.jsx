@@ -77,6 +77,8 @@ const AddGroupLine = ({ RefreshData }) => {
         setDepartmentLinkID('');
         setGroupLinkID('');
         setActivityLinkID('');
+        setCostCenter('');
+        setGLCode('');
     }
 
     useEffect(() => {
