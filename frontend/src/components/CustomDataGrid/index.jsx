@@ -29,13 +29,13 @@ const CustomDataGrid = ({
   };
   return (
     <DataGrid
-      columnHeaderHeight={25}
+      columnHeaderHeight={30}
       loading={loading}
       columns={columns}
       rows={rows}
       slots={slots}
       checkboxSelection={checkboxSelection}
-      rowHeight={25}
+      rowHeight={30}
       rowSelection={rowSelection}
       disableRowSelectionOnClick={disableRowSelectionOnClick}
       hoverStateEnabled={true}
@@ -48,11 +48,14 @@ const CustomDataGrid = ({
       rowSelectionModel={rowSelectionModel}
       getRowClassName={customGetRowClassName}
       sx={{
+        "& .checked-row": {
+          backgroundColor: "rgba(255, 0, 0, 0.3) !important",
+        },
         "--DataGrid-overlayHeight": gridOverLay,
         borderRadius: 0,
         height: height,
         maxHeight: maxHeight,
-        fontSize: '9px',
+        fontSize: '12px',
         "&.MuiDataGrid-root": {
           border: 0,
           borderBottom:
@@ -75,14 +78,9 @@ const CustomDataGrid = ({
           borderTop: "none",
           padding: 0,
         },
-        "& .duplicate-row": {
-          backgroundColor: "rgba(255, 0, 0, 0.3) !important",
-        },
-        "& .Mui-checked": {
-          color: "red !important", // Checked state color red
-        },
-        "& .checked-row": {
-          backgroundColor: "rgba(255, 0, 0, 0.3) !important",
+        '& .Mui-selected': {
+          backgroundColor: 'red !important',
+          color: 'white',
         },
       }}
     />
